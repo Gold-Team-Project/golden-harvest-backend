@@ -22,8 +22,9 @@ public class Discard {
     @Column(name = "lot_no", length = 20, nullable = false)
     private String lotNo;
 
-    @Column(name = "discard_status", length = 8, nullable = false)
-    private String discardStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "discard_status", nullable = false)
+    private DiscardStatus discardStatus;
 
     @Column(name = "quantity")
     private Integer quantity;
@@ -41,7 +42,7 @@ public class Discard {
     public Discard(
             String discardId,
             String lotNo,
-            String discardStatus,
+            DiscardStatus discardStatus,
             Integer quantity,
             LocalDateTime discardedAt,
             String approvedBy,

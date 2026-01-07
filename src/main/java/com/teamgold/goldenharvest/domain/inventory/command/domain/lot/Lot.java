@@ -1,9 +1,6 @@
 package com.teamgold.goldenharvest.domain.inventory.command.domain.lot;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,8 +30,9 @@ public class Lot {
     @Column(name = "inbound_date")
     private LocalDate inboundDate;
 
-    @Column(name = "lot_status", length = 8, nullable = false)
-    private String lotStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lot_status", nullable = false)
+    private LotStatus lotStatus;
 
     @Builder
     public Lot (
@@ -43,7 +41,7 @@ public class Lot {
             String skuNo,
             Integer quantity,
             LocalDate inboundDate,
-            String lotStatus
+            LotStatus lotStatus
     ) {
         this.lotNo = lotNo;
         this.inboundId = inboundId;

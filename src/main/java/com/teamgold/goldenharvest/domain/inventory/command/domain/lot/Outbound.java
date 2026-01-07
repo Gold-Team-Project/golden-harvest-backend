@@ -22,8 +22,9 @@ public class Outbound {
     @Column(name = "sales_order_item_id", length = 20, nullable = false, updatable = false)
     private String salesOrderItemId;
 
-    @Column(name = "lot_no", length = 20, nullable = false, updatable = false)
-    private String lotNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lot_no", nullable = false, updatable = false)
+    private Lot lot;
 
     @Column(name = "outbound_date")
     private LocalDate outboundDate;
@@ -38,14 +39,14 @@ public class Outbound {
     public Outbound(
             String outboundId,
             String salesOrderItemId,
-            String lotNo,
+            Lot lot,
             Integer quantity,
             LocalDate outboundDate,
             BigDecimal outboundPrice
     ) {
         this.outboundId = outboundId;
         this.salesOrderItemId = salesOrderItemId;
-        this.lotNo = lotNo;
+        this.lot = lot;
         this.quantity = quantity;
         this.outboundDate = outboundDate;
         this.outboundPrice = outboundPrice;
