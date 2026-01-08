@@ -1,0 +1,52 @@
+package com.teamgold.goldenharvest.domain.sales.command.domain.sales_order;
+
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "tb_sales_order")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class SalesOrder {
+    @Id
+    @Column(name = "sales_order_id", length = 20, nullable = false)
+    private String salesOrderId;
+
+    @Column(name = "user_email", length = 20, nullable = false)
+    private String userEmail;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status", length = 20, nullable = false)
+    private String salesStatusId;
+
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
+
+    @Column(name = "delivery_date")
+    private LocalDate deliveryDate;
+
+    @Column(name = "total_amount", precision = 10, scale = 2)
+    private BigDecimal totalAmount;
+
+    @OneToMany(mappedBy = "salesOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<SalesOrderItem> salesOrderItems;
+}
