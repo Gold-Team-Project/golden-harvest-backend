@@ -125,7 +125,7 @@
 </details>
 <br>
 
-### 3. **DB 모델링**
+### 3. **ERD**
 
 <details> 
 <summary> ERD 이미지</summary>
@@ -147,11 +147,13 @@ FIGMA 바로가기 [여기](https://www.figma.com/design/mEtAMkg9PCEV5wRXPM7Ogq/
 
 ### **API GIF**
 
-
 ### **GUIDE URL**
 
-## ⚙️ **7. CI/CD 구축 및 배포 자동화**
+## ⚙️ **7. 아키텍쳐**
 
-
+<details> 
+<summary> 아키텍쳐</summary>
+<img width="1760" height="962" alt="Image" src="image/PROJECT/ERD.png" />
+</details>
 
 ## ⚠️ **8. 트러블 슈팅**
