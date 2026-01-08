@@ -121,7 +121,9 @@
 
 <details> 
 <summary> 요구사항 명세서 이미지</summary>
-<img width="926" height="448" alt="Image" src="image/PROJECT/요구사항명세서.png" />
+<img width="785" height="577" alt="Image" src="https://github.com/user-attachments/assets/bb9fb911-f0d4-43fd-87ad-b7dd1cc85cf0" />
+<img width="783" height="580" alt="Image" src="https://github.com/user-attachments/assets/e608684a-28ee-44aa-97a4-56b0795dde3a" />
+<img width="785" height="205" alt="Image" src="https://github.com/user-attachments/assets/71e77ec5-5707-4d69-ad3d-ded7ce0b3289" />
 </details>
 <br>
 
