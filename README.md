@@ -34,21 +34,13 @@
 
 ## 📖 **2. 프로젝트 개요**
 
-### 🎯 **소개**
+[프로젝트 기획서](https://docs.google.com/document/d/1v7wiuOBeu2GY7eWCEXlaqo3bHUNFWnCKDQfKgXnpFAI/edit?tab=t.0)에서 확인하실 수 있습니다.
 
-<br>
-
-### ⭐ **선정 이유**
-
-<br>
-
-### 🚀 **주요 기능**
-
-<br>
 
 ## 🕹️ **3. 개발 환경 및 기술 스택**
 
 ### 💾 Database & Cache
+
 <p>
     <img src="https://img.shields.io/badge/HeidiSQL-b0fb0c?style=for-the-badge&logo=heidisql&logoColor=white"/>
     <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
@@ -143,8 +135,7 @@
 
 
 ### 5. **FIGMA**
-FIGMA 바로가기 [여기](https://www.figma.com/design/mEtAMkg9PCEV5wRXPM7Ogq/GOLD?node-id=0-1&t=U5aUd94NJQIHN4xX-1)에서 확인하실 수 있습니다.
-
+[FIGMA 바로가기](https://www.figma.com/design/C76lMTHuExvnOCFg2q12LU/GoldenHarvest?node-id=0-1&p=f&t=dC1Wz7BUplinmjtQ-0)에서 확인하실 수 있습니다.
 
 <br>
 
@@ -158,7 +149,7 @@ FIGMA 바로가기 [여기](https://www.figma.com/design/mEtAMkg9PCEV5wRXPM7Ogq/
 
 <details> 
 <summary> 아키텍쳐</summary>
-<img width="1760" height="962" alt="Image" src="readme/Architecture.drawio.png" />
+<img alt="Image" src="readme/Architecture.drawio.png" />
 </details>
 
 ## ⚠️ **8. 트러블 슈팅**
