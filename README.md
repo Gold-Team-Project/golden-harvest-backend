@@ -2,7 +2,6 @@
 
 ## 👤 **1. 팀원 소개**
 
-
 <table style="width: 100%; text-align: center;">
 <tr>
 <td align="center"> <a href="https://github.com/okok02110211">강성현</a></td>
@@ -73,7 +72,6 @@
     <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
     <img src="https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white">
     <img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
-    <img src="https://img.shields.io/badge/websocket-000000?style=for-the-badge&logo=webstorm&logoColor=white">
 </p>
 
 ### 📝 Design & Documentation
