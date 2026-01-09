@@ -1,8 +1,8 @@
 package com.teamgold.goldenharvest.domain.notification.command.domain.aggregate;
 
+import com.teamgold.goldenharvest.domain.user.command.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.User;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -34,8 +34,8 @@ public class UserNotification {
     private LocalDateTime readAt;
 
     @CreationTimestamp
-    @Column(name = "recieved_at")
-    private LocalDateTime recievedAt;
+    @Column(name = "received_at")
+    private LocalDateTime receivedAt;
 
     public void markAsRead(LocalDateTime now) {
         this.isRead = true;
