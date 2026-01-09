@@ -13,19 +13,19 @@
 </tr>
 <tr>
 <td align="center">
-    <img width="250" height="180" alt="Image" src="image/USER/강성현.png" />
+    <img width="250" height="180" alt="Image" src="readme/USER/강성현.png" />
 </td>
 <td align="center">
-    <img width="250" height="180" alt="Image" src="image/USER/김진.png" />
+    <img width="250" height="180" alt="Image" src="readme/USER/김진.png" />
 </td>
 <td align="center">
-    <img width="250" height="180" alt="Image" src="image/USER/박규진.png" />
+    <img width="250" height="180" alt="Image" src="readme/USER/박규진.png" />
 </td>
 <td align="center">
-    <img width="250" height="180" alt="Image" src="image/USER/정동욱.png" />
+    <img width="250" height="180" alt="Image" src="readme/USER/정동욱.png" />
 </td>
 <td align="center">
-    <img width="250" height="180" alt="image" src="image/USER/최지원.png" />
+    <img width="250" height="180" alt="image" src="readme/USER/최지원.png" />
 
 </td>
 </tr>
@@ -113,7 +113,10 @@
 
 <details> 
 <summary> WBS 이미지</summary>
-<img width="1058" height="630" alt="Image" src="https://github.com/user-attachments/assets/42c2fa29-3e54-477f-b5ae-19ebb6feba45" />
+<img alt="Image" src="readme/WBS.png" />
+<img alt="Image" src="readme/WBS2.png" />
+<img alt="Image" src="readme/WBS3.png" />
+<img alt="Image" src="readme/WBS4.png" />
 </details>
 <br>
 
@@ -121,9 +124,9 @@
 
 <details> 
 <summary> 요구사항 명세서 이미지</summary>
-<img width="785" height="577" alt="Image" src="https://github.com/user-attachments/assets/bb9fb911-f0d4-43fd-87ad-b7dd1cc85cf0" />
-<img width="783" height="580" alt="Image" src="https://github.com/user-attachments/assets/e608684a-28ee-44aa-97a4-56b0795dde3a" />
-<img width="785" height="205" alt="Image" src="https://github.com/user-attachments/assets/71e77ec5-5707-4d69-ad3d-ded7ce0b3289" />
+<img alt="Image" src="readme/requirements.png" />
+<img alt="Image" src="readme/requirements2.png" />
+<img alt="Image" src="readme/requirements3.png" />
 </details>
 <br>
 
@@ -131,7 +134,7 @@
 
 <details> 
 <summary> ERD 이미지</summary>
-<img width="1760" height="962" alt="Image" src="image/PROJECT/ERD.png" />
+<img alt="Image" src="readme/ERD.png" />
 </details>
 
 <br>
@@ -155,7 +158,7 @@ FIGMA 바로가기 [여기](https://www.figma.com/design/mEtAMkg9PCEV5wRXPM7Ogq/
 
 <details> 
 <summary> 아키텍쳐</summary>
-<img width="1760" height="962" alt="Image" src="image/PROJECT/ERD.png" />
+<img width="1760" height="962" alt="Image" src="readme/Architecture.drawio.png" />
 </details>
 
 ## ⚠️ **8. 트러블 슈팅**
