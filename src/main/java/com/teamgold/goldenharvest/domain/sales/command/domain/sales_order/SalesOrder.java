@@ -4,8 +4,9 @@ package com.teamgold.goldenharvest.domain.sales.command.domain.sales_order;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -31,9 +32,9 @@ public class SalesOrder {
     @Column(name = "user_email", length = 20, nullable = false)
     private String userEmail;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "order_status", length = 20, nullable = false)
-    private String salesStatusId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_status")
+    private SalesOrderStatus orderStatus;
 
     @Column(name = "created_at")
     private LocalDate createdAt;
