@@ -14,7 +14,7 @@ public class Variety {
     private String varietyCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "item_code", nullable = false)
     private ProduceMaster produceMaster;
 
     @Column(nullable = false, length = 20)
