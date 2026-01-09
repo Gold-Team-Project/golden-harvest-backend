@@ -19,22 +19,22 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
     @Id
-    @Column(length = 20, nullable = false)
+    @Column(name = "user_email", nullable = false)
     private String email; //이메일
 
-    @Column(nullable = false)
+    @Column(name = "user_password", nullable = false)
     private String password; //비밀번호
 
-    @Column(length = 20, nullable = false)
+    @Column(name = "user_company", length = 20, nullable = false)
     private String company; //회사 이름
 
     @Column(length = 20)
     private String businessNumber; //사업자 번호
 
-    @Column(length = 20)
+    @Column(name = "user_name", length = 20)
     private String name; //이름
 
-    @Column(length = 20, nullable = false)
+    @Column(name = "user_phone", length = 20, nullable = false)
     private String phoneNumber; //전화번호
 
     @Enumerated(EnumType.STRING)
@@ -56,11 +56,12 @@ public class User {
     @Column(length = 20)
     private String postalCode; // 우편번호
 
-    private String imageUrl; // 이미지 url
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_status_id", nullable = false)
     private Role role;
+
+    @Column(name = "file_id", nullable = false)
+    private Long fileId;
 
     @Builder
     public User(String email,
@@ -75,8 +76,8 @@ public class User {
                 String addressLine1,
                 String addressLine2,
                 String postalCode,
-                String imageUrl,
-                Role role) {
+                Role role,
+                Long fileId) {
         this.email = email;
         this.password = password;
         this.company = company;
@@ -89,7 +90,7 @@ public class User {
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.postalCode = postalCode;
-        this.imageUrl = imageUrl;
         this.role = role;
+        this.fileId = fileId;
     }
 }
