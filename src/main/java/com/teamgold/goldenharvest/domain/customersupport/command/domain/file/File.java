@@ -2,6 +2,7 @@ package com.teamgold.goldenharvest.domain.customersupport.command.domain.file;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +33,19 @@ public class File {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @Builder
+    public File(Long fileId,
+                String fileUrl,
+                String originalName,
+                String uuidFilename,
+                FileContentType contentType,
+                LocalDateTime createdAt) {
+        this.fileId = fileId;
+        this.fileUrl = fileUrl;
+        this.originalName = originalName;
+        this.uuidFilename = uuidFilename;
+        this.contentType = contentType;
+        this.createdAt = createdAt;
+    }
 }
