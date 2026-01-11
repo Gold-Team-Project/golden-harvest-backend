@@ -12,9 +12,9 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProduceMaster {
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 8)
-    private String itemCode;
+    private Long itemCode;
 
     @Column(length = 20)
     private String itemName;
@@ -22,6 +22,10 @@ public class ProduceMaster {
     @Column(length = 20)
     private String baseUnit;
 
+    @Column(length = 20)
+    private String packUnitName;
+
+    private String packToKg;
     private int shelfLifeDays;
 
     private Double storageTempMin;
@@ -29,7 +33,10 @@ public class ProduceMaster {
     private Double storageTempMax;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isActive = true;
+
+    @Column
+    private String country;
 
     @CreationTimestamp
     private LocalDate createdAt;
@@ -37,24 +44,28 @@ public class ProduceMaster {
     @UpdateTimestamp
     private LocalDate updatedAt;
 
+    private String description;
+
     @Builder
-    protected ProduceMaster(String itemCode,
-                            String itemName,
+    protected ProduceMaster(String itemName,
                             String baseUnit,
+                            String packUnitName,
+                            String packToKg,
                             int shelfLifeDays,
                             Double storageTempMin,
                             Double storageTempMax,
                             Boolean isActive,
-                            LocalDate createdAt,
-                            LocalDate updatedAt) {
-        this.itemCode = itemCode;
+                            String country,
+                            String description) {
         this.itemName = itemName;
         this.baseUnit = baseUnit;
+        this.packUnitName = packUnitName;
+        this.packToKg = packToKg;
         this.shelfLifeDays = shelfLifeDays;
         this.storageTempMin = storageTempMin;
         this.storageTempMax = storageTempMax;
         this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.country = country;
+        this.description = description;
     }
 }
