@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.master.command.domain;
+package com.teamgold.goldenharvest.domain.master.command.domain.master;
 
 import lombok.*;
 import java.io.Serializable;

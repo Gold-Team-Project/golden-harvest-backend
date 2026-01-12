@@ -1,6 +1,6 @@
-package com.teamgold.goldenharvest.domain.master.command.domain;
+package com.teamgold.goldenharvest.domain.master.command.domain.price;
 
-import com.teamgold.goldenharvest.domain.master.command.domain.Sku;
+import com.teamgold.goldenharvest.domain.master.command.domain.master.Sku;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
