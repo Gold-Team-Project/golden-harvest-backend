@@ -12,9 +12,9 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProduceMaster {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(length = 8)
-    private Long itemCode;
+    private String  itemCode;
 
     @Column(length = 20)
     private String itemName;
@@ -47,7 +47,8 @@ public class ProduceMaster {
     private String description;
 
     @Builder
-    protected ProduceMaster(String itemName,
+    protected ProduceMaster(String itemCode,
+                            String itemName,
                             String baseUnit,
                             String packUnitName,
                             String packToKg,
@@ -57,6 +58,7 @@ public class ProduceMaster {
                             Boolean isActive,
                             String country,
                             String description) {
+        this.itemCode = itemCode;
         this.itemName = itemName;
         this.baseUnit = baseUnit;
         this.packUnitName = packUnitName;

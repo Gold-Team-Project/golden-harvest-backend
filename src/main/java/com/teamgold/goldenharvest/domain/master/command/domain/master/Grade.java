@@ -25,4 +25,5 @@ public class Grade {
         this.gradeName = gradeName;
         this.gradeRank = gradeRank;
     }
+
 }

@@ -3,6 +3,7 @@ package com.teamgold.goldenharvest.domain.master.command.domain.price;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.Sku;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,17 @@ public class OriginPrice {
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal originPrice;
 
-    @Column(nullable = false)
+    @Column()
+    private String unit;
+
+    @Column
     private LocalDate createdAt;
+
+    @Builder
+    protected OriginPrice(Sku sku, BigDecimal originPrice, String unit, LocalDate createdAt) {
+        this.sku = sku;
+        this.originPrice = originPrice;
+        this.unit = unit;
+        this.createdAt = createdAt;
+    }
 }

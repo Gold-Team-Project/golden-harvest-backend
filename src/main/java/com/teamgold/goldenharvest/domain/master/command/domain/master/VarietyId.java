@@ -8,6 +8,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class VarietyId implements Serializable {
-    private Long produceMaster;
+    private String produceMaster;
     private String varietyCode;
 }
