@@ -15,13 +15,10 @@ import lombok.NoArgsConstructor;
 public class OrderStatus {
 
     @Id
-    @Column(name = "order_status_id", length = 20, nullable = false)
-    private String id;
+    @Column(name = "order_status_type", length = 20)
+    private String type;
 
     @Column(name = "order_status_name", length = 20)
     private String name;
-
-    @Column(name = "order_status_type", length = 20)
-    private String type;
 
 }
