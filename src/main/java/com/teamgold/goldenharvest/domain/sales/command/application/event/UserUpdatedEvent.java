@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.sales.command.application;
+package com.teamgold.goldenharvest.domain.sales.command.application.event;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

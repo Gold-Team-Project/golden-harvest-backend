@@ -11,10 +11,10 @@ import java.time.LocalDate;
 @Getter
 @Builder
 public class MyOrderResponse {
-    private String salesOrderId;
-    private String orderStatus;
-    private LocalDate createdAt;
-    private BigDecimal totalAmount;
+    private String salesOrderId; // 주문 번호 pk
+    private String orderStatus; // 주문 상태
+    private LocalDate createdAt; // 주문 일자
+    private BigDecimal totalAmount; // 총 결제 금액
 
     public static MyOrderResponse from(SalesOrder salesOrder) {
         return MyOrderResponse.builder()

@@ -17,14 +17,16 @@ import java.util.List;
 public class SalesOrderQueryController {
     private final SalesOrderQueryService salesOrderQueryService;
 
+    // TRX-015 주문 리스트 조회 (사용자)
     @GetMapping
     public ResponseEntity<List<MyOrderResponse>> getMyOrders(/*@AuthenticationPrincipal UserPrincipal userPrincipal*/) {
         // [중요] 실제로는 아래와 같이 Spring Security의 Principal 객체에서 사용자 정보를 가져옵니다.
         // String userEmail = userPrincipal.getEmail();
 
-        // 지금은 테스트를 위해 임시 이메일을 사용합니다.
+        // 지금은 테스트를 위해 임시 이메일을 사용
         String userEmail = "test@example.com";
 
+        // 사용자 주문 리스트 내역
         List<MyOrderResponse> myOrders = salesOrderQueryService.getMyOrders(userEmail);
 
         return ResponseEntity.ok(myOrders);
