@@ -5,29 +5,27 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Entity
-@Table(name = "tb_purchase_order")
+@Table(name = "tb_purchase_order_item")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PurchaseOrder {
+public class PurchaseOrderItem {
 
     @Id
-    @Column(name = "purchase_order_id", length = 20, nullable = false)
+    @Column(name = "purchase_order_item_id", length = 20, nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
-            name = "order_status_id",
+            name = "purchase_order_id",
             nullable = false
     )
-    private OrderStatus orderStatus;
+    private PurchaseOrder purchaseOrder;
 
-    @Column(name = "created_at")
-    private LocalDate createdAt;
+    @Column(name = "sku_no", length = 20, nullable = false)
+    private String skuNo;
 
-    @Column(name = "delivery_date")
-    private LocalDate deliveryDate;
-
+    @Column(name = "quantity")
+    private Integer quantity;
 }
+
