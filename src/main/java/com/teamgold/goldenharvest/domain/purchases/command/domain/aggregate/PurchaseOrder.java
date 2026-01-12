@@ -1,9 +1,7 @@
 package com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -11,11 +9,13 @@ import java.time.LocalDate;
 @Table(name = "tb_purchase_order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class PurchaseOrder {
 
     @Id
     @Column(name = "purchase_order_id", length = 20, nullable = false)
-    private String id;
+    private String purchase_order_id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
@@ -30,4 +30,9 @@ public class PurchaseOrder {
     @Column(name = "delivery_date")
     private LocalDate deliveryDate;
 
+    @Column(name = "sku_no", length = 20, nullable = false)
+    private String skuNo;
+
+    @Column(name = "quantity")
+    private Integer quantity;
 }
