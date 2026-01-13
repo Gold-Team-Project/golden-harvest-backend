@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.master.command.domain;
+package com.teamgold.goldenharvest.domain.master.command.domain.master;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +22,10 @@ public class ProduceMaster {
     @Column(length = 20)
     private String baseUnit;
 
+    @Column(length = 20)
+    private String packUnitName;
+
+    private String packToKg;
     private int shelfLifeDays;
 
     private Double storageTempMin;
@@ -29,7 +33,10 @@ public class ProduceMaster {
     private Double storageTempMax;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isActive = true;
+
+    @Column
+    private String country;
 
     @CreationTimestamp
     private LocalDate createdAt;
@@ -37,24 +44,30 @@ public class ProduceMaster {
     @UpdateTimestamp
     private LocalDate updatedAt;
 
+    private String description;
+
     @Builder
     protected ProduceMaster(String itemCode,
                             String itemName,
                             String baseUnit,
+                            String packUnitName,
+                            String packToKg,
                             int shelfLifeDays,
                             Double storageTempMin,
                             Double storageTempMax,
                             Boolean isActive,
-                            LocalDate createdAt,
-                            LocalDate updatedAt) {
+                            String country,
+                            String description) {
         this.itemCode = itemCode;
         this.itemName = itemName;
         this.baseUnit = baseUnit;
+        this.packUnitName = packUnitName;
+        this.packToKg = packToKg;
         this.shelfLifeDays = shelfLifeDays;
         this.storageTempMin = storageTempMin;
         this.storageTempMax = storageTempMax;
         this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.country = country;
+        this.description = description;
     }
 }

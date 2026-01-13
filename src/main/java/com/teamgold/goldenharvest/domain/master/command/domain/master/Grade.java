@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.master.command.domain;
+package com.teamgold.goldenharvest.domain.master.command.domain.master;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,4 +25,5 @@ public class Grade {
         this.gradeName = gradeName;
         this.gradeRank = gradeRank;
     }
+
 }
