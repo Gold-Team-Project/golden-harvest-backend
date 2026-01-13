@@ -25,6 +25,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
     implementation 'org.modelmapper:modelmapper:3.1.1'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -37,6 +39,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'com.google.guava:guava:33.5.0-jre'
+    implementation 'org.springframework.boot:spring-boot-starter-restclient:4.0.0'
 }
 
 tasks.named('test') {

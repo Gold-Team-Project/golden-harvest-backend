@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.master.command.domain;
+package com.teamgold.goldenharvest.domain.master.command.domain.master;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,15 +7,17 @@ import lombok.*;
 @Table(name = "tb_variety")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@IdClass(VarietyId.class)
 public class Variety {
 
     @Id
-    @Column(length = 8)
-    private String varietyCode;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_code", nullable = false)
     private ProduceMaster produceMaster;
+
+    @Id
+    @Column(name = "variety_code", length = 8)
+    private String varietyCode;
 
     @Column(nullable = false, length = 20)
     private String varietyName;

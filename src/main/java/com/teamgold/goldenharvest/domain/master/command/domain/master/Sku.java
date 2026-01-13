@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.master.command.domain;
+package com.teamgold.goldenharvest.domain.master.command.domain.master;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -16,17 +16,16 @@ public class Sku {
     @Column(name = "sku_no", length = 20)
     private String skuNo;
 
-    /**
-     * 품목
-     */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_code", nullable = false)
-    private ProduceMaster produceMaster;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "variety_code", nullable = false)
+    @JoinColumns({
+            @JoinColumn(name = "item_code", referencedColumnName = "item_code", nullable = false),
+            @JoinColumn(name = "variety_code", referencedColumnName = "variety_code", nullable = false)
+    })
     private Variety variety;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_code", insertable = false, updatable = false)
+    private ProduceMaster produceMaster;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_code", nullable = false)
@@ -34,13 +33,11 @@ public class Sku {
 
     @Builder
     protected Sku(String skuNo,
-                  ProduceMaster produceMaster,
                   Variety variety,
                   Grade grade) {
-
         this.skuNo = skuNo;
-        this.produceMaster = produceMaster;
         this.variety = variety;
+        this.produceMaster = variety.getProduceMaster();
         this.grade = grade;
     }
 }

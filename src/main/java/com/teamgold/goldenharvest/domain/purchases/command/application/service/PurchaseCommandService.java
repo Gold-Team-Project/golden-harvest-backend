@@ -1,8 +1,6 @@
 package com.teamgold.goldenharvest.domain.purchases.command.application.service;
 
 import com.teamgold.goldenharvest.domain.notification.command.domain.repository.NotificationRepository;
-import com.teamgold.goldenharvest.domain.purchases.command.application.event.DomainEventPublisher;
-import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.OrderStatus;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.PurchaseOrder;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.OrderStatusRepository;
@@ -22,7 +20,6 @@ public class PurchaseCommandService {
 
     private final PurchaseOrderRepository PurchaseOrderRepository;
     private final OrderStatusRepository OrderStatusRepository;
-    private final DomainEventPublisher eventPublisher;
     private final NotificationRepository notificationRepository;
     private final ModelMapper modelMapper;
 
@@ -58,13 +55,6 @@ public class PurchaseCommandService {
 
         // 5) 저장
         PurchaseOrderRepository.save(po);
-        eventPublisher.publish(
-                new PurchaseOrderCreatedEvent(
-                        poId
-                        ,LocalDate.now()
-                        ,quantity.intValue()
-                )
-        );
 
 
         return po.getPurchase_order_id();
