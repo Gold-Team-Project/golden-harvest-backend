@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: golden-harvest
+
+  datasource:
+    url: jdbc:mariadb://localhost:3306/goldenharvest
+    username: goldenharvest
+    password: goldenharvest
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    flyway:
+      enabled: true
+      locations: classpath:db/migration
+      baseline-on-migrate: true
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: mappers/**/*.xml
+
+server:
+  port: 8088
