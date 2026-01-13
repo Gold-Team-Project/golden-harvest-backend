@@ -60,32 +60,31 @@ public class MasterServiceImpl implements MasterService {
                 continue;
             }
 
-            {
-                for (String gradeCode : gradeCodes.split(",")) {
+            for (String gradeCode : gradeCodes.split(",")) {
 
-                    Grade grade = gradeRepository.findByGradeCode(gradeCode.trim())
-                            .orElseThrow(() ->
-                                    new IllegalStateException("존재X")
-                            );
-            //SKU
-                    String skuNo = master.getItemCode()
-                            + "-" + variety.getVarietyCode()
-                            + "-" + grade.getGradeCode();
+                Grade grade = gradeRepository.findByGradeCode(gradeCode.trim())
+                        .orElseThrow(() ->
+                                new IllegalStateException("존재X")
+                        );
+                //SKU
+                String skuNo = master.getItemCode()
+                        + "-" + variety.getVarietyCode()
+                        + "-" + grade.getGradeCode();
 
-                    if (skuRepository.existsBySkuNo(skuNo)) {
-                        continue;
-                    }
-
-
-                    Sku sku = Sku.builder()
-                            .skuNo(skuNo)
-                            .variety(variety)
-                            .grade(grade)
-                            .build();
-                    skuRepository.save(sku);
+                if (skuRepository.existsBySkuNo(skuNo)) {
+                    continue;
                 }
 
+
+                Sku sku = Sku.builder()
+                        .skuNo(skuNo)
+                        .variety(variety)
+                        .grade(grade)
+                        .build();
+                skuRepository.save(sku);
             }
+
+
         }
     }
 }

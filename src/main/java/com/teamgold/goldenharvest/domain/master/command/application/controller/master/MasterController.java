@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/internal/harvest")
+@RequestMapping("/api/harvest")
 @Slf4j
 public class MasterController {
 
     private final MasterCollector masterCollector;
 
-    @PostMapping("/produce-master")
+    @PostMapping
     public ResponseEntity<Void> collectProduceMaster() {
-
+        //todo 하드코딩 수정
         MasterRequest request = MasterRequest.builder()
                 .pStartday("2025-10-28")
                 .pEndday("2025-11-11")

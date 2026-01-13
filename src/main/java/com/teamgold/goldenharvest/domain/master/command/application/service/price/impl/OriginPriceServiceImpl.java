@@ -4,7 +4,9 @@ import com.teamgold.goldenharvest.domain.master.command.application.dto.response
 import com.teamgold.goldenharvest.domain.master.command.application.service.price.OriginPriceService;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.Sku;
 import com.teamgold.goldenharvest.domain.master.command.domain.price.OriginPrice;
+import com.teamgold.goldenharvest.domain.master.command.infrastucture.mater.SkuRepository;
 import com.teamgold.goldenharvest.domain.master.command.infrastucture.price.OriginPriceRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,21 +18,37 @@ import java.util.List;
 public class OriginPriceServiceImpl implements OriginPriceService {
 
     private final OriginPriceRepository originPriceRepository;
+    private final SkuRepository skuRepository;
 
     @Override
-    public void save(Sku sku, List<PriceResponse> responses) {
+    public void saveOriginPrice(Sku sku, PriceResponse price) {
 
-        List<OriginPrice> entities = responses.stream()
-                .map(r -> OriginPrice.builder()
-                        .sku(sku)
-                        .originPrice(r.getDpr1())
-                        .createdAt(LocalDate.now())
-                        .unit(r.getUnit())
-                        .build()
-                )
-                .toList();
+        OriginPrice prices = OriginPrice.builder()
+                .sku(sku)
+                .originPrice(price.getDpr1())
+                .unit(price.getUnit())
+                .createdAt(LocalDate.now())
+                .build();
 
-        originPriceRepository.saveAll(entities);
+        originPriceRepository.save(prices);
     }
+
+    @Override
+    @Transactional
+    public void save(List<PriceResponse> prices) {
+
+        List<Sku> skus = skuRepository.findAll();
+
+        for (Sku sku : skus) {
+            prices.stream()
+                    .filter(p ->
+                            sku.getProduceMaster().getItemCode().equals(p.getItemCode())
+                                    && sku.getVariety().getVarietyCode().equals(p.getKindCode())
+                                    && sku.getGrade().getGradeCode().equals(p.getRank())
+                    )
+                    .findFirst()
+                    .ifPresent(price -> saveOriginPrice(sku, price));
+        }
     }
+}
 

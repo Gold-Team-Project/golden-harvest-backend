@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class ProduceMaster {
     @Id
     @Column(length = 8)
-    private String  itemCode;
+    private String itemCode;
 
     @Column(length = 20)
     private String itemName;

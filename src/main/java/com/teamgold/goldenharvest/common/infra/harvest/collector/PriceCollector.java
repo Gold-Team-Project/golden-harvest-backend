@@ -22,32 +22,18 @@ public class PriceCollector {
     private final HarvestParse harvestParse;
     private final OriginPriceService originPriceService;
 
-    public void collectBySku(Sku sku) {
+    public void collect(PriceRequest request) {
 
-        PriceRequest request = PriceRequest.builder()
-                .product_cls_code("02") // 도매 기준
-                .item_category_code("400")
-                .p_country_code("1101") // 서울 (도매 가능 지역)
-                .p_regday(LocalDate.now().toString())
-                .build();
 
         String response = harvestClient.callPrice(request);
-        List<PriceResponse> allPrices = harvestParse.parsePrice(response);
+        List<PriceResponse> prices = harvestParse.parsePrice(response);
 
-        List<PriceResponse> matched = allPrices.stream()
-                .filter(p ->
-                        sku.getProduceMaster().getItemCode().equals(p.getItemCode())
-                                && sku.getVariety().getVarietyCode().equals(p.getKindCode())
-                                && sku.getGrade().getGradeCode().equals(p.getRank())
-                )
-                .toList();
-
-        if (matched.isEmpty()) {
-            log.info("[HARVEST] no matched price skuNo={}", sku.getSkuNo());
+        if (prices.isEmpty()) {
+            log.info("원가 데이터 없음");
             return;
         }
 
-        originPriceService.save(sku, matched);
+        originPriceService.save(prices);
     }
 
 }

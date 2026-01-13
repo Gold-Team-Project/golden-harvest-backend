@@ -9,5 +9,6 @@ import java.util.List;
 @Service
 public interface OriginPriceService {
     //원가 정보 등록
-    void save(Sku sku, List<PriceResponse> responses);
+    void saveOriginPrice(Sku sku, PriceResponse price);
+    void save (List<PriceResponse> responses);
 }

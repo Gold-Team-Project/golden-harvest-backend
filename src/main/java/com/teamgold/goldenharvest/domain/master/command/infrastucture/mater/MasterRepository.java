@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface MasterRepository extends JpaRepository<ProduceMaster, Long> {
+public interface MasterRepository extends JpaRepository<ProduceMaster, String> {
     Optional<ProduceMaster> findByItemName(String itemName);
 }

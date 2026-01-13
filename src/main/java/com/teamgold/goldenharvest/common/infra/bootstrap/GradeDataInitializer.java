@@ -21,7 +21,7 @@ public class GradeDataInitializer implements CommandLineRunner {
         if (gradeRepository.count() > 0) {
             return;
         }
-
+        //todo DML 및 Flyway로 변경
         List<Grade> grades = List.of(
                 grade("01", "1등급", 2),
                 grade("02", "2등급", 3),

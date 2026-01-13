@@ -21,9 +21,14 @@ public class MasterCollector {
 
     public void collect(MasterRequest request) {
         String response = harvestClient.callProduct(request);
-        List<MasterResponse> parse = harvestParse.parseProduct(response);
+        List<MasterResponse> masters = harvestParse.parseProduct(response);
 
-        masterService.saveAll(parse);
+        if(masters.isEmpty()){
+            //todo 예외 처리 추가
+            log.info("수집된 마스터 데이터 없음");
+            return;
+        }
+        masterService.saveAll(masters);
 
     }
 

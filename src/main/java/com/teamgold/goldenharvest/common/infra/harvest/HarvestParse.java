@@ -8,7 +8,6 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +56,7 @@ public class HarvestParse {
             return result;
 
         } catch (Exception e) {
+            //todo 예외 처리 추가
             throw new IllegalArgumentException("KAMIS 가격 파싱 실패", e);
         }
     }
@@ -68,7 +68,6 @@ public class HarvestParse {
             JsonNode items = root.path("info");
 
             if (items.isMissingNode() || !items.isArray()) {
-                log.warn("상품 마스터 데이터가 존재하지 않습니다. (info node missing or not array)");
                 return List.of();
             }
 
@@ -91,7 +90,7 @@ public class HarvestParse {
             return result;
 
         } catch (Exception e) {
-            log.error("KAMIS 상품 정보 파싱 중 에러 발생 Response: {}", response);
+            //todo 예외 처리 추가
             throw new IllegalArgumentException("KAMIS 상품 정보 파싱 실패", e);
         }
     }
