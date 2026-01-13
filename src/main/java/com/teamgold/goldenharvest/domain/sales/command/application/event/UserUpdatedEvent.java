@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserUpdatedEvent {
     private String userEmail;
-    private String newUserEmail;
+    private String newUserEmail; // 이메일의 상태 변경 시 를 대비하여 작성
 }
