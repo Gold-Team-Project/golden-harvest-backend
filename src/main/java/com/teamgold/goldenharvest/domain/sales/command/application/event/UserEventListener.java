@@ -20,8 +20,8 @@ public class UserEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleUserUpdate(UserUpdatedEvent event) {
-        log.info("Received user update event for user ID: {}", event.getUserId());
+        log.info("사용자 이메일 변경 이벤트 수신. old: {}, new: {}", event.getUserEmail(), event.getNewUserEmail());
         // SalesOrder 테이블의 userEmail을 업데이트하는 로직 호출
-        salesOrderCommandService.updateUserEmail(event.getUserId(), event.getNewEmail());
+        salesOrderCommandService.updateUserEmail(event.getUserEmail(), event.getNewUserEmail());
     }
 }

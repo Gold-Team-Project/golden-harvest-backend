@@ -50,4 +50,8 @@ public class SalesOrder {
 
     @OneToMany(mappedBy = "salesOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private java.util.List<SalesOrderItem> salesOrderItems;
+
+    public void updateUserEmail(String newUserEmail) {
+        this.userEmail = newUserEmail;
+    }
 }

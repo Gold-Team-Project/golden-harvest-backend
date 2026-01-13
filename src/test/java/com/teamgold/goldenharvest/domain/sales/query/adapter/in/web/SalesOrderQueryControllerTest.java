@@ -1,7 +1,8 @@
-package com.teamgold.goldenharvest.domain.sales.command.application.controller;
+package com.teamgold.goldenharvest.domain.sales.query.adapter.in.web;
 
-import com.teamgold.goldenharvest.domain.sales.command.application.dto.response.MyOrderResponse;
-import com.teamgold.goldenharvest.domain.sales.command.application.service.SalesOrderQueryService;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.response.MyOrderResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.service.SalesOrderQueryService;
+import com.teamgold.goldenharvest.domain.sales.query.adapter.in.web.SalesOrderQueryController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

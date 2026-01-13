@@ -1,7 +1,7 @@
-package com.teamgold.goldenharvest.domain.sales.command.application.service;
+package com.teamgold.goldenharvest.domain.sales.query.application.service;
 
-import com.teamgold.goldenharvest.domain.sales.command.application.dto.response.MyOrderResponse;
 import com.teamgold.goldenharvest.domain.sales.command.infrastructure.repository.SalesOrderRepository;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.response.MyOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
