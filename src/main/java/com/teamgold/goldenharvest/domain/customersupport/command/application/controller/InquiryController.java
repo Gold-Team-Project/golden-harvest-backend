@@ -28,7 +28,9 @@ public class InquiryController {
 
     @DeleteMapping("/{inquiryId}")
     public ResponseEntity<ApiResponse<?>> delete(@PathVariable String inquiryId) {
-        inquiryService.delete(inquiryId);
+        //todo 인증/인가 구현 후 수정
+        String userId = "rrrr@naver.com";
+        inquiryService.delete(userId,inquiryId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
@@ -36,11 +38,14 @@ public class InquiryController {
     public ResponseEntity<ApiResponse<?>> update(
             @PathVariable String inquiryId,
             @RequestBody InquiryUpdateRequest request) {
-        inquiryService.update(inquiryId,request);
+        //todo 인증/인가 구현 후 수정
+        String userId = "rrrr@naver.com";
+        inquiryService.update(userId,inquiryId,request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     @PostMapping("/{inquiryId}/comments")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<?>> comment(
             @PathVariable String inquiryId,
             @RequestBody CommentCreateRequest request) {

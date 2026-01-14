@@ -39,9 +39,10 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Override
     @Transactional
-    public void delete(String inquiryNo) {
-        Inquiry inquiry = inquiryRepository.findById(inquiryNo)
+    public void delete(String userId,String inquiryNo) {
+        Inquiry inquiry = inquiryRepository.findByInquiryIdAndUserId(inquiryNo,userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.INQUIRY_NOT_FOUND));
+
         inquiryRepository.delete(inquiry);
 
 
@@ -49,9 +50,9 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Override
     @Transactional
-    public void update(String inquiryNo, InquiryUpdateRequest request) {
+    public void update(String userId,String inquiryNo, InquiryUpdateRequest request) {
         // todo file 연동 구현
-        Inquiry inquiry = inquiryRepository.findById(inquiryNo)
+        Inquiry inquiry = inquiryRepository.findByInquiryIdAndUserId(inquiryNo,userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.INQUIRY_NOT_FOUND));
 
         inquiry.updatedInquiry(request.title(), request.body());

@@ -11,9 +11,9 @@ public interface InquiryService {
     //문의 등록
     void create(String userId, String salesOrderId, InquiryCreateRequest request);
     //문의 삭제
-    void delete(String inquiryNo);
+    void delete(String userId,String inquiryNo);
     //문의 수정
-    void update(String inquiryNo, InquiryUpdateRequest request);
+    void update(String userId,String inquiryNo, InquiryUpdateRequest request);
     //문의 답변
     void comment (String inquiryNo, CommentCreateRequest request);
 
