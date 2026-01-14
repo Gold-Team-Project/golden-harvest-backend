@@ -17,18 +17,18 @@ public class UserNotification {
 
     @Id
     @Column(name = "user_notification_id", nullable = false, length = 255)
-    private Long user_notification_id;
+    private Long userNotificationId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "notification_id", nullable = false)
     private Notification notification;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private String userId;
 
+    @Builder.Default
     @Column(name = "is_read",nullable = false)
-    private Boolean isRead;
+    private Boolean isRead = false;
 
     @Column(name = "read_at",nullable = true)
     private LocalDateTime readAt;
