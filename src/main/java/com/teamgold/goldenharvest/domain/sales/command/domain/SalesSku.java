@@ -18,7 +18,7 @@ public class SalesSku {
     @Column(name = "item_name", length = 20)
     private String itemName;
 
-    @Column(name = "greade_name", length = 20)
+    @Column(name = "grade_name", length = 20)
     private String gradeName;
 
     @Column(name = "variety_name", length = 20)

@@ -5,7 +5,7 @@
 
     <resultMap id="orderHistoryResultMap" type="com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryResponse">
         <id property="salesOrderId" column="sales_order_id"/>
-        <result property="orderStatus" column="status_name"/>
+        <result property="orderStatus" column="sales_status_name"/>
         <result property="createdAt" column="created_at"/>
         <result property="totalAmount" column="total_amount"/>
 
@@ -21,7 +21,7 @@
     <select id="findOrderHistoryByUserEmail" resultMap="orderHistoryResultMap">
         SELECT
             so.sales_order_id,
-            sos.status_name,
+            sos.sales_status_name,
             so.created_at,
             so.total_amount,
             sku.item_name,
@@ -32,7 +32,7 @@
         FROM
             tb_sales_order so
                 JOIN
-            tb_sales_order_status sos ON so.order_status_id = sos.order_status_id
+            tb_sales_order_status sos ON so.order_status_id = sos.sales_status_id
                 LEFT JOIN
             tb_sales_order_item soi ON so.sales_order_id = soi.sales_order_id
                 LEFT JOIN
