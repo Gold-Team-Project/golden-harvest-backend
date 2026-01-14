@@ -1,6 +1,5 @@
 package com.teamgold.goldenharvest.common.exception;
 
-import com.teamgold.goldenharvest.common.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter
