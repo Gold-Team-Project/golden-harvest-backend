@@ -15,7 +15,7 @@ public class NotificationCommandService {
 
     private final UserNotificationRepository userNotificationRepository;
 
-    @Transactional
+
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void NotificationRecieved(SignupPendingEvent e) {
         UserNotification userNotification = UserNotification.builder()
