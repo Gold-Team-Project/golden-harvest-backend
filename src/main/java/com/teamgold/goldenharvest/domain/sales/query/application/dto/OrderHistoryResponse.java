@@ -9,9 +9,9 @@ import java.util.List;
 @Getter
 @Builder
 public class OrderHistoryResponse {
-    private String salesOrderId;
-    private String orderStatus;
-    private LocalDate createdAt;
-    private BigDecimal totalAmount;
+    private String salesOrderId; // 주문번호
+    private String orderStatus; // 상태
+    private LocalDate createdAt; // 생성일
+    private BigDecimal totalAmount; // 총 가격
     private List<OrderHistoryItem> orderItems;
 }
