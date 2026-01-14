@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SalesOrderStatus {
     @Id
-    @Column(name = "sales_status_id", length = 20, nullable = false)
-    private String salesStatusId;
+    @Column(name = "sales_status_id", nullable = false)
+    private Long salesStatusId;
 
     @Column(name = "sales_status_name", length = 20)
     private String salesStatusName;
