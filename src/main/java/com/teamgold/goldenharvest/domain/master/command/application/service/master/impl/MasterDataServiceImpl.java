@@ -1,7 +1,11 @@
 package com.teamgold.goldenharvest.domain.master.command.application.service.master.impl;
 
+import com.teamgold.goldenharvest.common.exception.BusinessException;
+import com.teamgold.goldenharvest.common.exception.ErrorCode;
+import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataAppendRequest;
+import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataUpdatedRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.response.master.MasterResponse;
-import com.teamgold.goldenharvest.domain.master.command.application.service.master.MasterService;
+import com.teamgold.goldenharvest.domain.master.command.application.service.master.MasterDataService;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.Grade;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.ProduceMaster;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.Sku;
@@ -20,7 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MasterServiceImpl implements MasterService {
+public class MasterDataServiceImpl implements MasterDataService {
 
     private final MasterRepository masterRepository;
     private final VarietyRepository varietyRepository;
@@ -86,5 +90,44 @@ public class MasterServiceImpl implements MasterService {
 
 
         }
+    }
+
+    @Override
+    @Transactional
+    public void appendMasterData(String itemCode, MasterDataAppendRequest request) {
+        ProduceMaster master = masterRepository.findById(itemCode)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MASTER_DATA_NOT_FOUND));
+
+        master.appendedMasterData(
+                request.getShelfLifeDays(),
+                request.getStorageTempMin(),
+                request.getStorageTempMax(),
+                request.getDescription()
+        );
+    }
+
+    @Override
+    @Transactional
+    public void updateMasterDataStatus(String itemCode) {
+        ProduceMaster master = masterRepository.findById(itemCode)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MASTER_DATA_NOT_FOUND));
+
+        master.updateMasterDataStatus();
+
+    }
+
+    @Override
+    @Transactional
+    public void updatedMasterData(String itemCode, MasterDataUpdatedRequest request) {
+        ProduceMaster master = masterRepository.findById(itemCode)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MASTER_DATA_NOT_FOUND));
+
+        master.updatedMasterData(
+                request.getShelfLifeDays(),
+                request.getStorageTempMin(),
+                request.getStorageTempMax(),
+                request.getDescription()
+        );
+
     }
 }

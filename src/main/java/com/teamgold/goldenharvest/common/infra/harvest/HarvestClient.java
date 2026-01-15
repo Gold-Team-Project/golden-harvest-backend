@@ -1,15 +1,12 @@
 package com.teamgold.goldenharvest.common.infra.harvest;
 
-import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterRequest;
+import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.price.PriceRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Component
@@ -46,7 +43,7 @@ public class HarvestClient {
 
     }
 
-    public String callProduct(MasterRequest req) {
+    public String callProduct(MasterDataRequest req) {
 
         return client.get()
                 .uri(uriBuilder -> uriBuilder
