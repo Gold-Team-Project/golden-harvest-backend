@@ -25,8 +25,8 @@ public class UserNotification {
     private NotificationTemplate templateType;
 
     // 수신자 (너희 User PK 타입에 맞춰서 String/Long 선택)
-    @Column(name = "user_id", nullable = false, length = 50)
-    private String userId;
+    @Column(name = "user_email", nullable = false, length = 50)
+    private String userEmail;
 
     @Builder.Default
     @Column(name = "is_read", nullable = false)

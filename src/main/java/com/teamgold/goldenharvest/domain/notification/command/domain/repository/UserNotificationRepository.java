@@ -7,6 +7,6 @@ import java.util.List;
 public interface UserNotificationRepository {
 
     UserNotification save(UserNotification userNotification);
-    List<UserNotification> findAllByUserId(String userId);
+    List<UserNotification> findAllByUserEmail(String userEmail);
 
 }

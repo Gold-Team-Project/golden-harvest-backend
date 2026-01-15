@@ -19,7 +19,7 @@ public class NotificationCommandService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void NotificationRecieved(SignupPendingEvent e) {
         UserNotification userNotification = UserNotification.builder()
-                .userId(e.getUserEmail()).build();
+                .userEmail(e.getUserEmail()).build();
     }
 
 }
