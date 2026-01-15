@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class MasterRequest {
+public class MasterDataRequest {
     private String pStartday;            // 조회 시작기간
     private String pEndday;              // 조회  종료기간
     private String pCountrycode;         // 지역코드

@@ -1,9 +1,9 @@
 package com.teamgold.goldenharvest.common.infra.harvest.collector;
 
 import com.teamgold.goldenharvest.common.infra.harvest.*;
-import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterRequest;
+import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.response.master.MasterResponse;
-import com.teamgold.goldenharvest.domain.master.command.application.service.master.MasterService;
+import com.teamgold.goldenharvest.domain.master.command.application.service.master.MasterDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,9 +17,9 @@ import java.util.List;
 public class MasterCollector {
     private final HarvestClient harvestClient;
     private final HarvestParse harvestParse;
-    private final MasterService masterService;
+    private final MasterDataService masterService;
 
-    public void collect(MasterRequest request) {
+    public void collect(MasterDataRequest request) {
         String response = harvestClient.callProduct(request);
         List<MasterResponse> masters = harvestParse.parseProduct(response);
 
