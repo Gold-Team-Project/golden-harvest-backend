@@ -29,7 +29,9 @@ public enum ErrorCode {
     REFRESH_TOKEN_MISMATCH("2008", "리프레시 토큰이 일치하지 않거나 존재하지 않습니다.", HttpStatus.UNAUTHORIZED),
     PASSWORD_RESET_NOT_ELIGIBLE("2009", "비밀번호 재설정 인증이 필요합니다.", HttpStatus.FORBIDDEN),
     PASSWORD_RESET_ELIGIBILITY_EXPIRED("2010", "비밀번호 재설정 인증 유효 시간이 만료되었습니다.", HttpStatus.FORBIDDEN),
-    USER_INACTIVE("2011", "비활성화된 계정입니다.", HttpStatus.FORBIDDEN);
+    USER_INACTIVE("2011", "비활성화된 계정입니다.", HttpStatus.FORBIDDEN),
+    //Inquiry (7000-7999)
+    INQUIRY_NOT_FOUND("7000", "문의를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
 
     private final String code;
