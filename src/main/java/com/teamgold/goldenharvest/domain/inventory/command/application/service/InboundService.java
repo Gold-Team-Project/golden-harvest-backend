@@ -37,7 +37,7 @@ public class InboundService {
 				.orElseThrow(IllegalArgumentException::new);
 		}
 
-		// Todo: purchaseOrderEvent내 데이터 정합성 검증 로직
+		// Todo: purchaseOrderEvent내 데이터 정합성 검증 로직 (sku active, valid quantity, etc.)
 
 		// 입고 ID 생성
 		String inboundNo = createInboundNo();
