@@ -30,7 +30,7 @@ public class OriginPriceController {
                 .product_cls_code("02")
                 .item_category_code("400")
                 .p_country_code("1101")
-                .p_regday(LocalDate.now().toString())
+                .p_regday(LocalDate.now().minusDays(1).toString())
                 .build();
 
         priceCollector.collect(request);
