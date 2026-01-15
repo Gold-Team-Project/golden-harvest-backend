@@ -26,7 +26,7 @@ public class NotificationQueryController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    @GetMapping
+    @GetMapping("/{userEmail}/count")
     public ResponseEntity<ApiResponse<Long>> getCountUnreadNotifications(
             @PathVariable String userEmail
     ){
