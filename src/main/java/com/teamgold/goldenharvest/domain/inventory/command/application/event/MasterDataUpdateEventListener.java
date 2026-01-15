@@ -34,9 +34,9 @@ public class MasterDataUpdateEventListener {
 		log.info("마스터데이터 mirror 업데이트 완료");
 	}
 
-	@Async
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
-	public void updateItemPrice() {
-		// Todo: Current item origin price mirror update logic
-	}
+	// @Async
+	// @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
+	// public void updateItemPrice() {
+	// 	// Todo: Current item origin price mirror update logic
+	// }
 }
