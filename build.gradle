@@ -13,6 +13,7 @@ java {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -32,8 +33,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-flyway'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:4.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'com.h2database:h2:2.3.232'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:4.0.1'
     compileOnly 'org.projectlombok:lombok'
@@ -43,6 +45,9 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'com.google.guava:guava:33.5.0-jre'
     implementation 'org.springframework.boot:spring-boot-starter-restclient:4.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.mybatis:mybatis:3.5.19'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:4.0.1'
 }
 
 tasks.named('test') {

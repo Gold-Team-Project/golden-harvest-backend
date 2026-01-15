@@ -27,7 +27,7 @@ mybatis:
 
 kamis:
   cert:
-    key: ${KAMIS_PRIVATE_KEY}
+    key: ${KAMIS_CERT_KEY}
     id: ${KAMIS_CERT_ID}
 
 server:
