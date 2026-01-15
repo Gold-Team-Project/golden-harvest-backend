@@ -35,4 +35,10 @@ public class NotificationQueryService {
                         .build())
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public Long countUnreadNotifications(String request) {
+        return notificationMapper.countUnreadNotifications(request);
+    }
+
 }

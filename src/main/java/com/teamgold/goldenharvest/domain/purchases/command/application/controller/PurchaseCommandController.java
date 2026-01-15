@@ -24,4 +24,5 @@ public class PurchaseCommandController {
         purchaseCommandService.createPurchaseOrder(quantity, skuNo);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
 }
