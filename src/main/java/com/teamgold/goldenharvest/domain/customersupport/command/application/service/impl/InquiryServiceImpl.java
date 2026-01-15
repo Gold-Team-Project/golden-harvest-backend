@@ -5,12 +5,14 @@ import com.teamgold.goldenharvest.common.exception.ErrorCode;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.comment.CommentCreateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryCreateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryUpdateRequest;
+import com.teamgold.goldenharvest.domain.customersupport.command.application.event.InquiryCreatedEvent;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.service.InquiryService;
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.Inquiry;
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.ProcessingStatus;
 import com.teamgold.goldenharvest.domain.customersupport.command.infrastructure.repository.inquiry.InquiryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InquiryServiceImpl implements InquiryService {
     private final InquiryRepository inquiryRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -35,6 +38,10 @@ public class InquiryServiceImpl implements InquiryService {
                 .processingStatus(ProcessingStatus.N)
                 .build();
         inquiryRepository.save(inquiry);
+
+        eventPublisher.publishEvent(
+                new InquiryCreatedEvent(inquiryId, userId)
+        );
     }
 
     @Override

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Inquiry {
 
     @Id
-    @Column(length = 20)
+    @Column(length = 255)
     private String inquiryId;
 
     @Column(nullable = false)
