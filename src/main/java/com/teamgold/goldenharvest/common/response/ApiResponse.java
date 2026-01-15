@@ -5,13 +5,14 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+import com.teamgold.goldenharvest.common.exception.ErrorCode;
 
 @Builder
 @Getter
 public class ApiResponse<T> {
     private boolean success;    // 요청 성공 여부
     private T data;             // 실제 데이터 (성공 시만 사용)
-    private String errorCode;   // 실패 시 에러 코드
+    private ErrorCode errorCode;   // 실패 시 에러 코드
     private String message;     // 실패 시 에러 메세지
     private LocalDateTime timestamp;    // 응답 생성 시간
 
@@ -25,7 +26,7 @@ public class ApiResponse<T> {
     }
 
     // 실패 응답 생성 정적 메소드
-    public static<T> ApiResponse<T> fail(String errorCode, String message) {
+    public static<T> ApiResponse<T> fail(ErrorCode errorCode, String message) {
         return ApiResponse.<T>builder()
                 .success(false)
                 .errorCode(errorCode)
