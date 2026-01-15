@@ -27,7 +27,7 @@ public class OriginPriceServiceImpl implements OriginPriceService {
                 .sku(sku)
                 .originPrice(price.getDpr1())
                 .unit(price.getUnit())
-                .createdAt(LocalDate.now())
+                .createdAt(LocalDate.now().minusDays(1))
                 .build();
 
         originPriceRepository.save(prices);

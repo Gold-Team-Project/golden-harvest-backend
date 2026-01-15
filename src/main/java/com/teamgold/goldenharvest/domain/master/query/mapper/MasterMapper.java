@@ -1,0 +1,81 @@
+package com.teamgold.goldenharvest.domain.master.query.mapper;
+
+import com.teamgold.goldenharvest.domain.master.query.dto.response.master.MasterDataDetailResponse;
+import com.teamgold.goldenharvest.domain.master.query.dto.response.master.MasterDataListResponse;
+import com.teamgold.goldenharvest.domain.master.query.dto.response.price.OriginPriceResponse;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+
+@Mapper
+public interface MasterMapper {
+    @Select("""
+              SELECT
+                        s.sku_no                As skuNo,
+                        pm.item_code            AS itemCode,
+                        pm.item_name            AS itemName,
+                        g.grade_name            AS grade,
+                        pm.created_at           AS createdAt,
+                        pm.updated_at           AS updatedAt,
+                        pm.is_active             AS status
+                    FROM tb_sku s
+                    INNER JOIN tb_produce_master pm
+                        ON s.item_code = pm.item_code
+                    INNER JOIN tb_variety v
+                       ON s.item_code = v.item_code
+                      AND s.variety_code = v.variety_code
+                    INNER JOIN tb_grade g
+                       ON s.grade_code = g.grade_code
+                    ORDER BY pm.created_at DESC
+                    LIMIT #{limit}
+                    OFFSET #{offset}
+            """)
+    List<MasterDataListResponse> findAllMasterData(@Param("limit") int limit, @Param("offset") int offset);
+
+    @Select("""
+                SELECT
+                    s.sku_no             AS skuNo,
+                    pm.item_code         AS itemCode,
+                    pm.item_name         AS itemName,
+                    v.variety_name       AS varietyName,
+                    pm.base_unit         AS baseUnit,
+                    pm.pack_to_kg        AS packToKg,
+                    g.grade_name         AS grade,
+                    pm.created_at        AS createdAt,
+                    pm.updated_at        AS updatedAt,
+                    pm.country           AS country,
+                    pm.description       AS description,
+                    pm.shelf_life_days   AS shelfLifeDays,
+                    pm.storage_temp_min  AS storageTempMin,
+                    pm.storage_temp_max  AS storageTempMax
+                FROM tb_sku s
+                INNER JOIN tb_variety v
+                    ON s.item_code = v.item_code
+                   AND s.variety_code = v.variety_code
+                INNER JOIN tb_produce_master pm
+                    ON s.item_code = pm.item_code
+                INNER JOIN tb_grade g
+                    ON s.grade_code = g.grade_code
+                WHERE s.sku_no = #{skuNo}
+            """)
+    MasterDataDetailResponse findDetailMasterData(@Param("skuNo") String skuNo);
+
+    @Select("""
+                SELECT
+                    op.origin_price AS originPrice,
+                    op.unit         AS unit,
+                    op.created_at   AS createdAt
+                FROM tb_origin_price op
+                WHERE op.sku_no = #{skuNo}
+                ORDER BY op.created_at DESC
+                LIMIT 7
+            """)
+    List<OriginPriceResponse> findRecentOriginPrices(
+            @Param("skuNo") String skuNo
+    );
+
+}
+
+

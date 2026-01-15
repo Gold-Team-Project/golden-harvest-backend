@@ -33,7 +33,7 @@ public class ProduceMaster {
     private Double storageTempMax;
 
     @Column(nullable = false)
-    private Boolean isActive = true;
+    private Boolean isActive = false;
 
     @Column
     private String country;
@@ -70,4 +70,31 @@ public class ProduceMaster {
         this.country = country;
         this.description = description;
     }
+
+    public void appendedMasterData(
+            int shelfLifeDays,
+            Double storageTempMin,
+            Double storageTempMax,
+            String description) {
+        this.shelfLifeDays = shelfLifeDays;
+        this.storageTempMin = storageTempMin;
+        this.storageTempMax = storageTempMax;
+        this.description = description;
+    }
+
+    public void updatedMasterData(
+            int shelfLifeDays,
+            Double storageTempMin,
+            Double storageTempMax,
+            String description) {
+        if (shelfLifeDays != 0) this.shelfLifeDays = shelfLifeDays;
+        if (storageTempMin != null) this.storageTempMin = storageTempMin;
+        if (storageTempMax != null) this.storageTempMax = storageTempMax;
+        if (description != null) this.description = description;
+    }
+
+    public void updateMasterDataStatus(){
+        this.isActive = !this.isActive;
+    }
+
 }
