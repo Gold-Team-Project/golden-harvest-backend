@@ -2,6 +2,7 @@ package com.teamgold.goldenharvest.domain.inventory.command.application.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ public class LotService {
 
 	@Transactional
 	public String createLot(PurchaseOrderEvent purchaseOrderEvent) {
-		String lotNo = createLotNo();
+		String lotNo = IdGenerator.createId("lot");
 
 		Lot lot = Lot.builder()
 			.lotNo(lotNo)
@@ -36,20 +37,10 @@ public class LotService {
 		return lotNo;
 	}
 
-	/*
-	* Lot 번호 (native key)를 생성하는 메소드이다
-	* IdGenerator는 1씩 증가하는 반드시 고유한 숫자값을 반환한다
-	* */
-	private String createLotNo() {
-		IdGenerator generator = IdGenerator.create();
-		idGeneratorRepository.save(generator);
-
-		Long sequenceNum = generator.getId();
-
-		String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		String formattedSeq = String.format("%06d", sequenceNum);
-
-		// LOT_YYYYMMDD_NNNNNN 형식의 native id 생성
-		return "LOT_" + today + "_" + formattedSeq;
+	@Transactional
+	public List<String> OutboundLot(String skuNo, Integer quantity) {
+		// Todo: FIFO에 맞게 주문 들어온 상품을 출고 (수량 및 상태 변경 등)
+		// Todo: 변경이 발생한 lotNo들을 모두 반환
+		return null;
 	}
 }
