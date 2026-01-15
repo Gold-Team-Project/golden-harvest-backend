@@ -25,5 +25,10 @@ mybatis:
     map-underscore-to-camel-case: true
   mapper-locations: mappers/**/*.xml
 
+kamis:
+  cert:
+    key: ${KAMIS_CERT_KEY}
+    id: ${KAMIS_CERT_ID}
+
 server:
   port: 8088
