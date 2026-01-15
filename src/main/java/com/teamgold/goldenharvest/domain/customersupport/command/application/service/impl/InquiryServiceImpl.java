@@ -23,13 +23,13 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Override
     @Transactional
-    public void create(String userId, String salesOrderId, InquiryCreateRequest request) {
+    public void create(String userId,InquiryCreateRequest request) {
         // todo file 연동 구현
         String inquiryId = LocalDateTime.now() + "-" + "Inquiry" + "-" + UUID.randomUUID();
         Inquiry inquiry = Inquiry.builder()
                 .inquiryId(inquiryId)
                 .userId(userId)
-                .salesOrderId(salesOrderId)
+                .salesOrderId(request.salesOrderId())
                 .title(request.title())
                 .body(request.body())
                 .processingStatus(ProcessingStatus.N)

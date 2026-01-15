@@ -7,6 +7,7 @@ import com.teamgold.goldenharvest.domain.customersupport.command.application.dto
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryUpdateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.service.InquiryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,21 +17,22 @@ import org.springframework.web.bind.annotation.*;
 public class InquiryController {
     private final InquiryService inquiryService;
 
-    @PostMapping("/{salesOrderId}")
+    @PostMapping
     public ResponseEntity<ApiResponse<?>> save(
-            @PathVariable String salesOrderId,
             @RequestBody InquiryCreateRequest request) {
         //todo 인증/인가 구현 후 수정
         String userId = "rrrr@naver.com";
-        inquiryService.create(userId, salesOrderId, request);
-        return ResponseEntity.ok(ApiResponse.success(null));
+        inquiryService.create(userId, request);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(null));
     }
 
     @DeleteMapping("/{inquiryId}")
     public ResponseEntity<ApiResponse<?>> delete(@PathVariable String inquiryId) {
         //todo 인증/인가 구현 후 수정
         String userId = "rrrr@naver.com";
-        inquiryService.delete(userId,inquiryId);
+        inquiryService.delete(userId, inquiryId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
@@ -40,7 +42,7 @@ public class InquiryController {
             @RequestBody InquiryUpdateRequest request) {
         //todo 인증/인가 구현 후 수정
         String userId = "rrrr@naver.com";
-        inquiryService.update(userId,inquiryId,request);
+        inquiryService.update(userId, inquiryId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
@@ -49,7 +51,7 @@ public class InquiryController {
     public ResponseEntity<ApiResponse<?>> comment(
             @PathVariable String inquiryId,
             @RequestBody CommentCreateRequest request) {
-        inquiryService.comment(inquiryId,request);
+        inquiryService.comment(inquiryId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public interface InquiryService {
 
     //문의 등록
-    void create(String userId, String salesOrderId, InquiryCreateRequest request);
+    void create(String userId,InquiryCreateRequest request);
     //문의 삭제
     void delete(String userId,String inquiryNo);
     //문의 수정
