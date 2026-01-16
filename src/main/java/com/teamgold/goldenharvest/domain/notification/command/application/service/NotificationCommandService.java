@@ -22,4 +22,14 @@ public class NotificationCommandService {
                 .userEmail(e.getUserEmail()).build();
     }
 
+    @Transactional
+    public void DeleteAllNotification(String userEmail){
+        userNotificationRepository.deleteAllByUserEmail(userEmail);
+    }
+
+    @Transactional
+    public void DeleteNotificationById(Long notificationid){
+        userNotificationRepository.deleteByUserNotificationId(notificationid);
+    }
+
 }
