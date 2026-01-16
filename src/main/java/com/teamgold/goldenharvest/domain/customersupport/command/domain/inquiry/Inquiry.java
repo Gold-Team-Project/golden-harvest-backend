@@ -1,6 +1,5 @@
 package com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry;
 
-import com.teamgold.goldenharvest.common.infra.file.domain.File;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,6 +32,8 @@ public class Inquiry {
 
     private String comment;
 
+    private Long fileId;
+
     @Enumerated(EnumType.STRING)
     private ProcessingStatus processingStatus = ProcessingStatus.N;
 
@@ -45,6 +46,7 @@ public class Inquiry {
                    String salesOrderId,
                    String title,
                    String body,
+                   Long fileId,
                    String comment,
                    ProcessingStatus processingStatus,
                    LocalDateTime createdAt,
@@ -54,6 +56,7 @@ public class Inquiry {
         this.salesOrderId = salesOrderId;
         this.title = title;
         this.body = body;
+        this.fileId = fileId;
         this.comment = comment;
         this.processingStatus = processingStatus;
         this.createdAt = createdAt;
@@ -72,6 +75,10 @@ public class Inquiry {
     //문의 수정(제목, 내용)
     public void updatedComment(String comment){
         this.comment = comment;
+    }
+
+    public void updateFile(Long fileId) {
+        this.fileId = fileId;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.teamgold.goldenharvest.common.infra.file.service.storage;
 
-import com.teamgold.goldenharvest.common.infra.file.domain.FileContentType;
+import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.FileContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
