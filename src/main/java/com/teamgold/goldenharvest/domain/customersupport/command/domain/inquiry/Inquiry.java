@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Inquiry {
 
     @Id
-    @Column(length = 20)
+    @Column(length = 255)
     private String inquiryId;
 
     @Column(nullable = false)
@@ -26,14 +26,15 @@ public class Inquiry {
     @Column(nullable = false)
     private String salesOrderId;
 
+    @Column(nullable = false)
     private String title;
-
+    @Column(nullable = false)
     private String body;
 
     private String comment;
 
     @Enumerated(EnumType.STRING)
-    private ProcessingStatus processingStatus;
+    private ProcessingStatus processingStatus = ProcessingStatus.N;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -62,4 +63,20 @@ public class Inquiry {
         this.createdAt = createdAt;
         this.file = file;
     }
+
+    //활성화 상태 변경
+    public void updatedProcessingStatus(){
+        this.processingStatus = ProcessingStatus.Y;
+    }
+
+    //문의 수정(제목, 내용)
+    public void updatedInquiry(String title, String body){
+        if (title != null) this.title = title;
+        if (body !=null) this.body = body;
+    }
+    //문의 수정(제목, 내용)
+    public void updatedComment(String comment){
+        this.comment = comment;
+    }
+
 }

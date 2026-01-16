@@ -1,6 +1,5 @@
 package com.teamgold.goldenharvest.domain.notification.command.domain.aggregate;
 
-import com.teamgold.goldenharvest.domain.user.command.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,30 +15,32 @@ import java.time.LocalDateTime;
 public class UserNotification {
 
     @Id
-    @Column(name = "user_notification_id", nullable = false, length = 255)
-    private Long user_notification_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_notification_id", nullable = false)
+    private Long userNotificationId;
 
+    // 기본 문구(템플릿) 참조: type이 PK라서 FK도 type 컬럼으로 거는 게 깔끔함
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "notification_id", nullable = false)
-    private Notification notification;
+    @JoinColumn(name = "notification_type", nullable = false)
+    private NotificationTemplate templateType;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    // 수신자 (너희 User PK 타입에 맞춰서 String/Long 선택)
+    @Column(name = "user_email", nullable = false, length = 50)
+    private String userEmail;
 
-    @Column(name = "is_read",nullable = false)
-    private Boolean isRead;
+    @Builder.Default
+    @Column(name = "is_read", nullable = false)
+    private boolean isRead = false;
 
-    @Column(name = "read_at",nullable = true)
+    @Column(name = "read_at")
     private LocalDateTime readAt;
 
     @CreationTimestamp
-    @Column(name = "received_at")
+    @Column(name = "received_at", nullable = false, updatable = false)
     private LocalDateTime receivedAt;
 
     public void markAsRead(LocalDateTime now) {
         this.isRead = true;
         this.readAt = now;
     }
-
 }
