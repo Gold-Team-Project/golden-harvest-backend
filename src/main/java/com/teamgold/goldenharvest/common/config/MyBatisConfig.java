@@ -3,6 +3,7 @@ package com.teamgold.goldenharvest.common.config;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,13 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
+@MapperScan(basePackages = {
+        "com.teamgold.goldenharvest.domain.notification.query.mapper",
+        "com.teamgold.goldenharvest.domain.master.query.mapper",
+        "com.teamgold.goldenharvest.domain.inventory.query.mapper",
+        "com.teamgold.goldenharvest.domain.customersupport.query.mapper",
+        "com.teamgold.goldenharvest.domain.sales.query.application.mapper"
+})
 public class MyBatisConfig {
 
     @Bean

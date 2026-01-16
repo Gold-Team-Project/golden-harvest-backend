@@ -1,4 +1,4 @@
--- V4__insert_sales_order_status.sql
+-- V6__insert_sales_order_status.sql
 INSERT INTO tb_sales_order_status (sales_status_id, sales_status_name, sales_status_type) VALUES
 (1, '주문 접수', 'PENDING'),
 (2, '결제 완료', 'PAID'),
