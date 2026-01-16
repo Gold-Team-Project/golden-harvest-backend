@@ -16,7 +16,7 @@ public interface NotificationMapper {
     @Select("""
     SELECT
       un.user_notification_id AS user_notification_id,
-      un.email                 AS user_email,
+      un.user_email                 AS user_email,
       un.is_read              AS is_read,
       un.read_at              AS read_at,
       un.received_at          AS received_at,
@@ -24,8 +24,8 @@ public interface NotificationMapper {
       nt.title                AS template_title,
       nt.body                 AS template_body
     FROM tb_user_notification un
-    JOIN tb_notification_template nt ON un.type = nt.type
-    WHERE un.user_id = #{userId}
+    JOIN tb_notification_template nt ON un.template_type = nt.type
+    WHERE un.user_email = #{userEmail}
     ORDER BY un.received_at DESC
     """)
 
