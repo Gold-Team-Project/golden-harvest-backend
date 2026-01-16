@@ -19,7 +19,7 @@ public class SalesOrderQueryController {
     private final SalesOrderQueryService salesOrderQueryService;
 
     @GetMapping("/my-orders")
-    public ResponseEntity<ApiResponse<List<OrderHistoryResponse>>> getMyOrderHistory() {
+    public ResponseEntity<ApiResponse<?>> getMyOrderHistory() {
         // 최종 구현 시에는 Spring Security 등의 인증 시스템에서 사용자 이메일을 받아올 예정
         // userEmail 하드코딩으로 받아 옴
         String currentUserEmail = "testuser@example.com";
