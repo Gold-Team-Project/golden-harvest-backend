@@ -1,6 +1,6 @@
 package com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry;
 
-import com.teamgold.goldenharvest.domain.customersupport.command.domain.file.File;
+import com.teamgold.goldenharvest.common.infra.file.domain.File;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -39,10 +39,6 @@ public class Inquiry {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id", nullable = false)
-    private File file;
-
     @Builder
     public Inquiry(String inquiryId,
                    String userId,
@@ -61,7 +57,6 @@ public class Inquiry {
         this.comment = comment;
         this.processingStatus = processingStatus;
         this.createdAt = createdAt;
-        this.file = file;
     }
 
     //활성화 상태 변경

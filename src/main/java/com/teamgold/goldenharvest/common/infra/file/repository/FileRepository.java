@@ -1,6 +1,6 @@
-package com.teamgold.goldenharvest.domain.customersupport.command.infrastructure.repository.file;
+package com.teamgold.goldenharvest.common.infra.file.repository;
 
-import com.teamgold.goldenharvest.domain.customersupport.command.domain.file.File;
+import com.teamgold.goldenharvest.common.infra.file.domain.File;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

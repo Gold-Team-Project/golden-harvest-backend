@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.customersupport.command.domain.file;
+package com.teamgold.goldenharvest.common.infra.file.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,11 +24,10 @@ public class File {
     @Column(nullable = false)
     private String originalName;
 
-
     private String uuidFilename;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 30, nullable = false)
+    @Column(length = 50, nullable = false)
     private FileContentType contentType;
 
     @Column(nullable = false)
