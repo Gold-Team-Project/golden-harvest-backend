@@ -4,7 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-//@MapperScan("com.teamgold.goldenharvest.**.mapper")
+@MapperScan("com.teamgold.goldenharvest.domain.sales.query.application.mapper")
 @SpringBootApplication
 public class GoldenHarvestApplication {
 
