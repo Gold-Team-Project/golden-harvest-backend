@@ -4,6 +4,6 @@ import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistor
 import java.util.List;
 
 public interface SalesOrderQueryService {
-    // 주문 리스트 조회
     List<OrderHistoryResponse> getMyOrderHistory(String userEmail);
+    OrderHistoryResponse getOrderDetail(String salesOrderId);
 }
