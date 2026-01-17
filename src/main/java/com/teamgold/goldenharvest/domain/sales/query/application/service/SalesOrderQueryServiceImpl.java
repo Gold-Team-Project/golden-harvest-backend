@@ -18,13 +18,6 @@ public class SalesOrderQueryServiceImpl implements SalesOrderQueryService {
     private final SalesOrderMapper salesOrderMapper;
 
     @Override
-//    public List<OrderHistoryResponse> getMyOrderHistory(String userEmail) {
-//        List<OrderHistoryResponse> orders = salesOrderMapper.findOrderHistoryByUserEmail(userEmail);
-//        orders.forEach(order -> {
-//            List<OrderHistoryItem> items = salesOrderMapper.findOrderItemsBySalesOrderId(order.getSalesOrderId());
-//        });
-//        return salesOrderMapper.findOrderHistoryByUserEmail(userEmail);
-//    }
     public List<OrderHistoryResponse> getMyOrderHistory(String userEmail) {
         return salesOrderMapper.findOrderHistoryByUserEmail(userEmail);
     }
