@@ -25,7 +25,13 @@ public class InquiryQueryServiceImpl implements InquiryQueryService {
 
     @Override
     public InquiryDetailResponse getDetailInquiry(String inquiryNo) {
-        return inquiryMapper.findDetailInquiry(inquiryNo);
+        InquiryDetailResponse dto = inquiryMapper.findDetailInquiry(inquiryNo);
+
+        if (dto.getFileId() != null) {
+            dto.updateUrl("/files/" + dto.getFileId());
+        }
+
+        return dto;
     }
 
     @Override
@@ -37,6 +43,12 @@ public class InquiryQueryServiceImpl implements InquiryQueryService {
 
     @Override
     public AdminInquiryDetailResponse getDetailAdminInquiry(String inquiryNo) {
-        return inquiryMapper.findDetailAdminInquiry(inquiryNo);
+        AdminInquiryDetailResponse dto = inquiryMapper.findDetailAdminInquiry(inquiryNo);
+
+        if (dto.getFileId() != null) {
+            dto.updateUrl("/files/" + dto.getFileId());
+        }
+
+        return dto;
     }
 }

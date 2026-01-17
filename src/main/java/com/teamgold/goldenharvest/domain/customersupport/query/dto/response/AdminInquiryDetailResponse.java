@@ -15,6 +15,13 @@ public class AdminInquiryDetailResponse {
     String body; //본문
     String comment; //답변
     ProcessingStatus processingStatus; //처리 상태
+    //파일
+    Long fileId;
+    String fileName;
+    String contentType;
+    String downloadUrl;
 
-    //todo 파일 추가
+    public void updateUrl(String downloadUrl){
+        this.downloadUrl = downloadUrl;
+    }
 }
