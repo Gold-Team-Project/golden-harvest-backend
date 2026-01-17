@@ -12,7 +12,7 @@ import org.springframework.core.io.Resource;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/files")
+@RequestMapping("/api/files")
 public class FileDownloadController {
 
     private final FileDownloadService fileDownloadService;
