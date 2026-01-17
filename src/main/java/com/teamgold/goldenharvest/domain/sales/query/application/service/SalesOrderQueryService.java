@@ -6,4 +6,5 @@ import java.util.List;
 public interface SalesOrderQueryService {
     List<OrderHistoryResponse> getMyOrderHistory(String userEmail);
     OrderHistoryResponse getOrderDetail(String salesOrderId);
+    List<OrderHistoryResponse> getAllOrderHistory();
 }

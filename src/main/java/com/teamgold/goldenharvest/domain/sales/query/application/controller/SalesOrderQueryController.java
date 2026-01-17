@@ -37,4 +37,11 @@ public class SalesOrderQueryController {
         OrderHistoryResponse orderDetail = salesOrderQueryService.getOrderDetail(salesOrderId);
         return ResponseEntity.ok(ApiResponse.success(orderDetail));
     }
+
+    // 관리자가 사용자 주문 내역 조회하는 기능
+    @GetMapping("/all-orders")
+    public ResponseEntity<ApiResponse<List<OrderHistoryResponse>>> getAllOrderHistory() {
+        List<OrderHistoryResponse> orderHistory = salesOrderQueryService.getAllOrderHistory();
+        return ResponseEntity.ok(ApiResponse.success(orderHistory));
+    }
 }

@@ -30,4 +30,9 @@ public class SalesOrderQueryServiceImpl implements SalesOrderQueryService {
         }
         return orderDetail;
     }
+
+    @Override
+    public List<OrderHistoryResponse> getAllOrderHistory() {
+        return salesOrderMapper.findAllOrderHistory();
+    }
 }
