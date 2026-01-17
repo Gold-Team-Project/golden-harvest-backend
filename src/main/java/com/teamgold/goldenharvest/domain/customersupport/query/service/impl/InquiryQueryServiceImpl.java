@@ -38,7 +38,7 @@ public class InquiryQueryServiceImpl implements InquiryQueryService {
     public List<AdminInquiryListResponse> getAllAdminInquiry(Integer page, Integer size) {
         int limit = size;
         int offset = (page - 1) * limit;
-        return inquiryMapper.findAllAdminInquiry(page, offset);
+        return inquiryMapper.findAllAdminInquiry(limit, offset);
     }
 
     @Override
