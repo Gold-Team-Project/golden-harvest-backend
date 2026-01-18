@@ -15,9 +15,15 @@ public class MasterQueryController {
     @GetMapping("/items")
     public ResponseEntity<ApiResponse<?>> getAllMasterData(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
-            @RequestParam(name = "size", defaultValue = "20") Integer size){
+            @RequestParam(name = "size", defaultValue = "20") Integer size,
+            @RequestParam(name = "itemName", required = false) String itemName,
+            @RequestParam(name = "itemCode", required = false) String itemCode,
+            @RequestParam(name = "grade", required = false) String gradeName,
+            @RequestParam(name = "status", required = false) Boolean isActive){
 
-        return ResponseEntity.ok(ApiResponse.success(masterQueryService.getAllMasterData(page,size)));
+        return ResponseEntity.ok(ApiResponse.success(
+                masterQueryService.getAllMasterData(page, size, itemName, itemCode, gradeName, isActive)
+        ));
     }
 
     @GetMapping("/items/{skuNo}")
