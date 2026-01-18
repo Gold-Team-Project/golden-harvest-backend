@@ -15,10 +15,15 @@ public interface InquiryMapper {
     //문의 상세
     @Select("""
                 SELECT
-                    i.title        AS title,
-                    i.body         AS body,
-                    i.comment      AS comment
+                    i.title         AS title,
+                    i.body          AS body,
+                    i.comment       AS comment,
+                    f.file_id       AS fileId,
+                    f.original_name AS fileName,
+                    f.content_type  AS contentType
                 FROM tb_inquiry i
+                LEFT JOIN tb_inquiry_file f
+                  ON i.file_id = f.file_id
                 WHERE i.inquiry_id = #{inquiryNo}
             """)
     InquiryDetailResponse findDetailInquiry(@Param("inquiryNo") String inquiryNo);
@@ -53,8 +58,14 @@ public interface InquiryMapper {
                     i.title             AS title,
                     i.body              AS body,
                     i.comment           AS comment,
-                    i.processing_status AS processingStatus
+                    i.processing_status AS processingStatus,
+                    f.file_id       AS fileId,
+                    f.original_name AS fileName,
+                    f.content_type  AS contentType
+                
                 FROM tb_inquiry i
+                LEFT JOIN tb_inquiry_file f
+                  ON i.file_id = f.file_id
                 LEFT JOIN tb_inquiry_writer_snapshot s
                   ON i.inquiry_id = s.inquiry_id
                 WHERE i.inquiry_id = #{inquiryNo}

@@ -2,6 +2,9 @@ spring:
   application:
     name: golden-harvest
 
+  profiles:
+    active: local
+
   datasource:
     url: jdbc:mariadb://localhost:3306/goldenharvest
     username: goldenharvest
@@ -15,20 +18,19 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+file:
+  upload-dir: ./uploads
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: mappers/**/*.xml
-
-kamis:
-  cert:
-    key: ${KAMIS_CERT_KEY}
-    id: ${KAMIS_CERT_ID}
 
 server:
   port: 8088
