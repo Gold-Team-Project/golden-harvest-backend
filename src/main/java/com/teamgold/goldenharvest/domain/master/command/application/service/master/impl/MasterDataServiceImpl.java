@@ -2,6 +2,7 @@ package com.teamgold.goldenharvest.domain.master.command.application.service.mas
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
+import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataAppendRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataUpdatedRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.response.master.MasterResponse;
@@ -18,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -30,7 +33,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     private final VarietyRepository varietyRepository;
     private final GradeRepository gradeRepository;
     private final SkuRepository skuRepository;
-
+    private final FileUploadService fileUploadService;
     @Override
     @Transactional
     public void saveAll(List<MasterResponse> responses) {
@@ -94,7 +97,16 @@ public class MasterDataServiceImpl implements MasterDataService {
 
     @Override
     @Transactional
-    public void appendMasterData(String itemCode, MasterDataAppendRequest request) {
+    public void appendMasterData(
+            String itemCode,
+            MasterDataAppendRequest request,
+            MultipartFile file) throws IOException {
+        Long fileId = null;
+
+        if (file != null && !file.isEmpty()) {
+            var savedFile = fileUploadService.upload(file);
+            fileId = savedFile.getFileId();
+        }
         ProduceMaster master = masterRepository.findById(itemCode)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MASTER_DATA_NOT_FOUND));
 
@@ -102,7 +114,9 @@ public class MasterDataServiceImpl implements MasterDataService {
                 request.getShelfLifeDays(),
                 request.getStorageTempMin(),
                 request.getStorageTempMax(),
-                request.getDescription()
+                request.getDescription(),
+                fileId
+
         );
     }
 
@@ -118,7 +132,17 @@ public class MasterDataServiceImpl implements MasterDataService {
 
     @Override
     @Transactional
-    public void updatedMasterData(String itemCode, MasterDataUpdatedRequest request) {
+    public void updatedMasterData(
+            String itemCode,
+            MasterDataUpdatedRequest request,
+            MultipartFile file
+    ) throws IOException {
+        Long fileId = null;
+
+        if (file != null && !file.isEmpty()) {
+            var savedFile = fileUploadService.upload(file);
+            fileId = savedFile.getFileId();
+        }
         ProduceMaster master = masterRepository.findById(itemCode)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MASTER_DATA_NOT_FOUND));
 
@@ -126,7 +150,8 @@ public class MasterDataServiceImpl implements MasterDataService {
                 request.getShelfLifeDays(),
                 request.getStorageTempMin(),
                 request.getStorageTempMax(),
-                request.getDescription()
+                request.getDescription(),
+                fileId
         );
 
     }
