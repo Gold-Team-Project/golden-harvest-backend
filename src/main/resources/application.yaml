@@ -1,7 +1,11 @@
 spring:
   application:
     name: golden-harvest
-
+  mvc:
+    static-path-pattern: /files/** # 브라우저 요청 URL 패턴
+  web:
+    resources:
+      static-locations: file:./uploads/  # 실제 파일 위치 (프로젝트 루트의 uploads 폴더)
   profiles:
     active: local
 

@@ -47,7 +47,7 @@ public class MasterDataServiceImpl implements MasterDataService {
                                 .baseUnit(row.getBaseUnit())
                                 .packToKg(row.getUnitSize())
                                 .country(row.getCountryName())
-                                .isActive(true)
+                                .isActive(false)
                                 .build();
                         return masterRepository.save(newMaster);
                     });

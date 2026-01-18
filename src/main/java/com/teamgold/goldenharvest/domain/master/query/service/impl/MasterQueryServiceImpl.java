@@ -21,11 +21,12 @@ public class MasterQueryServiceImpl implements MasterQueryService {
             Integer size,
             String itemName,
             String itemCode,
+            String varietyName,
             String gradeName,
             Boolean isActive) {
         int limit = size;
         int offset = (page-1) * limit;
-        return masterMapper.findAllMasterData(itemName, itemCode, gradeName, isActive, limit, offset);
+        return masterMapper.findAllMasterData(itemName, itemCode,varietyName, gradeName, isActive, limit, offset);
     }
 
     @Override

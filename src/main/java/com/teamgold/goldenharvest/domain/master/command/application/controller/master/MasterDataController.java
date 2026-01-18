@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
@@ -43,16 +44,21 @@ public class MasterDataController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    @PutMapping(
+    @PatchMapping(
             value = "/{itemCode}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<ApiResponse<?>> updatedMasterData(
             @PathVariable String itemCode,
-            @RequestParam("request") MasterDataUpdatedRequest request,
+            @RequestParam("request") String requestJson,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) throws IOException {
-        masterDataService.updatedMasterData(itemCode, request,file);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        MasterDataUpdatedRequest request = objectMapper.readValue(requestJson, MasterDataUpdatedRequest.class);
+
+        masterDataService.updatedMasterData(itemCode, request, file);
+
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
