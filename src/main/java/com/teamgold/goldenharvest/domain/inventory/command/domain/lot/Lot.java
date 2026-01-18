@@ -30,9 +30,8 @@ public class Lot {
     @Column(name = "inbound_date")
     private LocalDate inboundDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lot_status", nullable = false)
-    private LotStatus lotStatus;
+    @Column(name = "lot_status", nullable = false)
+    private LotStatus.LotStatusType lotStatus;
 
     @Builder
     public Lot (
@@ -41,7 +40,7 @@ public class Lot {
             String skuNo,
             Integer quantity,
             LocalDate inboundDate,
-            LotStatus lotStatus
+            LotStatus.LotStatusType lotStatus
     ) {
         this.lotNo = lotNo;
         this.inboundId = inboundId;
@@ -50,4 +49,10 @@ public class Lot {
         this.inboundDate = inboundDate;
         this.lotStatus = lotStatus;
     }
+
+	public Integer consumeQuantity(Integer quantity) {
+		int actualConsume = Math.min(this.quantity, quantity);
+		this.quantity -= actualConsume;
+		return actualConsume; // 실제로 이 Lot에서 차감된 수량 반환
+	}
 }

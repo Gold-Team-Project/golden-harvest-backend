@@ -2,6 +2,9 @@ spring:
   application:
     name: golden-harvest
 
+  profiles:
+    active: local
+
   datasource:
     url: jdbc:mariadb://localhost:3306/goldenharvest
     username: goldenharvest
@@ -15,6 +18,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+file:
+  upload-dir: ./uploads
 
 mybatis:
   configuration:

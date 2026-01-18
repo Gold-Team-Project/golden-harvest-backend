@@ -1,5 +1,8 @@
 package com.teamgold.goldenharvest.domain.inventory.command.domain;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,7 +31,15 @@ public class IdGenerator {
 	)
 	private Long id;
 
-	public static IdGenerator create() {
-		return new IdGenerator();
+	public static String createId(String type) {
+		IdGenerator generator = new IdGenerator();
+		Long sequenceNum = generator.getId();
+
+		String formattedType = type.substring(0, Math.min(3, type.length())).toUpperCase();
+		String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String formattedSeq = String.format("%06d", sequenceNum);
+
+		// TYPE_YYYYMMDD_NNNNNN 형식의 native id 생성
+		return formattedType + "_" + today + "_" + formattedSeq;
 	}
 }
