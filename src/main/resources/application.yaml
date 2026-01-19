@@ -37,7 +37,7 @@ kamis:
     key: ${KAMIS_CERT_KEY}
     id: ${KAMIS_CERT_ID}
 jwt:
-  secret-key: v9y$B&E)H@McQfTjWnZr4u7x!A%C*F-JaNdRgUkXp2s5v8y/B?E(G+KbPeShVmYp
+  secret-key: ${JWT_SECRET_KEY}
   access-token-expiration: 3600000  # 1시간
   refresh-token-expiration: 1209600000  # 1일
 
