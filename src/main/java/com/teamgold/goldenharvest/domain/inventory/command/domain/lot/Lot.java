@@ -30,6 +30,7 @@ public class Lot {
     @Column(name = "inbound_date")
     private LocalDate inboundDate;
 
+	@Enumerated(EnumType.STRING)
     @Column(name = "lot_status", nullable = false)
     private LotStatus.LotStatusType lotStatus;
 

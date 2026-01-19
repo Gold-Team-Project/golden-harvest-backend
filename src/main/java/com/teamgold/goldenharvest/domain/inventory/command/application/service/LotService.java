@@ -42,7 +42,7 @@ public class LotService {
 	}
 
 	@Transactional
-	public void ConsumeLot(SalesOrderEvent salesOrderEvent) {
+	public void consumeLot(SalesOrderEvent salesOrderEvent) {
 
 		String skuNo = salesOrderEvent.skuNo();
 		int quantity = salesOrderEvent.quantity();

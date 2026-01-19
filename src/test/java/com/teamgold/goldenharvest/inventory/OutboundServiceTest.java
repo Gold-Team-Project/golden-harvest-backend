@@ -70,7 +70,7 @@ class OutboundServiceTest {
 			.willReturn(List.of(lot1, lot2));
 
 		// when
-		lotService.ConsumeLot(event);
+		lotService.consumeLot(event);
 
 		// then
 		verify(lot1).consumeQuantity(150);
@@ -117,7 +117,7 @@ class OutboundServiceTest {
 
 		// when & then
 		BusinessException exception = assertThrows(BusinessException.class, () -> {
-			lotService.ConsumeLot(event);
+			lotService.consumeLot(event);
 		});
 
 		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.INSUFFICIENT_STOCK);
