@@ -1,11 +1,8 @@
 package com.teamgold.goldenharvest.domain.notification.query.mapper;
 
-import com.teamgold.goldenharvest.domain.notification.command.domain.aggregate.UserNotification;
 import com.teamgold.goldenharvest.domain.notification.query.dto.request.NotificationSearchRequest;
 import com.teamgold.goldenharvest.domain.notification.query.dto.response.UserNotificationDTO;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -16,7 +13,7 @@ public interface NotificationMapper {
     @Select("""
     SELECT
       un.user_notification_id AS user_notification_id,
-      un.user_email                 AS user_email,
+      un.user_email           AS user_email,
       un.is_read              AS is_read,
       un.read_at              AS read_at,
       un.received_at          AS received_at,
@@ -24,7 +21,7 @@ public interface NotificationMapper {
       nt.title                AS template_title,
       nt.body                 AS template_body
     FROM tb_user_notification un
-    JOIN tb_notification_template nt ON un.template_type = nt.type
+    JOIN tb_notification_template nt ON un.notification_type = nt.type
     WHERE un.user_email = #{userEmail}
     ORDER BY un.received_at DESC
     """)

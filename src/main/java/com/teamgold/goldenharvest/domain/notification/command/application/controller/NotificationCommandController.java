@@ -4,10 +4,7 @@ import com.teamgold.goldenharvest.common.response.ApiResponse;
 import com.teamgold.goldenharvest.domain.notification.command.application.service.NotificationCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -16,19 +13,19 @@ public class NotificationCommandController {
 
     private final NotificationCommandService notificationCommandService;
 
-    @DeleteMapping("/{userEmail}")
-    public ResponseEntity<ApiResponse<Void>> deleteAllNotification(
-            @PathVariable String userEmail
+    @DeleteMapping("/deleteAll")
+        public ResponseEntity<ApiResponse<Void>> deleteAllNotification(
+            @RequestParam String userEmail
     ) {
         notificationCommandService.DeleteAllNotification(userEmail);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    @DeleteMapping("/{notificationid}")
+    @DeleteMapping("/{notificationId}")
     public ResponseEntity<ApiResponse<Void>> deleteNotification(
-            @PathVariable Long notificationid
+            @PathVariable Long notificationId
     ) {
-        notificationCommandService.DeleteNotificationById(notificationid);
+        notificationCommandService.DeleteNotificationById(notificationId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
