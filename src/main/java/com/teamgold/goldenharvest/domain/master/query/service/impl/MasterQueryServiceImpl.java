@@ -16,10 +16,17 @@ import java.util.List;
 public class MasterQueryServiceImpl implements MasterQueryService {
     private final MasterMapper masterMapper;
     @Override
-    public List<MasterDataListResponse> getAllMasterData(Integer page, Integer size) {
+    public List<MasterDataListResponse> getAllMasterData(
+            Integer page,
+            Integer size,
+            String itemName,
+            String itemCode,
+            String varietyName,
+            String gradeName,
+            Boolean isActive) {
         int limit = size;
         int offset = (page-1) * limit;
-        return masterMapper.findAllMasterData(limit,offset);
+        return masterMapper.findAllMasterData(itemName, itemCode,varietyName, gradeName, isActive, limit, offset);
     }
 
     @Override

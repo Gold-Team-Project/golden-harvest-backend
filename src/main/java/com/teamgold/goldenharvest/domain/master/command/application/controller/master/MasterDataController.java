@@ -8,8 +8,13 @@ import com.teamgold.goldenharvest.domain.master.command.application.service.mast
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,12 +22,15 @@ import org.springframework.web.bind.annotation.*;
 public class MasterDataController {
     private final MasterDataService masterDataService;
 
-    @PostMapping("/{itemCode}")
+    @PostMapping(
+            value = "/{itemCode}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<?>> appendMasterData(
             @PathVariable String itemCode,
-            @RequestBody MasterDataAppendRequest request
-    ) {
-        masterDataService.appendMasterData(itemCode, request);
+            @RequestPart("request") MasterDataAppendRequest request,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) throws IOException {
+        masterDataService.appendMasterData(itemCode, request,file);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(null));
@@ -36,12 +44,21 @@ public class MasterDataController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    @PutMapping("/{itemCode}")
+    @PatchMapping(
+            value = "/{itemCode}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     public ResponseEntity<ApiResponse<?>> updatedMasterData(
             @PathVariable String itemCode,
-            @RequestBody MasterDataUpdatedRequest request
-    ) {
-        masterDataService.updatedMasterData(itemCode, request);
+            @RequestParam("request") String requestJson,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        MasterDataUpdatedRequest request = objectMapper.readValue(requestJson, MasterDataUpdatedRequest.class);
+
+        masterDataService.updatedMasterData(itemCode, request, file);
+
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
