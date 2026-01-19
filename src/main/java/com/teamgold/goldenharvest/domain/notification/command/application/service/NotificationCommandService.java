@@ -20,6 +20,8 @@ public class NotificationCommandService {
     public void NotificationRecieved(SignupPendingEvent e) {
         UserNotification userNotification = UserNotification.builder()
                 .userEmail(e.getUserEmail()).build();
+
+        userNotificationRepository.save(userNotification);
     }
 
     @Transactional
