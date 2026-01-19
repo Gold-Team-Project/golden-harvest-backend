@@ -10,14 +10,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tb_sales_status")
+@Table(name = "tb_sales_order_status")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class SalesOrderStatus {
     @Id
-    @Column(name = "sales_status_id", length = 20, nullable = false)
-    private String salesStatusId;
+    @Column(name = "sales_status_id", nullable = false)
+    private Long salesStatusId;
 
     @Column(name = "sales_status_name", length = 20)
     private String salesStatusName;

@@ -38,6 +38,9 @@ public enum ErrorCode {
 	// Inventory (4000~4999)
 	INSUFFICIENT_STOCK("4000", "재고 수량이 부족합니다", HttpStatus.BAD_REQUEST),
 
+    // Sales (5000-5999)
+    ORDER_NOT_FOUND("5000", "주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     //Inquiry (7000-7999)
     INQUIRY_NOT_FOUND("7000", "문의를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 

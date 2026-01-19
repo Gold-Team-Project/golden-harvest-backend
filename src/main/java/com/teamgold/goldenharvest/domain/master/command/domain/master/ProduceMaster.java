@@ -37,7 +37,7 @@ public class ProduceMaster {
 
     @Column
     private String country;
-
+    private Long fileId;
     @CreationTimestamp
     private LocalDate createdAt;
 
@@ -57,7 +57,8 @@ public class ProduceMaster {
                             Double storageTempMax,
                             Boolean isActive,
                             String country,
-                            String description) {
+                            String description,
+                            Long fileId) {
         this.itemCode = itemCode;
         this.itemName = itemName;
         this.baseUnit = baseUnit;
@@ -69,31 +70,36 @@ public class ProduceMaster {
         this.isActive = isActive;
         this.country = country;
         this.description = description;
+        this.fileId = fileId;
     }
 
     public void appendedMasterData(
             int shelfLifeDays,
             Double storageTempMin,
             Double storageTempMax,
-            String description) {
+            String description,
+            Long fileId) {
         this.shelfLifeDays = shelfLifeDays;
         this.storageTempMin = storageTempMin;
         this.storageTempMax = storageTempMax;
         this.description = description;
+        this.fileId = fileId;
     }
 
     public void updatedMasterData(
             int shelfLifeDays,
             Double storageTempMin,
             Double storageTempMax,
-            String description) {
+            String description,
+            Long fileId) {
         if (shelfLifeDays != 0) this.shelfLifeDays = shelfLifeDays;
         if (storageTempMin != null) this.storageTempMin = storageTempMin;
         if (storageTempMax != null) this.storageTempMax = storageTempMax;
         if (description != null) this.description = description;
+        this.fileId = fileId;
     }
 
-    public void updateMasterDataStatus(){
+    public void updateMasterDataStatus() {
         this.isActive = !this.isActive;
     }
 
