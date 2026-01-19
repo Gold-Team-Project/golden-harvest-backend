@@ -33,7 +33,7 @@ public class SalesOrder {
     private String userEmail;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_status")
+    @JoinColumn(name = "order_status_id")
     private SalesOrderStatus orderStatus;
 
     @Column(name = "created_at")

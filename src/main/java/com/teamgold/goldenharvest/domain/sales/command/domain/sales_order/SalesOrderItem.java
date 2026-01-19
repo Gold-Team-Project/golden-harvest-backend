@@ -12,6 +12,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "tb_sales_order_item")
 @Getter
@@ -32,4 +34,7 @@ public class SalesOrderItem {
 
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Column(name = "price")
+    private BigDecimal price;
 }
