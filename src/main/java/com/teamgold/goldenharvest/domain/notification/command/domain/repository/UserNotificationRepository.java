@@ -8,5 +8,6 @@ public interface UserNotificationRepository {
 
     UserNotification save(UserNotification userNotification);
     List<UserNotification> findAllByUserEmail(String userEmail);
-
+    void deleteAllByUserEmail(String userEmail);
+    void deleteByUserNotificationId(Long id);
 }
