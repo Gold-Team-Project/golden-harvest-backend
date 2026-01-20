@@ -99,8 +99,8 @@ public class InquiryServiceImpl implements InquiryService {
         Inquiry inquiry = inquiryRepository.findById(inquiryNo)
                 .orElseThrow(() -> new BusinessException(ErrorCode.INQUIRY_NOT_FOUND));
 
-        if (request.getComment() != null) {
-            inquiry.updatedComment(request.getComment()); // 답변 작성
+        if (request.comment() != null) {
+            inquiry.updatedComment(request.comment()); // 답변 작성
             inquiry.updatedProcessingStatus(); // 문의 상태 변경
         }
 
