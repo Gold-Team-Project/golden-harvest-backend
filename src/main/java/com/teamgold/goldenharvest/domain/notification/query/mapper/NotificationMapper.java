@@ -2,10 +2,7 @@ package com.teamgold.goldenharvest.domain.notification.query.mapper;
 
 import com.teamgold.goldenharvest.domain.notification.query.dto.request.NotificationSearchRequest;
 import com.teamgold.goldenharvest.domain.notification.query.dto.response.UserNotificationDTO;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -56,16 +53,7 @@ public interface NotificationMapper {
     ORDER BY un.received_at DESC
     LIMIT #{size} OFFSET #{offset}
     """)
-    @Results(id = "UserNotificationDtoMap", value = {
-            @Result(property = "userNotificationId", column = "user_notification_id", id = true),
-            @Result(property = "userEmail",          column = "user_email"),
-            @Result(property = "isRead",             column = "is_read"),
-            @Result(property = "readAt",             column = "read_at"),
-            @Result(property = "receivedAt",         column = "received_at"),
-            @Result(property = "notificationTemplate.type",  column = "template_type"),
-            @Result(property = "notificationTemplate.title", column = "template_title"),
-            @Result(property = "notificationTemplate.body",  column = "template_body"),
-    })
+    @ResultMap("UserNotificationDtoMap")
     List<UserNotificationDTO> selectAllNotifications(NotificationSearchRequest request);
 
     @Select("""
