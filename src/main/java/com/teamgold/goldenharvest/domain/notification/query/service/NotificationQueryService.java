@@ -37,6 +37,25 @@ public class NotificationQueryService {
     }
 
     @Transactional(readOnly = true)
+    public NotificationListResponse getAllNotifications(NotificationSearchRequest request) {
+        List<UserNotificationDTO> userNotifications = notificationMapper.selectUserNotifications(request);
+
+        long totalItems = notificationMapper.countAllNotifications();
+
+        int page = request.getPage();
+        int size = request.getSize();
+
+        return NotificationListResponse.builder()
+                .notifications(userNotifications)
+                .pagination(Pagination.builder()
+                        .currentPage(page)
+                        .totalPages((int) Math.ceil((double) totalItems / size))
+                        .totalItems(totalItems)
+                        .build())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
     public Long countUnreadNotifications(String request) {
         return notificationMapper.countUnreadNotifications(request);
     }
