@@ -6,5 +6,6 @@ spring:
     password:
   sql:
     init:
-      schema-locations:
-      data-locations:
+      mode: always # 테스트 시 항상 스크립트 실행 보장
+      schema-locations: classpath:test-sql/lot-query-schema.sql
+      data-locations: classpath:test-sql/lot-query-data.sql

@@ -1,16 +1,16 @@
 package com.teamgold.goldenharvest.domain.inventory.query.dto;
 
+import java.time.LocalDate;
+
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class AvailableItemResponse {
+public class InboundResponse {
+	String inboundId;
+	String purchaseOrderId;
 	String skuNo;
 	Integer quantity;
-	String itemName;
-	String gradeName;
-	String varietyName;
-	String baseUnit;
-	Double customerPrice;
+	LocalDate inboundDate;
 }

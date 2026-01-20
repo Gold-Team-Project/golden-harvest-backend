@@ -1,9 +1,11 @@
 package com.teamgold.goldenharvest.domain.customersupport.query.dto.response;
 
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.ProcessingStatus;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class AdminInquiryDetailResponse {
     String InquiryNo; //문의번호
     String createdAt; //문의일

@@ -31,7 +31,7 @@ public class SalesOrderEventListener {
 		log.info("판매 주문 event 수신 완료");
 
 		try {
-			lotService.ConsumeLot(salesOrderEvent);
+			lotService.consumeLot(salesOrderEvent);
 
 			eventPublisher.publishEvent(SalesOrderResultEvent.create(salesOrderEvent.salesOrderItemId(), "SUCCESS"));
 			log.info("판매 주문 처리 완료");

@@ -3,7 +3,6 @@ package com.teamgold.goldenharvest.inventory;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,7 +21,6 @@ import com.teamgold.goldenharvest.domain.inventory.command.application.dto.Sales
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.LotService;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.OutboundService;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Lot;
-import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.LotStatus;
 import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.LotRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +55,7 @@ class OutboundServiceTest {
 			skuNo,
 			100,
 			LocalDate.of(2026, 1, 1),
-			LotStatus.LotStatusType.AVAILABLE));
+			Lot.LotStatus.AVAILABLE));
 
 		Lot lot2 = spy(new Lot(
 			lotNo2,
@@ -65,13 +63,13 @@ class OutboundServiceTest {
 			skuNo,
 			100,
 			LocalDate.of(2026, 1, 2),
-			LotStatus.LotStatusType.AVAILABLE));
+			Lot.LotStatus.AVAILABLE));
 
-		given(lotRepository.findBySkuNoAndLotStatusOrderByInboundDateAsc(skuNo, LotStatus.LotStatusType.AVAILABLE))
+		given(lotRepository.findBySkuNoAndLotStatusOrderByInboundDateAsc(skuNo, Lot.LotStatus.AVAILABLE))
 			.willReturn(List.of(lot1, lot2));
 
 		// when
-		lotService.ConsumeLot(event);
+		lotService.consumeLot(event);
 
 		// then
 		verify(lot1).consumeQuantity(150);
@@ -103,7 +101,7 @@ class OutboundServiceTest {
 			skuNo,
 			100,
 			LocalDate.of(2026, 1, 1),
-			LotStatus.LotStatusType.AVAILABLE));
+			Lot.LotStatus.AVAILABLE));
 
 		Lot lot2 = spy(new Lot(
 			lotNo2,
@@ -111,14 +109,14 @@ class OutboundServiceTest {
 			skuNo,
 			100,
 			LocalDate.of(2026, 1, 2),
-			LotStatus.LotStatusType.AVAILABLE));
+			Lot.LotStatus.AVAILABLE));
 
-		given(lotRepository.findBySkuNoAndLotStatusOrderByInboundDateAsc(skuNo, LotStatus.LotStatusType.AVAILABLE))
+		given(lotRepository.findBySkuNoAndLotStatusOrderByInboundDateAsc(skuNo, Lot.LotStatus.AVAILABLE))
 			.willReturn(List.of(lot1, lot2));
 
 		// when & then
 		BusinessException exception = assertThrows(BusinessException.class, () -> {
-			lotService.ConsumeLot(event);
+			lotService.consumeLot(event);
 		});
 
 		assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.INSUFFICIENT_STOCK);

@@ -1,6 +1,7 @@
 package com.teamgold.goldenharvest.domain.inventory.command.application.service;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,6 @@ public class InboundService {
 				throw new BusinessException(ErrorCode.DUPLICATE_REQUEST);
 		}
 
-		// Todo: purchaseOrderEvent내 데이터 정합성 검증 로직 (sku active, valid quantity, etc.)
 
 		// 입고 ID 생성
 		String inboundNo = IdGenerator.createId("in");
