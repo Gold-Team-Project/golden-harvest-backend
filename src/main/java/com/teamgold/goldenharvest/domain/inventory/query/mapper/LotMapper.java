@@ -54,9 +54,6 @@ public interface LotMapper {
 	List<AvailableItemResponse> findAllAvailableItems(
 		@Param("limit") int limit,
 		@Param("offset") int offset,
-		@Param("skuNo") String skuNo);
-
-
-
-
+		@Param("skuNo") String skuNo
+	);
 }

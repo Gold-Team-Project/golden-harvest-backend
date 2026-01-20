@@ -22,10 +22,10 @@ public class LotHistory {
     @JoinColumn(name = "lot_no", nullable = false, updatable = false)
     private Lot lot;
 
-    @Column(name = "from_status", length = 8)
+    @Column(name = "from_status", length = 20)
     private String fromStatus;
 
-    @Column(name = "to_status", length = 8)
+    @Column(name = "to_status", length = 20)
     private String toStatus;
 
     @Column(name = "changed_at", nullable = false, updatable = false)
