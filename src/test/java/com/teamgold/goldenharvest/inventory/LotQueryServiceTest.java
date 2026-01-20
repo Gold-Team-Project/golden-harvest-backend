@@ -47,7 +47,7 @@ class LotQueryServiceTest {
 		given(lotMapper.findAllAvailableItems(1, 0)).willReturn(givenResponses);
 
 		// when
-		List<AvailableItemResponse> receivedResponses = lotQueryService.getAllAvailableItem(1, 1);
+		List<AvailableItemResponse> receivedResponses = lotQueryService.getAllAvailableItem(1, 1, null);
 		AvailableItemResponse givenResponse = givenResponses.getFirst();
 		AvailableItemResponse receivedResponse = receivedResponses.getFirst();
 

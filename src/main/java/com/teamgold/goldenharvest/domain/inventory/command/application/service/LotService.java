@@ -12,7 +12,6 @@ import com.teamgold.goldenharvest.domain.inventory.command.application.dto.Purch
 import com.teamgold.goldenharvest.domain.inventory.command.application.dto.SalesOrderEvent;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.IdGenerator;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Lot;
-import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.LotStatus;
 import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.LotRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,7 @@ public class LotService {
 			.skuNo(purchaseOrderEvent.skuNo())
 			.quantity(purchaseOrderEvent.quantity())
 			.inboundDate(LocalDate.now())
-			.lotStatus(LotStatus.LotStatusType.AVAILABLE)
+			.lotStatus(Lot.LotStatus.AVAILABLE)
 			.build();
 
 		return lotRepository.save(lot).getLotNo();
@@ -48,7 +47,7 @@ public class LotService {
 		int quantity = salesOrderEvent.quantity();
 
 		List<Lot> availableItems = lotRepository.findBySkuNoAndLotStatusOrderByInboundDateAsc(skuNo,
-			LotStatus.LotStatusType.AVAILABLE);
+			Lot.LotStatus.AVAILABLE);
 
 		// 주문 수량이 재고 수량보다 많을 때 발생 (동시성 문제 OR OUTDATED 재고 정보 참조 등)
 		if (availableItems.stream().mapToInt(Lot::getQuantity).sum() < quantity) {

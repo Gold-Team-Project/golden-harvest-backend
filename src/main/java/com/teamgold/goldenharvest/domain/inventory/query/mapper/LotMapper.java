@@ -32,6 +32,8 @@ public interface LotMapper {
 			l.sku_no = p.sku_no
 		WHERE
 		    l.lot_status = 'AVAILABLE'
+		AND
+		    (l.sku_no = #{skuNo} OR #{skuNo} IS NULL)
 		GROUP BY
 		    l.sku_no,
           	i.item_name,
@@ -49,5 +51,12 @@ public interface LotMapper {
 		    #{offset}
 	"""
 	)
-	List<AvailableItemResponse> findAllAvailableItems(@Param("limit") int limit, @Param("offset") int offset);
+	List<AvailableItemResponse> findAllAvailableItems(
+		@Param("limit") int limit,
+		@Param("offset") int offset,
+		@Param("skuNo") String skuNo);
+
+
+
+
 }

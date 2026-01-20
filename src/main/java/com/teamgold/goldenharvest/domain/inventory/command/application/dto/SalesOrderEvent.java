@@ -7,5 +7,4 @@ public record SalesOrderEvent(
 	String skuNo,
 	BigDecimal salesPrice,
 	Integer quantity
-) {
-}
+) { }

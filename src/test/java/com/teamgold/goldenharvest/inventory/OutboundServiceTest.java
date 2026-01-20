@@ -21,7 +21,6 @@ import com.teamgold.goldenharvest.domain.inventory.command.application.dto.Sales
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.LotService;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.OutboundService;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Lot;
-import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.LotStatus;
 import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.LotRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +55,7 @@ class OutboundServiceTest {
 			skuNo,
 			100,
 			LocalDate.of(2026, 1, 1),
-			LotStatus.LotStatusType.AVAILABLE));
+			Lot.LotStatus.AVAILABLE));
 
 		Lot lot2 = spy(new Lot(
 			lotNo2,
@@ -64,9 +63,9 @@ class OutboundServiceTest {
 			skuNo,
 			100,
 			LocalDate.of(2026, 1, 2),
-			LotStatus.LotStatusType.AVAILABLE));
+			Lot.LotStatus.AVAILABLE));
 
-		given(lotRepository.findBySkuNoAndLotStatusOrderByInboundDateAsc(skuNo, LotStatus.LotStatusType.AVAILABLE))
+		given(lotRepository.findBySkuNoAndLotStatusOrderByInboundDateAsc(skuNo, Lot.LotStatus.AVAILABLE))
 			.willReturn(List.of(lot1, lot2));
 
 		// when
@@ -102,7 +101,7 @@ class OutboundServiceTest {
 			skuNo,
 			100,
 			LocalDate.of(2026, 1, 1),
-			LotStatus.LotStatusType.AVAILABLE));
+			Lot.LotStatus.AVAILABLE));
 
 		Lot lot2 = spy(new Lot(
 			lotNo2,
@@ -110,9 +109,9 @@ class OutboundServiceTest {
 			skuNo,
 			100,
 			LocalDate.of(2026, 1, 2),
-			LotStatus.LotStatusType.AVAILABLE));
+			Lot.LotStatus.AVAILABLE));
 
-		given(lotRepository.findBySkuNoAndLotStatusOrderByInboundDateAsc(skuNo, LotStatus.LotStatusType.AVAILABLE))
+		given(lotRepository.findBySkuNoAndLotStatusOrderByInboundDateAsc(skuNo, Lot.LotStatus.AVAILABLE))
 			.willReturn(List.of(lot1, lot2));
 
 		// when & then

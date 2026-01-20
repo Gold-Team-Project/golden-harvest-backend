@@ -15,10 +15,10 @@ public class LotQueryService {
 
 	private final LotMapper lotMapper;
 
-	public List<AvailableItemResponse> getAllAvailableItem(Integer page, Integer size) {
+	public List<AvailableItemResponse> getAllAvailableItem(Integer page, Integer size, String skuNo) {
 		int limit = size;
 		int offset = (page - 1) * limit;
 
-		return lotMapper.findAllAvailableItems(limit, offset);
+		return lotMapper.findAllAvailableItems(limit, offset, skuNo);
 	}
 }

@@ -1,7 +1,5 @@
 package com.teamgold.goldenharvest.domain.inventory.query.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Builder;
 import lombok.Getter;
 

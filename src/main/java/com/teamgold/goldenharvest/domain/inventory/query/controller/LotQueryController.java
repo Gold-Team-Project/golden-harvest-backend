@@ -25,15 +25,20 @@ public class LotQueryController {
 	@GetMapping("/item")
 	public ResponseEntity<ApiResponse<?>> getAvailableItemList(
 		@RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
-		@RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(50) Integer size
+		@RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(50) Integer size,
+		@RequestParam(name = "sku") String skuNo
 	) {
-		return ResponseEntity.ok(ApiResponse.success(lotQueryService.getAllAvailableItem(page, size)));
+		return ResponseEntity.ok(ApiResponse.success(lotQueryService.getAllAvailableItem(page, size, skuNo)));
 	}
 
 	@GetMapping("/inbound")
-	// Todo: 관리자 인증
 	public ResponseEntity<ApiResponse<?>> getAllInboundList() {
-		// Todo: 입고 내역 조회
+		return null;
+	}
+
+	@GetMapping("/outbound")
+	public ResponseEntity<ApiResponse<?>> getAllOutboundList() {
+		// Todo
 		return null;
 	}
 }

@@ -32,7 +32,14 @@ public class Lot {
 
 	@Enumerated(EnumType.STRING)
     @Column(name = "lot_status", nullable = false)
-    private LotStatus.LotStatusType lotStatus;
+    private LotStatus lotStatus;
+
+	public enum LotStatus {
+		AVAILABLE,
+		ALLOCATED,
+		DEPLETED,
+		DISCARDED
+	}
 
     @Builder
     public Lot (
@@ -41,7 +48,7 @@ public class Lot {
             String skuNo,
             Integer quantity,
             LocalDate inboundDate,
-            LotStatus.LotStatusType lotStatus
+            LotStatus lotStatus
     ) {
         this.lotNo = lotNo;
         this.inboundId = inboundId;
