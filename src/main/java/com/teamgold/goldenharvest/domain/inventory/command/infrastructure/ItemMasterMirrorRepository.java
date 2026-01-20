@@ -1,9 +1,13 @@
 package com.teamgold.goldenharvest.domain.inventory.command.infrastructure;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.teamgold.goldenharvest.domain.inventory.command.domain.mirror.ItemMasterMirror;
 
 @Repository
-public interface ItemMasterMirrorRepository extends JpaRepository<ItemMasterMirror, String> { }
+public interface ItemMasterMirrorRepository extends JpaRepository<ItemMasterMirror, String> {
+	List<ItemMasterMirror> findBySkuNo(String skuNo);
+}
