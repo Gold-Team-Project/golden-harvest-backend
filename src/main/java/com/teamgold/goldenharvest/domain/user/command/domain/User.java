@@ -93,4 +93,8 @@ public class User {
         this.role = role;
         this.fileId = fileId;
     }
+
+    public void updatePassword(String encodePassword) {
+        this.password = encodePassword;
+    }
 }

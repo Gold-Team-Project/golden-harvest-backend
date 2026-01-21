@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.common.jwt;
+package com.teamgold.goldenharvest.common.security.jwt;
 
 import lombok.Getter;
 import lombok.Setter;
