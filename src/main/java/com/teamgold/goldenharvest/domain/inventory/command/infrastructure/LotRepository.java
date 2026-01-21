@@ -15,4 +15,7 @@ public interface LotRepository extends JpaRepository<Lot, String> {
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	List<Lot> findBySkuNoAndLotStatusOrderByInboundDateAsc(String skuNo, Lot.LotStatus lotStatus);
+
+	@Lock(LockModeType.OPTIMISTIC)
+	List<Lot> findByLotNo(String lotNo);
 }
