@@ -1,9 +1,11 @@
 package com.teamgold.goldenharvest.domain.customersupport.query.dto.response;
 
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.ProcessingStatus;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class AdminInquiryDetailResponse {
     String InquiryNo; //문의번호
     String createdAt; //문의일
@@ -15,6 +17,13 @@ public class AdminInquiryDetailResponse {
     String body; //본문
     String comment; //답변
     ProcessingStatus processingStatus; //처리 상태
+    //파일
+    Long fileId;
+    String fileName;
+    String contentType;
+    String downloadUrl;
 
-    //todo 파일 추가
+    public void updateUrl(String downloadUrl){
+        this.downloadUrl = downloadUrl;
+    }
 }

@@ -8,8 +8,12 @@ import com.teamgold.goldenharvest.domain.customersupport.command.application.dto
 import com.teamgold.goldenharvest.domain.customersupport.command.application.service.InquiryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/inquiries")
@@ -17,12 +21,13 @@ import org.springframework.web.bind.annotation.*;
 public class InquiryController {
     private final InquiryService inquiryService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<?>> save(
-            @RequestBody InquiryCreateRequest request) {
-        //todo 인증/인가 구현 후 수정
+            @RequestPart("request") InquiryCreateRequest request,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) throws IOException {
         String userId = "rrrr@naver.com";
-        inquiryService.create(userId, request);
+        inquiryService.create(userId, request, file);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(null));
@@ -36,15 +41,20 @@ public class InquiryController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    @PutMapping("/{inquiryId}")
+    @PutMapping(
+            value = "/{inquiryId}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     public ResponseEntity<ApiResponse<?>> update(
             @PathVariable String inquiryId,
-            @RequestBody InquiryUpdateRequest request) {
-        //todo 인증/인가 구현 후 수정
+            @RequestPart("request") InquiryUpdateRequest request,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) throws IOException {
         String userId = "rrrr@naver.com";
-        inquiryService.update(userId, inquiryId, request);
+        inquiryService.update(userId, inquiryId, request, file);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
 
     @PostMapping("/{inquiryId}/comments")
 //    @PreAuthorize("hasRole('ADMIN')")

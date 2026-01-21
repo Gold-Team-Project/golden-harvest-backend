@@ -53,7 +53,7 @@ class InboundServiceTest {
 	}
 
 	@Test
-	@DisplayName("성공 케이스")
+	@DisplayName("구매 주문이 성공적으로 처리된다")
 	void receive_order_event_success() {
 		// given
 		PurchaseOrderEvent event1 = new PurchaseOrderEvent("PO_20250115_000001", "SKU_001", 100);

@@ -3,6 +3,7 @@ package com.teamgold.goldenharvest.domain.customersupport.command.application.dt
 public record InquiryUpdateRequest(
         String title,
         String body
+
 ) {
 }
 

@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
 import com.teamgold.goldenharvest.domain.inventory.query.mapper.LotMapper;
-import com.teamgold.goldenharvest.domain.inventory.query.service.LotQueryService;
+import com.teamgold.goldenharvest.domain.inventory.query.service.InventoryQueryService;
 
 @ExtendWith(MockitoExtension.class)
 class LotQueryServiceTest {
@@ -25,7 +25,7 @@ class LotQueryServiceTest {
 	private LotMapper lotMapper;
 
 	@InjectMocks
-	private LotQueryService lotQueryService;
+	private InventoryQueryService lotQueryService;
 
 	@Test
 	@DisplayName("사용자 대상 재고 조회가 된다 (서비스)")
@@ -44,10 +44,10 @@ class LotQueryServiceTest {
 			.build());
 
 		// lotMapper의 동작 mock
-		given(lotMapper.findAllAvailableItems(1, 0)).willReturn(givenResponses);
+		given(lotMapper.findAllAvailableItems(1, 0, null)).willReturn(givenResponses);
 
 		// when
-		List<AvailableItemResponse> receivedResponses = lotQueryService.getAllAvailableItem(1, 1);
+		List<AvailableItemResponse> receivedResponses = lotQueryService.getAllAvailableItem(1, 1, null);
 		AvailableItemResponse givenResponse = givenResponses.getFirst();
 		AvailableItemResponse receivedResponse = receivedResponses.getFirst();
 

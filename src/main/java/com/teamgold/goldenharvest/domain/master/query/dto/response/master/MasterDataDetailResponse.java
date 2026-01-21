@@ -22,7 +22,7 @@ public class MasterDataDetailResponse {
     private int shelfLifeDays; //유통기한
     private Double storageTempMin; // 저장온도(최소)
     private Double storageTempMax; // 저장온도(최대)
-
+    private String fileUrl; //파일
     private List<OriginPriceResponse> originPrices; // 원가 저장(최대 7일)
 
     public void setOriginPrices(List<OriginPriceResponse> originPrices) {

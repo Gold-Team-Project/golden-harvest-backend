@@ -1,11 +1,11 @@
-#spring:
-#  datasource:
-#    driver-class-name: org.h2.Driver
-#    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
-#    username: sa
-#    password:
-#  sql:
-#    init:
-#      mode: always # 테스트 시 항상 스크립트 실행 보장
-#      schema-locations: classpath:test-sql/lot-query-schema.sql
-#      data-locations: classpath:test-sql/lot-query-data.sql
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always # 테스트 시 항상 스크립트 실행 보장
+      schema-locations: classpath:test-sql/lot-query-schema.sql
+      data-locations: classpath:test-sql/lot-query-data.sql

@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.customersupport.command.domain.file;
+package com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tb_file")
+@Table(name = "tb_inquiry_file")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class File {
@@ -24,11 +24,10 @@ public class File {
     @Column(nullable = false)
     private String originalName;
 
-
     private String uuidFilename;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 30, nullable = false)
+    @Column(length = 50, nullable = false)
     private FileContentType contentType;
 
     @Column(nullable = false)
