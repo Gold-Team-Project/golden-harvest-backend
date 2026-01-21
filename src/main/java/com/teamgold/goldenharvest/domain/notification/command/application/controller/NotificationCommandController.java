@@ -29,4 +29,12 @@ public class NotificationCommandController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    @PatchMapping("/{notificationId}")
+    public ResponseEntity<ApiResponse<Void>> markAsRead(
+            @PathVariable Long notificationId
+    ) {
+        notificationCommandService.markAsRead(notificationId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
 }

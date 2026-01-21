@@ -23,6 +23,14 @@ public class NotificationQueryController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @GetMapping("/admin")
+    public ResponseEntity<ApiResponse<NotificationListResponse>> getNotificationsForAdmin(
+            NotificationSearchRequest NotificationSearchRequest
+    ){
+        NotificationListResponse response = notificationQueryService.getAllNotifications(NotificationSearchRequest);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     @GetMapping("/{userEmail}/count")
     public ResponseEntity<ApiResponse<Long>> getCountUnreadNotifications(
             @PathVariable String userEmail
