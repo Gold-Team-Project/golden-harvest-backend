@@ -2,6 +2,7 @@ package com.teamgold.goldenharvest.domain.inventory.command.application.controll
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.teamgold.goldenharvest.common.response.ApiResponse;
 import com.teamgold.goldenharvest.domain.inventory.command.application.dto.PricePolicyRequest;
+import com.teamgold.goldenharvest.domain.inventory.command.application.dto.PricePolicyUpdateRequest;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.PricePolicyService;
 
 import jakarta.validation.Valid;
@@ -25,5 +27,10 @@ public class PricePolicyController {
 	@PostMapping("/price-policy")
 	public ResponseEntity<ApiResponse<?>> registerPricePolicy(@Valid @RequestBody PricePolicyRequest pricePolicyRequest) {
 		return ResponseEntity.ok(ApiResponse.success(pricePolicyService.registerPricePolicy(pricePolicyRequest)));
+	}
+
+	@PatchMapping("/price-policy")
+	public ResponseEntity<ApiResponse<?>> updatePricePolicy(@Valid @RequestBody PricePolicyUpdateRequest pricePolicyUpdateRequest) {
+		return ResponseEntity.ok(ApiResponse.success(pricePolicyService.updatePricePolicy(pricePolicyUpdateRequest)));
 	}
 }
