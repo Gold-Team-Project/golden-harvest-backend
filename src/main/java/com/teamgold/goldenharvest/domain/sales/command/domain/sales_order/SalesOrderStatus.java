@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 public class SalesOrderStatus {
     @Id
     @Column(name = "sales_status_id", nullable = false)
-    private Long salesStatusId;
+    private Long salesStatusId; // 고유 pk
 
     @Column(name = "sales_status_name", length = 20)
-    private String salesStatusName;
+    private String salesStatusName; // 배송 상태 한글 이름 표기
 
     @Column(name = "sales_status_type", length = 20)
-    private String salesStatusType;
+    private String salesStatusType; // 배송 상태 영어 이름 표기
 }

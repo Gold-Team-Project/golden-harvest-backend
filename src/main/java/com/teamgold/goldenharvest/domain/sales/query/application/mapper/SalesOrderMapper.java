@@ -1,5 +1,7 @@
 package com.teamgold.goldenharvest.domain.sales.query.application.mapper;
 
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderDetailResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderHistoryResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryItem;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryResponse;
 import org.apache.ibatis.annotations.Mapper;
@@ -46,7 +48,8 @@ public interface SalesOrderMapper {
         so.created_at DESC;
     
     """)
-    @ResultMap("orderHistoryResultMap")
-    List<OrderHistoryResponse> findAllOrderHistory();
+    @ResultMap("adminOrderHistoryResultMap")
+    List<AdminOrderHistoryResponse> findAllOrderHistory();
 
+    AdminOrderDetailResponse findAdminOrderDetailBySalesOrderId(String salesOrderId);
 }

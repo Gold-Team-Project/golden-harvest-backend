@@ -1,6 +1,8 @@
 package com.teamgold.goldenharvest.domain.sales.query.application.controller;
 
 import com.teamgold.goldenharvest.common.response.ApiResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderDetailResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderHistoryResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.service.SalesOrderQueryService;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +42,15 @@ public class SalesOrderQueryController {
 
     // 관리자가 사용자 주문 내역 조회하는 기능
     @GetMapping("/all-orders")
-    public ResponseEntity<ApiResponse<List<OrderHistoryResponse>>> getAllOrderHistory() {
-        List<OrderHistoryResponse> orderHistory = salesOrderQueryService.getAllOrderHistory();
+    public ResponseEntity<ApiResponse<List<AdminOrderHistoryResponse>>> getAllOrderHistory() {
+        List<AdminOrderHistoryResponse> orderHistory = salesOrderQueryService.getAllOrderHistory();
         return ResponseEntity.ok(ApiResponse.success(orderHistory));
+    }
+
+    // 관리자용 상세 주문 내역 조회 기능
+    @GetMapping("/orders/{salesOrderId}/details")
+    public ResponseEntity<ApiResponse<AdminOrderDetailResponse>> getAdminOrderDetail(@PathVariable String salesOrderId) {
+        AdminOrderDetailResponse orderDetail = salesOrderQueryService.getAdminOrderDetail(salesOrderId);
+        return ResponseEntity.ok(ApiResponse.success(orderDetail));
     }
 }

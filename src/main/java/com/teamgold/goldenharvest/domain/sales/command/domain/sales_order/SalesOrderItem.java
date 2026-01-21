@@ -33,8 +33,8 @@ public class SalesOrderItem {
     private String skuNo;
 
     @Column(name = "quantity")
-    private Integer quantity;
+    private Integer quantity; // 수량
 
     @Column(name = "price")
-    private BigDecimal price;
+    private BigDecimal price; // 가격
 }
