@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -22,9 +25,12 @@ public class AuthController {
     private final MailService mailService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<?>> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
-        authService.signup(signUpRequest);
-        return ResponseEntity.ok(ApiResponse.success("회원가입이 완료되었습니다."));
+    public ResponseEntity<ApiResponse<String>> signup(
+            @RequestPart("data") @Valid SignUpRequest signUpRequest, // JSON 데이터
+            @RequestPart("file") MultipartFile file // 사업자등록증 파일
+    ) {
+        authService.signup(signUpRequest, file);
+        return ResponseEntity.ok(ApiResponse.success("회원가입 신청이 완료되었습니다."));
     }
 
     @PostMapping("/login")
