@@ -56,4 +56,8 @@ public class ItemMasterMirror {
 		this.currentOriginPrice = currentOriginPrice;
 		this.isActive = isActive;
 	}
+
+	public void updatePrice(BigDecimal updatedPrice) {
+		this.currentOriginPrice = updatedPrice;
+	}
 }
