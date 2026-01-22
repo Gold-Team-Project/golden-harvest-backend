@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+import com.teamgold.goldenharvest.common.exception.BusinessException;
+import com.teamgold.goldenharvest.common.exception.ErrorCode;
+
 @Entity
 @Table(name = "tb_lot")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -61,6 +64,16 @@ public class Lot {
 	public Integer consumeQuantity(Integer quantity) {
 		int actualConsume = Math.min(this.quantity, quantity);
 		this.quantity -= actualConsume;
+
+		if (this.quantity < 0) {
+			throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK);
+		}
+
+		if (this.quantity == 0) {
+			this.lotStatus = LotStatus.DEPLETED;
+		}
+
+
 		return actualConsume; // 실제로 이 Lot에서 차감된 수량 반환
 	}
 }
