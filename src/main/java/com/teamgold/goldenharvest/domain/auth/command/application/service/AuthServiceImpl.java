@@ -2,6 +2,7 @@ package com.teamgold.goldenharvest.domain.auth.command.application.service;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
+import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
 import com.teamgold.goldenharvest.common.security.jwt.JwtProperties;
 import com.teamgold.goldenharvest.common.security.jwt.JwtTokenProvider;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.LoginRequest;
@@ -19,7 +20,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.Duration;
 
 @Slf4j
@@ -33,9 +36,10 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
     private final JwtProperties jwtProperties;
+    private final FileUploadService fileUploadService;
 
     @Override
-    public void signup(SignUpRequest signUpRequest) {
+    public void signup(SignUpRequest signUpRequest, MultipartFile file) {
         // 이메일 중복 여부 확인
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
@@ -46,6 +50,15 @@ public class AuthServiceImpl implements AuthService {
         //  인증되지 않은 이메일인 경우 예외 발생
         if (isVerified == null || !isVerified.equals("true")) {
             throw new BusinessException(ErrorCode.EMAIL_VERIFICATION_REQUIRED);
+        }
+
+        //  파일 업로드 tb_inquiry_file 테이블에 데이터가 쌓이고 File 객체가 반환
+        com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.File uploadedFile;
+        try {
+            uploadedFile = fileUploadService.upload(file);
+        } catch (IOException e) {
+            log.error("회원가입 중 파일 업로드 실패: {}", e.getMessage());
+            throw new BusinessException(ErrorCode.FILE_UPLOAD_ERROR);
         }
 
         Role role = roleRepository.findById("ROLE_USER")    // 사용자 권한 조회
@@ -60,9 +73,9 @@ public class AuthServiceImpl implements AuthService {
                 .businessNumber(signUpRequest.getBusinessNumber())
                 .name(signUpRequest.getName())
                 .phoneNumber(signUpRequest.getPhoneNumber())
-                .status(UserStatus.ACTIVE)
+                .status(UserStatus.PENDING)
                 .role(role)
-                .fileId(signUpRequest.getFileId())
+                .fileId(uploadedFile.getFileId())
                 .build();
 
         userRepository.save(user);
@@ -81,11 +94,14 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new BusinessException(ErrorCode.PASSWORD_NOT_MATCH);
         }
+        if (user.getStatus().equals(UserStatus.PENDING)) {
+            // 관리자 승인이 필요한 상태
+            throw new BusinessException(ErrorCode.USER_NOT_APPROVED);
+        }
         //  계정 상태 확인
         if (!user.getStatus().equals(UserStatus.ACTIVE)) {
             throw new BusinessException(ErrorCode.USER_INACTIVE);
         }
-
         String accessToken = jwtTokenProvider.createAccessToken(user);
         String refreshToken = jwtTokenProvider.createRefreshToken(user);
 
