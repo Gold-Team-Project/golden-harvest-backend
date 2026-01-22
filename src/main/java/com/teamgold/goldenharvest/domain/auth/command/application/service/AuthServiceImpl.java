@@ -7,6 +7,7 @@ import com.teamgold.goldenharvest.common.security.jwt.JwtTokenProvider;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.LoginRequest;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.PasswordResetRequest;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.SignUpRequest;
+import com.teamgold.goldenharvest.domain.user.command.application.event.UserUpdatedEvent;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.response.TokenResponse;
 import com.teamgold.goldenharvest.domain.user.command.domain.Role;
 import com.teamgold.goldenharvest.domain.user.command.domain.User;
@@ -14,6 +15,7 @@ import com.teamgold.goldenharvest.domain.user.command.domain.UserStatus;
 import com.teamgold.goldenharvest.domain.user.command.infrastructure.repository.RoleRepository;
 import com.teamgold.goldenharvest.domain.user.command.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +35,9 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
     private final JwtProperties jwtProperties;
+
+    // User 정보 이벤트 리스너 (정동욱)
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public void signup(SignUpRequest signUpRequest) {
@@ -70,6 +75,18 @@ public class AuthServiceImpl implements AuthService {
         // 가입 완료 후 redis에 남아있는 인증 성공 기록 삭제
         redisTemplate.delete("EMAIL_VERIFIED:" +  signUpRequest.getEmail());
 
+        // 이벤트 발행 시 요청되는 값 (정동욱)
+        UserUpdatedEvent event = UserUpdatedEvent.builder()
+                .email(user.getEmail())
+                .company(user.getCompany())
+                .businessNumber(user.getBusinessNumber())
+                .name(user.getName())
+                .phoneNumber(user.getPhoneNumber())
+                .addressLine1(user.getAddressLine1())
+                .addressLine2(user.getAddressLine2())
+                .postalCode(user.getPostalCode())
+                .build();
+        eventPublisher.publishEvent(event);
     }
 
     @Override
