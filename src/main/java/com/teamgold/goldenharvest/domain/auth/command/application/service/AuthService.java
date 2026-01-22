@@ -1,6 +1,7 @@
 package com.teamgold.goldenharvest.domain.auth.command.application.service;
 
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.LoginRequest;
+import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.PasswordResetRequest;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.SignUpRequest;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.response.TokenResponse;
 
@@ -12,5 +13,7 @@ public interface AuthService {
     TokenResponse reissue(String refreshToken);
 
     void logout(String accessToken, String email);
+    //  비밀번호 재설정(비밀번호 찾기)
+    void resetPassword(PasswordResetRequest passwordResetRequest);
 
 }

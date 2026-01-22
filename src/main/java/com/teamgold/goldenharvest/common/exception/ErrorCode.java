@@ -31,6 +31,8 @@ public enum ErrorCode {
     PASSWORD_RESET_NOT_ELIGIBLE("2009", "비밀번호 재설정 인증이 필요합니다.", HttpStatus.FORBIDDEN),
     PASSWORD_RESET_ELIGIBILITY_EXPIRED("2010", "비밀번호 재설정 인증 유효 시간이 만료되었습니다.", HttpStatus.FORBIDDEN),
     USER_INACTIVE("2011", "비활성화된 계정입니다.", HttpStatus.FORBIDDEN),
+    EMAIL_SEND_FAILED("2012", "이메일 발송에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    PASSWORD_SAME_AS_OLD("2013","기존 비밀번호와 동일합니다.", HttpStatus.FORBIDDEN),
 
 	// MasterData (3000~3999)
 	MASTER_DATA_NOT_FOUND("3000","마스터 데이터를 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
