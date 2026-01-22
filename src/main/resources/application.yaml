@@ -51,8 +51,8 @@ mybatis:
 
 kamis:
   cert:
-    key: ${kamis.cert.key}
-    id: ${kamis.cert.id}
+    key: ${KAMIS_CERT_KEY}
+    id: ${KAMIS_CERT_ID}
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiration: 3600000  # 1시간
