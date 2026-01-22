@@ -1,5 +1,6 @@
-package com.teamgold.goldenharvest.common.jwt;
+package com.teamgold.goldenharvest.common.security.jwt;
 
+import com.teamgold.goldenharvest.common.security.CustomUserDetailsService;
 import com.teamgold.goldenharvest.domain.user.command.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -25,6 +27,7 @@ public class JwtTokenProvider {
 
     private final JwtProperties jwtProperties;
     private SecretKey secretKey;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @PostConstruct  // 시크릿키 초기화
     public void init() {
@@ -65,12 +68,11 @@ public class JwtTokenProvider {
         Claims claims = getClaims(token);
 
         String email = claims.getSubject(); //  이메일 추출
-        String role = claims.get("role", String.class); //  권한 문자열 추출
 
-        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
         //  최종적인 인증 객체 생성하여 반환
-        return new UsernamePasswordAuthenticationToken(email, null, authorities);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
     }
     // 토큰 유효성 검사
