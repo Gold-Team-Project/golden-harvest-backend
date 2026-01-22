@@ -40,11 +40,11 @@ public class PricePolicy {
 		this.isActive = true;
 	}
 
-	public void activate() {
-		this.isActive = true;
+	public void updateMarginRate(BigDecimal marginRate) {
+		this.marginRate = marginRate;
 	}
 
-	public void deactivate() {
-		this.isActive = false;
+	public void updateActiveStatus(Boolean isActive) {
+		this.isActive = isActive;
 	}
 }
