@@ -2,6 +2,8 @@ package com.teamgold.goldenharvest.domain.user.command.application.service;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
+import com.teamgold.goldenharvest.domain.user.command.application.dto.reponse.UserProfileResponse;
+import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserProfileUpdateRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.PasswordChangeRequest;
 import com.teamgold.goldenharvest.domain.user.command.domain.User;
 import com.teamgold.goldenharvest.domain.user.command.infrastructure.repository.UserRepository;
@@ -45,5 +47,40 @@ public class UserServiceImpl implements UserService{
 
         log.info("[Golden Harvest] 마이페이지 비밀번호 변경 완료: {}", email);
 
+    }
+
+    @Override
+    public void updateProfile(String email, UserProfileUpdateRequest userProfileUpdateRequest) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        user.updateProfile(
+                userProfileUpdateRequest.getName(),
+                userProfileUpdateRequest.getPhoneNumber(),
+                userProfileUpdateRequest.getAddressLine1(),
+                userProfileUpdateRequest.getAddressLine2(),
+                userProfileUpdateRequest.getPostalCode()
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserProfileResponse getUserProfile(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        return UserProfileResponse.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .company(user.getCompany())
+                .businessNumber(user.getBusinessNumber())
+                .phoneNumber(user.getPhoneNumber())
+                .addressLine1(user.getAddressLine1())
+                .addressLine2(user.getAddressLine2())
+                .postalCode(user.getPostalCode())
+                .status(user.getStatus().name())
+                .build();
     }
 }
