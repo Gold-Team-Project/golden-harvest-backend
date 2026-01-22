@@ -42,4 +42,22 @@ public class CartController {
         cartService.updateItemQuantity(userEmail, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+    @DeleteMapping("/items/{skuNo}")
+    public ResponseEntity<ApiResponse<Void>> removeItemFromCart(@PathVariable String skuNo) {
+        // TODO: Spring Security 적용 후, 인증된 사용자 정보에서 이메일을 가져오도록 수정
+        String userEmail = "testuser@example.com";
+
+        cartService.removeItem(userEmail, skuNo);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity<ApiResponse<String>> checkout() {
+        // TODO: Spring Security 적용 후, 인증된 사용자 정보에서 이메일을 가져오도록 수정
+        String userEmail = "testuser@example.com";
+
+        String cartId = cartService.placeOrder(userEmail);
+        return ResponseEntity.ok(ApiResponse.success(cartId));
+    }
 }

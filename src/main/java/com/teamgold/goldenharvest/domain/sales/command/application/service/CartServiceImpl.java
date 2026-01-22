@@ -8,16 +8,23 @@ import com.teamgold.goldenharvest.domain.sales.command.application.dto.CartRespo
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.RedisCartItem;
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.UpdateCartItemRequest;
 import com.teamgold.goldenharvest.domain.sales.command.domain.SalesSku;
+import com.teamgold.goldenharvest.domain.sales.command.domain.cart.Cart;
+import com.teamgold.goldenharvest.domain.sales.command.domain.cart.CartItem;
+import com.teamgold.goldenharvest.domain.sales.command.domain.cart.CartStatus;
+import com.teamgold.goldenharvest.domain.sales.command.infrastructure.cart.CartRepository;
 import com.teamgold.goldenharvest.domain.sales.command.infrastructure.repository.SalesSkuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -27,6 +34,7 @@ public class CartServiceImpl implements CartService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final SalesSkuRepository salesSkuRepository;
+    private final CartRepository cartRepository;
     private static final String CART_PREFIX = "cart:";
     private static final long CART_EXPIRE_DAYS = 30;
 
@@ -100,5 +108,60 @@ public class CartServiceImpl implements CartService {
 
         // 장바구니 만료 시간 갱신
         redisTemplate.expire(cartKey, CART_EXPIRE_DAYS, TimeUnit.DAYS);
+    }
+
+    @Override
+    public void removeItem(String userEmail, String skuNo) {
+        String cartKey = CART_PREFIX + userEmail;
+        HashOperations<String, String, RedisCartItem> hashOperations = redisTemplate.opsForHash();
+
+        hashOperations.delete(cartKey, skuNo);
+
+        // 장바구니 만료 시간 갱신
+        redisTemplate.expire(cartKey, CART_EXPIRE_DAYS, TimeUnit.DAYS);
+    }
+
+    @Override
+    @Transactional
+    public String placeOrder(String userEmail) {
+        String cartKey = CART_PREFIX + userEmail;
+        HashOperations<String, String, RedisCartItem> hashOperations = redisTemplate.opsForHash();
+
+        Map<String, RedisCartItem> redisCartItems = hashOperations.entries(cartKey);
+
+        if (redisCartItems.isEmpty()) {
+            throw new BusinessException(ErrorCode.INVALID_REQUEST);
+        }
+
+        // 1. JPA Cart 엔티티 생성
+        String cartId = UUID.randomUUID().toString();
+        Cart cart = Cart.builder()
+                .cartId(cartId)
+                .userEmail(userEmail)
+                .status(CartStatus.ORDERED)
+                .createdAt(LocalDate.now())
+                .updatedAt(LocalDate.now())
+                .build();
+
+        // 2. JPA CartItem 엔티티 생성 및 Cart에 추가
+        List<CartItem> cartItems = redisCartItems.values().stream()
+                .map(redisCartItem -> CartItem.builder()
+                        .cartItemId(UUID.randomUUID().toString())
+                        .cart(cart)
+                        .skuNo(redisCartItem.getSkuNo())
+                        .quantity(redisCartItem.getQuantity())
+                        .unitPrice(redisCartItem.getUnitPrice())
+                        .build())
+                .collect(Collectors.toList());
+
+        cart.setCartItems(cartItems); // Cart 엔티티에 CartItem 리스트 설정 (cascade 덕분에 함께 저장됨)
+
+        // 3. Cart를 DB에 저장
+        cartRepository.save(cart);
+
+        // 4. Redis 장바구니 데이터 삭제
+        redisTemplate.delete(cartKey);
+
+        return cartId; // 생성된 주문(장바구니) ID 반환
     }
 }

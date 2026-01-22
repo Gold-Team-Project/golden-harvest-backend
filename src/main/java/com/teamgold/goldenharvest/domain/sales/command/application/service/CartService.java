@@ -8,4 +8,6 @@ public interface CartService {
     void addItemToCart(String userEmail, AddToCartRequest request);
     CartResponse getCart(String userEmail);
     void updateItemQuantity(String userEmail, UpdateCartItemRequest request);
+    void removeItem(String userEmail, String skuNo);
+    String placeOrder(String userEmail);
 }
