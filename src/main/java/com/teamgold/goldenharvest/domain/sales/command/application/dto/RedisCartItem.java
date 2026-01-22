@@ -1,10 +1,7 @@
 package com.teamgold.goldenharvest.domain.sales.command.application.dto;
 
 import com.teamgold.goldenharvest.domain.sales.command.domain.SalesSku;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,6 +10,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
 public class RedisCartItem implements Serializable {
     private String skuNo;
     private String itemName;
