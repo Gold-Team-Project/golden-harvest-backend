@@ -4,10 +4,12 @@ import com.teamgold.goldenharvest.common.response.ApiResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderDetailResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderHistoryResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.service.SalesOrderQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,8 +44,8 @@ public class SalesOrderQueryController {
 
     // 관리자가 사용자 주문 내역 조회하는 기능
     @GetMapping("/all-orders")
-    public ResponseEntity<ApiResponse<List<AdminOrderHistoryResponse>>> getAllOrderHistory() {
-        List<AdminOrderHistoryResponse> orderHistory = salesOrderQueryService.getAllOrderHistory();
+    public ResponseEntity<ApiResponse<List<AdminOrderHistoryResponse>>> getAllOrderHistory(@ModelAttribute AdminOrderSearchCondition searchCondition) {
+        List<AdminOrderHistoryResponse> orderHistory = salesOrderQueryService.getAllOrderHistory(searchCondition);
         return ResponseEntity.ok(ApiResponse.success(orderHistory));
     }
 

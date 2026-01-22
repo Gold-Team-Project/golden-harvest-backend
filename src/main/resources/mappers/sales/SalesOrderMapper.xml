@@ -52,6 +52,52 @@
         </collection>
     </resultMap>
 
+    <select id="findAllOrderHistory" resultMap="adminOrderHistoryResultMap">
+        SELECT
+            so.sales_order_id,
+            sos.sales_status_name,
+            so.created_at,
+            so.total_amount,
+            sc.customer_company AS company,
+            pm.item_name,
+            g.grade_name,
+            v.variety_name,
+            soi.quantity AS item_quantity,
+            soi.price AS item_price
+        FROM
+            tb_sales_order so
+                JOIN
+            tb_sales_order_status sos ON so.order_status_id = sos.sales_status_id
+                LEFT JOIN
+            tb_sales_order_item soi ON so.sales_order_id = soi.sales_order_id
+                LEFT JOIN
+            tb_sku s ON soi.sku_no = s.sku_no
+                LEFT JOIN
+            tb_variety v ON s.item_code = v.item_code AND s.variety_code = v.variety_code
+                LEFT JOIN
+            tb_produce_master pm ON v.item_code = pm.item_code
+                LEFT JOIN
+            tb_grade g ON s.grade_code = g.grade_code
+                LEFT JOIN
+            tb_sales_customer_info sc ON so.user_email = sc.customer_email
+        <where>
+            <if test="startDate != null">
+                AND so.created_at >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND so.created_at &lt;= #{endDate}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                AND sos.sales_status_name = #{orderStatus}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                AND sc.customer_company LIKE CONCAT('%', #{customerName}, '%')
+            </if>
+        </where>
+        ORDER BY
+            so.created_at DESC
+    </select>
+
     <select id="findOrderHistoryByUserEmail" resultMap="orderHistoryResultMap">
         SELECT
             so.sales_order_id,

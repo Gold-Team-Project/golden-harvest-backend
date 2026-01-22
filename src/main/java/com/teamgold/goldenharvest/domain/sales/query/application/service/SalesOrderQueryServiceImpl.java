@@ -4,6 +4,7 @@ import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderDetailResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderHistoryResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.mapper.SalesOrderMapper;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,8 @@ public class SalesOrderQueryServiceImpl implements SalesOrderQueryService {
     }
 
     @Override
-    public List<AdminOrderHistoryResponse> getAllOrderHistory() {
-        return salesOrderMapper.findAllOrderHistory();
+    public List<AdminOrderHistoryResponse> getAllOrderHistory(AdminOrderSearchCondition searchCondition) {
+        return salesOrderMapper.findAllOrderHistory(searchCondition);
     }
 
     @Override
