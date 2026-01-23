@@ -97,4 +97,12 @@ public class User {
     public void updatePassword(String encodePassword) {
         this.password = encodePassword;
     }
+
+    public void updateProfile(String name, String phoneNumber,String addressLine1, String addressLine2, String postalCode) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.addressLine1 = addressLine1;
+        this.addressLine2 = addressLine2;
+        this.postalCode = postalCode;
+    }
 }
