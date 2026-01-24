@@ -19,7 +19,7 @@ import java.util.List;
 public class Cart {
 
     @Id
-    @Column(name = "cart_id", length = 20, nullable = false)
+    @Column(name = "cart_id", length = 36, nullable = false)
     private String cartId; // 고유 번호
 
     @Column(name = "user_email", length = 20, nullable = false)

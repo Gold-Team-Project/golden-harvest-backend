@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 public class CartItem {
 
     @Id
-    @Column(name = "cart_item_id", length = 20, nullable = false)
+    @Column(name = "cart_item_id", length = 36, nullable = false)
     private String cartItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
