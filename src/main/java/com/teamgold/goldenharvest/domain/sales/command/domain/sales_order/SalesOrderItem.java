@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 @Builder
 public class SalesOrderItem {
     @Id
-    @Column(name = "sales_order_item_id", length = 20, nullable = false)
+    @Column(name = "sales_order_item_id", length = 36, nullable = false)
     private String salesOrderItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)

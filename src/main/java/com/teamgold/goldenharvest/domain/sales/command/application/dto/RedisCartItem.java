@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @Builder
 @Setter
 public class RedisCartItem implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String skuNo;
     private String itemName;
     private String gradeName;

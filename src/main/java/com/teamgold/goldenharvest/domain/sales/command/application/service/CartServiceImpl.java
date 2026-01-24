@@ -11,7 +11,12 @@ import com.teamgold.goldenharvest.domain.sales.command.domain.SalesSku;
 import com.teamgold.goldenharvest.domain.sales.command.domain.cart.Cart;
 import com.teamgold.goldenharvest.domain.sales.command.domain.cart.CartItem;
 import com.teamgold.goldenharvest.domain.sales.command.domain.cart.CartStatus;
+import com.teamgold.goldenharvest.domain.sales.command.domain.sales_order.SalesOrder;
+import com.teamgold.goldenharvest.domain.sales.command.domain.sales_order.SalesOrderItem;
+import com.teamgold.goldenharvest.domain.sales.command.domain.sales_order.SalesOrderStatus;
 import com.teamgold.goldenharvest.domain.sales.command.infrastructure.cart.CartRepository;
+import com.teamgold.goldenharvest.domain.sales.command.infrastructure.sales_order.SalesOrderRepository;
+import com.teamgold.goldenharvest.domain.sales.command.infrastructure.sales_order.SalesOrderStatusRepository;
 import com.teamgold.goldenharvest.domain.sales.command.infrastructure.repository.SalesSkuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
@@ -35,6 +40,8 @@ public class CartServiceImpl implements CartService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final SalesSkuRepository salesSkuRepository;
     private final CartRepository cartRepository;
+    private final SalesOrderRepository salesOrderRepository;
+    private final SalesOrderStatusRepository salesOrderStatusRepository;
     private static final String CART_PREFIX = "cart:";
     private static final long CART_EXPIRE_DAYS = 30;
 
@@ -133,7 +140,9 @@ public class CartServiceImpl implements CartService {
             throw new BusinessException(ErrorCode.INVALID_REQUEST);
         }
 
-        // 1. JPA Cart 엔티티 생성
+        // ----------------------------------------------------
+        // 1. tb_cart에 장바구니 정보 주문 완료 상태로 저장
+        // ----------------------------------------------------
         String cartId = UUID.randomUUID().toString();
         Cart cart = Cart.builder()
                 .cartId(cartId)
@@ -143,7 +152,6 @@ public class CartServiceImpl implements CartService {
                 .updatedAt(LocalDate.now())
                 .build();
 
-        // 2. JPA CartItem 엔티티 생성 및 Cart에 추가
         List<CartItem> cartItems = redisCartItems.values().stream()
                 .map(redisCartItem -> CartItem.builder()
                         .cartItemId(UUID.randomUUID().toString())
@@ -153,15 +161,47 @@ public class CartServiceImpl implements CartService {
                         .unitPrice(redisCartItem.getUnitPrice())
                         .build())
                 .collect(Collectors.toList());
-
-        cart.setCartItems(cartItems); // Cart 엔티티에 CartItem 리스트 설정 (cascade 덕분에 함께 저장됨)
-
-        // 3. Cart를 DB에 저장
+        cart.setCartItems(cartItems);
         cartRepository.save(cart);
 
-        // 4. Redis 장바구니 데이터 삭제
+        // ----------------------------------------------------
+        // 2. tb_sales_order와 tb_sales_order_item에 주문 정보 저장
+        // ----------------------------------------------------
+        String salesOrderId = UUID.randomUUID().toString();
+        SalesOrderStatus defaultOrderStatus = salesOrderStatusRepository.findBySalesStatusType("PENDING")
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        BigDecimal totalAmount = redisCartItems.values().stream()
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        SalesOrder salesOrder = SalesOrder.builder()
+                .salesOrderId(salesOrderId)
+                .userEmail(userEmail)
+                .orderStatus(defaultOrderStatus)
+                .createdAt(LocalDate.now())
+                .updatedAt(LocalDate.now())
+                .deliveryDate(LocalDate.now().plusDays(3)) // 임시 배송일 3일 뒤
+                .totalAmount(totalAmount)
+                .build();
+
+        List<SalesOrderItem> salesOrderItems = redisCartItems.values().stream()
+                .map(redisCartItem -> SalesOrderItem.builder()
+                        .salesOrderItemId(UUID.randomUUID().toString())
+                        .salesOrder(salesOrder)
+                        .skuNo(redisCartItem.getSkuNo())
+                        .quantity(redisCartItem.getQuantity())
+                        .price(redisCartItem.getUnitPrice())
+                        .build())
+                .collect(Collectors.toList());
+        salesOrder.setSalesOrderItems(salesOrderItems); // SalesOrder 엔티티에 SalesOrderItem 리스트 설정
+        salesOrderRepository.save(salesOrder);
+
+        // ----------------------------------------------------
+        // 3. Redis 장바구니 데이터 삭제
+        // ----------------------------------------------------
         redisTemplate.delete(cartKey);
 
-        return cartId; // 생성된 주문(장바구니) ID 반환
+        return salesOrderId; // 새로 생성된 SalesOrder ID 반환
     }
 }
