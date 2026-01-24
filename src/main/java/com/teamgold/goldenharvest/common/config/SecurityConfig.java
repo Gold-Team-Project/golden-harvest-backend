@@ -34,12 +34,16 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/**"
-                        ).permitAll()
-                                // 로그인이 반드시 필요한 경로
-                                .requestMatchers("/api/user/password").authenticated()
+                                // 1. 회원가입/로그인
+                                .requestMatchers("/api/auth/**").permitAll()
 
+                                // 2. 관리자 기능은 ADMIN 권한만
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                                // 3. 유저 관련 기능
+                                .requestMatchers("/api/user/**").authenticated()
+
+                                // 4. 그 외 나머지 API
                                 .anyRequest().permitAll()
 
                         // JWT 인증 필터 추가

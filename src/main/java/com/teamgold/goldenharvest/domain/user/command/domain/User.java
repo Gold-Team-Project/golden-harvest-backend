@@ -105,4 +105,18 @@ public class User {
         this.addressLine2 = addressLine2;
         this.postalCode = postalCode;
     }
+
+    public void updateStatus(UserStatus Status) {
+        this.status = Status;
+    }
+
+    public void updateRole(Role role) {
+        this.role = role;
+    }
+
+    public void updateBusinessInfo(String company, String businessNumber, Long fileId) {
+        this.company = company;
+        this.businessNumber = businessNumber;
+        this.fileId = fileId;
+    }
 }
