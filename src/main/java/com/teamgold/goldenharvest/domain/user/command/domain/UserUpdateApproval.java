@@ -26,9 +26,7 @@ public class UserUpdateApproval {
     private Long requestFileId;
 
     @Enumerated(EnumType.STRING)
-    private RequestStatus status; // Enum: PENDING, APPROVED, REJECTED 생성 필요
-
-    private String rejectReason;
+    private RequestStatus status;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
