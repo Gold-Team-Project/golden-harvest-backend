@@ -1,5 +1,6 @@
 package com.teamgold.goldenharvest.domain.inventory.query.mapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -7,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
+import com.teamgold.goldenharvest.domain.inventory.query.dto.ItemResponse;
 
 @Mapper
 public interface LotMapper {
@@ -49,11 +51,44 @@ public interface LotMapper {
 		    #{limit}
 		OFFSET
 		    #{offset}
-	"""
-	)
+	""")
 	List<AvailableItemResponse> findAllAvailableItems(
 		@Param("limit") int limit,
 		@Param("offset") int offset,
 		@Param("skuNo") String skuNo
+	);
+
+	@Select("""
+		SELECT
+		    l.lot_no AS lotNo,
+		    l.sku_no AS skuNo,
+		    l.quantity AS quantity,
+		    i.item_name AS itemName,
+		    i.grade_name AS gradeName,
+		    i.variety_name AS varietyName,
+		    i.base_unit AS baseUnit
+		FROM
+		    tb_lot AS l
+		JOIN
+			tb_item_master_mirror AS i
+		ON
+			l.sku_no = i.sku_no
+		WHERE
+		    (#{skuNo} IS NULL OR l.sku_no = #{skuNo})
+			AND
+		    l.inbound_date BETWEEN #{startDate} AND #{endDate}
+		ORDER BY
+		    l.inbound_date DESC
+		LIMIT
+			#{limit}
+		OFFSET
+			#{offset}
+	""")
+	List<ItemResponse> findAllItems(
+		@Param("limit") int limit,
+		@Param("offset") int offset,
+		@Param("skuNo") String skuNo,
+		@Param("startDate") LocalDate startDate,
+		@Param("endDate") LocalDate endDate
 	);
 }
