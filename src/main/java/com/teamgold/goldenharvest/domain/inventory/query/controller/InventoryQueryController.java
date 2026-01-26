@@ -40,6 +40,28 @@ public class InventoryQueryController {
 	}
 
 	/*
+	* 과거 재고 기록을 포함한 모든 재고를 조회할 수 있는
+	* 관리자 전용 endpoint이다
+	* sku, 날짜, 상태를 통한 필터링이 가능하다
+	 */
+	@GetMapping("/admin/item")
+	public ResponseEntity<ApiResponse<?>> getAllItemList(
+		@RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
+		@RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(50) Integer size,
+		@RequestParam(name = "skuNo", required = false) String skuNo,
+		@RequestParam(name = "startDate", required = false) LocalDate startDate,
+		@RequestParam(name = "endDate", required = false) LocalDate endDate
+	) {
+		return ResponseEntity.ok(ApiResponse.success(inventoryQueryService.getAllItem(
+			page,
+			size,
+			skuNo,
+			startDate,
+			endDate
+			)));
+	}
+
+	/*
 	* 입고(Inbound) 이력을 가져올 수 있는 endpoint이다
 	* startDate와 endDate로 날짜 필터링이 가능하며
 	* 기본값은 현재 시점으로 1주일 사이의 데이터를 가져온다
@@ -53,7 +75,13 @@ public class InventoryQueryController {
 		@RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 		@RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
 	) {
-		return ResponseEntity.ok(ApiResponse.success(inventoryQueryService.getInbounds(page, size, skuNo, startDate, endDate)));
+		return ResponseEntity.ok(ApiResponse.success(inventoryQueryService.getInbounds(
+			page,
+			size,
+			skuNo,
+			startDate,
+			endDate
+		)));
 	}
 
 	/*
@@ -72,6 +100,13 @@ public class InventoryQueryController {
 		@RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 		@RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
 	) {
-		return ResponseEntity.ok(ApiResponse.success(inventoryQueryService.getOutbounds(page, size, skuNo, lotNo, startDate, endDate)));
+		return ResponseEntity.ok(ApiResponse.success(inventoryQueryService.getOutbounds(
+			page,
+			size,
+			skuNo,
+			lotNo,
+			startDate,
+			endDate
+		)));
 	}
 }
