@@ -35,6 +35,7 @@ public enum ErrorCode {
     PASSWORD_SAME_AS_OLD("2013","기존 비밀번호와 동일합니다.", HttpStatus.FORBIDDEN),
     USER_NOT_APPROVED("2014","승인되지 않은 사용자입니다.", HttpStatus.FORBIDDEN),
     FILE_UPLOAD_ERROR("2015","파일 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    USER_ONLY_PENDING_CAN_BE_APPROVED("2016","대기 상태인 유저만 승인할 수 있습니다.", HttpStatus.FORBIDDEN),
 
 	// MasterData (3000~3999)
 	MASTER_DATA_NOT_FOUND("3000","마스터 데이터를 찾을 수 없습니다.",HttpStatus.NOT_FOUND),

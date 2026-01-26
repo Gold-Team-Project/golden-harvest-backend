@@ -2,11 +2,14 @@ package com.teamgold.goldenharvest.domain.user.command.application.service;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
-import com.teamgold.goldenharvest.domain.user.command.application.dto.reponse.UserProfileResponse;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserProfileUpdateRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.PasswordChangeRequest;
+import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserUpdateRequest;
+import com.teamgold.goldenharvest.domain.user.command.domain.RequestStatus;
 import com.teamgold.goldenharvest.domain.user.command.domain.User;
+import com.teamgold.goldenharvest.domain.user.command.domain.UserUpdateApproval;
 import com.teamgold.goldenharvest.domain.user.command.infrastructure.repository.UserRepository;
+import com.teamgold.goldenharvest.domain.user.command.infrastructure.repository.UserUpdateApprovalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final UserUpdateApprovalRepository userUpdateApprovalRepository;
 
     @Override//  마이페이지 비밀번호 변경
     public void changePassword(String email, PasswordChangeRequest passwordChangeRequest) {
@@ -65,22 +69,23 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public UserProfileResponse getUserProfile(String email) {
-
+    public void requestBusinessUpdate(String email, UserUpdateRequest userUpdateRequest) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        return UserProfileResponse.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .company(user.getCompany())
-                .businessNumber(user.getBusinessNumber())
-                .phoneNumber(user.getPhoneNumber())
-                .addressLine1(user.getAddressLine1())
-                .addressLine2(user.getAddressLine2())
-                .postalCode(user.getPostalCode())
-                .status(user.getStatus().name())
+        // 중요 정보 수정은 '승인 대기' 중인 건이 있는지 체크
+        if (userUpdateApprovalRepository.existsByUserAndStatus(user, RequestStatus.PENDING)) {
+            throw new BusinessException(ErrorCode.DUPLICATE_REQUEST);
+        }
+
+        UserUpdateApproval approval = UserUpdateApproval.builder()
+                .user(user)
+                .requestCompany(userUpdateRequest.getRequestCompany())
+                .requestBusinessNumber(userUpdateRequest.getRequestBusinessNumber())
+                .requestFileId(userUpdateRequest.getRequestFileId())
                 .build();
+
+        userUpdateApprovalRepository.save(approval);
+        log.info("[Golden Harvest] 사업자 정보 수정 요청 완료: {}", email);
     }
 }

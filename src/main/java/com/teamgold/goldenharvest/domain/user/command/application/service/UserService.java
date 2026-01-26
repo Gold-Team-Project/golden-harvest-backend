@@ -1,8 +1,8 @@
 package com.teamgold.goldenharvest.domain.user.command.application.service;
 
-import com.teamgold.goldenharvest.domain.user.command.application.dto.reponse.UserProfileResponse;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserProfileUpdateRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.PasswordChangeRequest;
+import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserUpdateRequest;
 
 public interface UserService {
 
@@ -10,5 +10,5 @@ public interface UserService {
 
     void updateProfile(String email, UserProfileUpdateRequest userProfileUpdateRequest);
 
-    UserProfileResponse getUserProfile(String email);
+    void requestBusinessUpdate(String email, UserUpdateRequest userUpdateRequest);
 }

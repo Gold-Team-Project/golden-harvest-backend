@@ -2,9 +2,9 @@ package com.teamgold.goldenharvest.domain.user.command.application.controller;
 
 import com.teamgold.goldenharvest.common.response.ApiResponse;
 import com.teamgold.goldenharvest.common.security.CustomUserDetails;
-import com.teamgold.goldenharvest.domain.user.command.application.dto.reponse.UserProfileResponse;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserProfileUpdateRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.PasswordChangeRequest;
+import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserUpdateRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,12 +40,14 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("회원 정보가 성공적으로 수정되었습니다."));
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UserProfileResponse>> getMyProfile(
-            @AuthenticationPrincipal UserDetails userDetails) {
+    @PostMapping("/me/business-update") // URL도 명확하게 구분하는 것이 좋습니다.
+    public ResponseEntity<ApiResponse<Void>> requestBusinessUpdate(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody UserUpdateRequest dto) {
 
-        UserProfileResponse userProfileResponse = userService.getUserProfile(userDetails.getUsername());
+        // updateProfile이 아니라 requestBusinessUpdate를 호출해야 합니다!
+        userService.requestBusinessUpdate(userDetails.getEmail(), dto);
 
-        return ResponseEntity.ok(ApiResponse.success(userProfileResponse));
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
