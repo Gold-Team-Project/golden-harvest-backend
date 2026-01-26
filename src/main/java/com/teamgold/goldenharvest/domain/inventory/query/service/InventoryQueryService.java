@@ -105,6 +105,6 @@ public class InventoryQueryService {
 		if (Objects.isNull(startDate) || Objects.isNull(endDate)) {
 			return true;
 		}
-		else return startDate.isBefore(endDate);
+		else return startDate.isAfter(endDate);
 	}
 }
