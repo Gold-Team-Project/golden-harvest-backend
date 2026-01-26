@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 public class Cart {
 
     @Id
-    @Column(name = "cart_id", length = 20, nullable = false)
+    @Column(name = "cart_id", length = 36, nullable = false)
     private String cartId; // 고유 번호
 
     @Column(name = "user_email", length = 20, nullable = false)
@@ -35,6 +36,7 @@ public class Cart {
     private LocalDate updatedAt;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter // CartServiceImpl에서 cartItems를 설정하기 위해 필요
     private List<CartItem> cartItems;
 }
 

@@ -46,6 +46,7 @@ public enum ErrorCode {
 
     // Sales (5000-5999)
     ORDER_NOT_FOUND("5000", "주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    PRODUCT_NOT_FOUND("5001", "상품을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     //Inquiry (7000-7999)
     INQUIRY_NOT_FOUND("7000", "문의를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
