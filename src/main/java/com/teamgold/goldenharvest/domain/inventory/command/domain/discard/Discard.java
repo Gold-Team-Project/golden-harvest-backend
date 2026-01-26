@@ -38,15 +38,19 @@ public class Discard {
     @Column(name = "discard_rate", precision = 10, scale = 2)
     private BigDecimal discardRate;
 
+	@Column(name = "price", precision = 10, scale = 2)
+	private BigDecimal totalPrice;
+
     @Builder
     public Discard(
-            String discardId,
-            String lotNo,
-            DiscardStatus discardStatus,
-            Integer quantity,
-            LocalDateTime discardedAt,
-            String approvedBy,
-            BigDecimal discardRate
+		String discardId,
+		String lotNo,
+		DiscardStatus discardStatus,
+		Integer quantity,
+		LocalDateTime discardedAt,
+		String approvedBy,
+		BigDecimal discardRate,
+		BigDecimal totalPrice
     ) {
         this.discardId = discardId;
         this.lotNo = lotNo;
@@ -55,5 +59,6 @@ public class Discard {
         this.discardedAt = discardedAt;
         this.approvedBy = approvedBy;
         this.discardRate = discardRate;
+		this.totalPrice = totalPrice;
     }
 }

@@ -1,7 +1,6 @@
 package com.teamgold.goldenharvest.domain.inventory.command.application.service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -15,8 +14,10 @@ import com.teamgold.goldenharvest.domain.inventory.command.domain.IdGenerator;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.discard.Discard;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.discard.DiscardStatus;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Lot;
+import com.teamgold.goldenharvest.domain.inventory.command.domain.mirror.ItemMasterMirror;
 import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.DiscardRepository;
 import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.DiscardStatusRepository;
+import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.ItemMasterMirrorRepository;
 import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.LotRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class DiscardService {
 	private final DiscardRepository discardRepository;
 	private final DiscardStatusRepository discardStatusRepository;
 	private final LotRepository lotRepository;
+	private final ItemMasterMirrorRepository itemMasterMirrorRepository;
 
 
 	@Transactional
@@ -46,6 +48,10 @@ public class DiscardService {
 			() -> new BusinessException(ErrorCode.INVALID_DISCARD_STATUS)
 		);
 
+		ItemMasterMirror itemMaster = itemMasterMirrorRepository.findById(lot.getSkuNo()).orElseThrow(
+			() -> new BusinessException(ErrorCode.NO_SUCH_SKU)
+		);
+
 		Discard discard = Discard.builder()
 			.discardId(discardId)
 			.lotNo(lot.getLotNo())
@@ -54,6 +60,7 @@ public class DiscardService {
 			.discardedAt(LocalDateTime.now())
 			.approvedBy(discardItemRequest.getApprovedAdminEmail())
 			.discardRate(BigDecimal.valueOf(discardItemRequest.getQuantity() / lot.getQuantity()))
+			.totalPrice(itemMaster.getCurrentOriginPrice().multiply(BigDecimal.valueOf(discardItemRequest.getQuantity())))
 			.build();
 
 		return discardRepository.save(discard).getLotNo();

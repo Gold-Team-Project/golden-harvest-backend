@@ -1,6 +1,5 @@
 package com.teamgold.goldenharvest.domain.inventory.query.mapper;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,7 +7,10 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import com.teamgold.goldenharvest.domain.inventory.query.dto.DiscardLossResponse;
+import com.teamgold.goldenharvest.domain.inventory.query.dto.DiscardRateResponse;
 import com.teamgold.goldenharvest.domain.inventory.query.dto.DiscardResponse;
+import com.teamgold.goldenharvest.domain.inventory.query.dto.DiscardVolumeResponse;
 
 @Mapper
 public interface DiscardMapper {
@@ -37,7 +39,7 @@ public interface DiscardMapper {
 		ORDER BY d.discarded_at DESC
 		LIMIT #{limit}
 		OFFSET #{offset}
-		""")
+	""")
 	List<DiscardResponse> findAllDiscard(
 		@Param("limit") Integer limit,
 		@Param("offset") Integer offset,
@@ -45,5 +47,60 @@ public interface DiscardMapper {
 		@Param("discardStatus") String discardStatus,
 		@Param("startDate") LocalDateTime startDate,
 		@Param("endDate") LocalDateTime endDate
+	);
+
+	@Select("""
+		SELECT
+		    COALESCE(SUM(CASE WHEN discarded_at BETWEEN #{thisMonthStart} AND #{now} THEN quantity ELSE 0 END), 0) AS currentQuantity,
+		    COALESCE(SUM(CASE WHEN discarded_at BETWEEN #{lastMonthStart} AND #{lastMonthUntilNow} THEN quantity ELSE 0 END), 0) AS lastQuantity
+      	FROM tb_discard
+      	WHERE discarded_at BETWEEN #{lastMonthStart} AND #{now}
+	""")
+	DiscardVolumeResponse findDiscardVolume(
+		@Param("lastMonthStart") LocalDateTime lastMonthStart,
+		@Param("lastMonthUntilNow") LocalDateTime lastMonthUntilNow,
+		@Param("thisMonthStart") LocalDateTime thisMonthStart,
+		@Param("now") LocalDateTime now
+	);
+
+	@Select("""
+		SELECT
+		    COALESCE(SUM(CASE WHEN discarded_at BETWEEN #{thisMonthStart} AND #{now} THEN price ELSE 0 END), 0) AS currentTotalValue,
+			COALESCE(SUM(CASE WHEN discarded_at BETWEEN #{lastMonthStart} AND #{lastMonthUntilNow} THEN price ELSE 0 END), 0) AS lastTotalValue
+      	FROM tb_discard
+      	WHERE discarded_at BETWEEN #{lastMonthStart} AND #{now}
+	""")
+	DiscardLossResponse findDiscardLoss(
+		@Param("lastMonthStart") LocalDateTime lastMonthStart,
+		@Param("lastMonthUntilNow") LocalDateTime lastMonthUntilNow,
+		@Param("thisMonthStart") LocalDateTime thisMonthStart,
+		@Param("now") LocalDateTime now
+	);
+
+	@Select("""
+		SELECT
+		    SUM(d. quantity) AS totalQuantity,
+		    i.item_name AS itemName
+		FROM 
+		    tb_discard AS d
+		JOIN 
+			tb_lot l
+		ON 
+		    l.lot_no = d.lot_no
+		JOIN
+		    tb_item_master_mirror i
+		ON
+			l.sku_no = i.sku_no
+		WHERE
+		    d.discarded_at BETWEEN #{thisMonthStart} AND #{now}
+		GROUP BY
+		    i.item_name
+		ORDER BY
+			totalQuantity DESC
+		LIMIT 10
+	""")
+	List<DiscardRateResponse> findDiscardRate(
+		@Param("thisMonthStart") LocalDateTime thisMonthStart,
+		@Param("now") LocalDateTime now
 	);
 }
