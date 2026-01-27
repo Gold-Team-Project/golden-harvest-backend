@@ -31,15 +31,24 @@ public enum ErrorCode {
     PASSWORD_RESET_NOT_ELIGIBLE("2009", "비밀번호 재설정 인증이 필요합니다.", HttpStatus.FORBIDDEN),
     PASSWORD_RESET_ELIGIBILITY_EXPIRED("2010", "비밀번호 재설정 인증 유효 시간이 만료되었습니다.", HttpStatus.FORBIDDEN),
     USER_INACTIVE("2011", "비활성화된 계정입니다.", HttpStatus.FORBIDDEN),
+    EMAIL_SEND_FAILED("2012", "이메일 발송에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    PASSWORD_SAME_AS_OLD("2013","기존 비밀번호와 동일합니다.", HttpStatus.FORBIDDEN),
+    USER_NOT_APPROVED("2014","승인되지 않은 사용자입니다.", HttpStatus.FORBIDDEN),
+    FILE_UPLOAD_ERROR("2015","파일 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    USER_ONLY_PENDING_CAN_BE_APPROVED("2016","대기 상태인 유저만 승인할 수 있습니다.", HttpStatus.FORBIDDEN),
 
 	// MasterData (3000~3999)
 	MASTER_DATA_NOT_FOUND("3000","마스터 데이터를 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
 
 	// Inventory (4000~4999)
 	INSUFFICIENT_STOCK("4000", "재고 수량이 부족합니다", HttpStatus.BAD_REQUEST),
+	LOT_NOT_FOUND("4001", "Lot 번호에 맞는 재고를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+	INVALID_DISCARD_STATUS("4002", "폐기 상태코드를 잘못되었습니다", HttpStatus.BAD_REQUEST),
+	NO_SUCH_SKU("4003", "Sku 번호에 맞는 재고를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
 
     // Sales (5000-5999)
     ORDER_NOT_FOUND("5000", "주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    PRODUCT_NOT_FOUND("5001", "상품을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     //Inquiry (7000-7999)
     INQUIRY_NOT_FOUND("7000", "문의를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);

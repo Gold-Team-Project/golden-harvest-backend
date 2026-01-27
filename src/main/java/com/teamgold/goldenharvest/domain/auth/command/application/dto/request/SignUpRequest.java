@@ -1,13 +1,13 @@
 package com.teamgold.goldenharvest.domain.auth.command.application.dto.request;
 
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class SignUpRequest {
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
@@ -31,7 +31,6 @@ public class SignUpRequest {
     @Pattern(regexp = "^01[0-9]-?\\d{3,4}-?\\d{4}$", message = "전화번호 형식이 올바르지 않습니다.")
     private String phoneNumber;
 
-    @NotNull(message = "사업자등록증 파일은 필수입니다.")
     private Long fileId;
 
 }

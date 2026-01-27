@@ -18,5 +18,6 @@ public class OrderHistoryResponse {
     private String orderStatus; // 상태
     private LocalDate createdAt; // 생성일
     private BigDecimal totalAmount; // 총 가격
+
     private List<OrderHistoryItem> orderItems;
 }

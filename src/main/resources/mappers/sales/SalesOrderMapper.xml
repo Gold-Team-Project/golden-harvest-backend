@@ -8,7 +8,6 @@
         <result property="orderStatus" column="sales_status_name"/>
         <result property="createdAt" column="created_at"/>
         <result property="totalAmount" column="total_amount"/>
-
         <collection property="orderItems" ofType="com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryItem">
             <result property="itemName" column="item_name"/>
             <result property="gradeName" column="grade_name"/>
@@ -17,6 +16,87 @@
             <result property="price" column="item_price"/>
         </collection>
     </resultMap>
+
+    <resultMap id="adminOrderHistoryResultMap" type="com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderHistoryResponse">
+        <id property="salesOrderId" column="sales_order_id"/>
+        <result property="orderStatus" column="sales_status_name"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="company" column="company"/>
+        <collection property="orderItems" ofType="com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryItem">
+            <result property="itemName" column="item_name"/>
+            <result property="gradeName" column="grade_name"/>
+            <result property="varietyName" column="variety_name"/>
+            <result property="quantity" column="item_quantity"/>
+            <result property="price" column="item_price"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="adminOrderDetailResultMap" type="com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderDetailResponse">
+        <id property="salesOrderId" column="sales_order_id"/>
+        <result property="orderStatus" column="sales_status_name"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="company" column="company"/>
+        <result property="name" column="customer_name"/>
+        <result property="phoneNumber" column="customer_phone"/>
+        <result property="addressLine1" column="address_line1"/>
+        <result property="addressLine2" column="address_line2"/>
+        <result property="postalCode" column="postal_code"/>
+        <collection property="orderItems" ofType="com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryItem">
+            <result property="itemName" column="item_name"/>
+            <result property="gradeName" column="grade_name"/>
+            <result property="varietyName" column="variety_name"/>
+            <result property="quantity" column="item_quantity"/>
+            <result property="price" column="item_price"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAllOrderHistory" resultMap="adminOrderHistoryResultMap">
+        SELECT
+            so.sales_order_id,
+            sos.sales_status_name,
+            so.created_at,
+            so.total_amount,
+            sc.customer_company AS company,
+            pm.item_name,
+            g.grade_name,
+            v.variety_name,
+            soi.quantity AS item_quantity,
+            soi.price AS item_price
+        FROM
+            tb_sales_order so
+                JOIN
+            tb_sales_order_status sos ON so.order_status_id = sos.sales_status_id
+                LEFT JOIN
+            tb_sales_order_item soi ON so.sales_order_id = soi.sales_order_id
+                LEFT JOIN
+            tb_sku s ON soi.sku_no = s.sku_no
+                LEFT JOIN
+            tb_variety v ON s.item_code = v.item_code AND s.variety_code = v.variety_code
+                LEFT JOIN
+            tb_produce_master pm ON v.item_code = pm.item_code
+                LEFT JOIN
+            tb_grade g ON s.grade_code = g.grade_code
+                LEFT JOIN
+            tb_sales_customer_info sc ON so.user_email = sc.customer_email
+        <where>
+            <if test="startDate != null">
+                AND so.created_at >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND so.created_at &lt;= #{endDate}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                AND sos.sales_status_name = #{orderStatus}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                AND sc.customer_company LIKE CONCAT('%', #{customerName}, '%')
+            </if>
+        </where>
+        ORDER BY
+            so.created_at DESC
+    </select>
 
     <select id="findOrderHistoryByUserEmail" resultMap="orderHistoryResultMap">
         SELECT
@@ -66,18 +146,35 @@
             so.sales_order_id = #{salesOrderId}
     </select>
 
-<!--    <select id="findOrderItemsBySalesOrderId" resultType="com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryItem">-->
-<!--        SELECT-->
-<!--            sku.item_name as itemName,-->
-<!--            sku.grade_name as gradeName,-->
-<!--            sku.variety_name as varietyName,-->
-<!--            soi.quantity,-->
-<!--            soi.price-->
-<!--        FROM-->
-<!--            tb_sales_order_item soi-->
-<!--                LEFT JOIN-->
-<!--            tb_sales_sku sku ON soi.sku_no = sku.sku_no-->
-<!--        WHERE-->
-<!--            soi.sales_order_id = #{salesOrderId}-->
-<!--    </select>-->
+    <select id="findAdminOrderDetailBySalesOrderId" resultMap="adminOrderDetailResultMap">
+        SELECT
+            so.sales_order_id,
+            sos.sales_status_name,
+            so.created_at,
+            so.total_amount,
+            sci.customer_company AS company,
+            sci.customer_name AS name,
+            sci.customer_phone AS phoneNumber,
+            sci.address_line1 AS addressLine1,
+            sci.address_line2 AS addressLine2,
+            sci.postal_code AS postalCode,
+            sku.item_name,
+            sku.grade_name,
+            sku.variety_name,
+            soi.quantity AS item_quantity,
+            soi.price AS item_price
+        FROM
+            tb_sales_order so
+                JOIN
+            tb_sales_order_status sos ON so.order_status_id = sos.sales_status_id
+                LEFT JOIN
+            tb_sales_customer_info sci ON so.user_email = sci.customer_email
+                LEFT JOIN
+            tb_sales_order_item soi ON so.sales_order_id = soi.sales_order_id
+                LEFT JOIN
+            tb_sales_sku sku ON soi.sku_no = sku.sku_no
+        WHERE
+            so.sales_order_id = #{salesOrderId}
+    </select>
+
 </mapper>

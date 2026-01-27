@@ -1,0 +1,21 @@
+package com.teamgold.goldenharvest.domain.user.command.application.dto.request;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class PasswordChangeRequest {
+    @NotBlank(message = "기존 비밀번호는 필수 입력 값입니다.")
+    private String oldPassword;
+
+    @NotBlank(message = "새 비밀번호는 필수 입력 값입니다.")
+    @Size(min = 8, max = 20, message = "비밀번호는 8~20자 사이여야 합니다.")
+    private String newPassword;
+}

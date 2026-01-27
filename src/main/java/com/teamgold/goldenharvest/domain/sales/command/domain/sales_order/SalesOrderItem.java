@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 @Builder
 public class SalesOrderItem {
     @Id
-    @Column(name = "sales_order_item_id", length = 20, nullable = false)
+    @Column(name = "sales_order_item_id", length = 36, nullable = false)
     private String salesOrderItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,8 +33,8 @@ public class SalesOrderItem {
     private String skuNo;
 
     @Column(name = "quantity")
-    private Integer quantity;
+    private Integer quantity; // 수량
 
     @Column(name = "price")
-    private BigDecimal price;
+    private BigDecimal price; // 가격
 }

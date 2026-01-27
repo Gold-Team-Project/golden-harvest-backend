@@ -1,11 +1,15 @@
 package com.teamgold.goldenharvest.domain.sales.query.application.controller;
 
 import com.teamgold.goldenharvest.common.response.ApiResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderDetailResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderHistoryResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.service.SalesOrderQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,6 +39,20 @@ public class SalesOrderQueryController {
     @GetMapping("/{salesOrderId}")
     public ResponseEntity<ApiResponse<OrderHistoryResponse>> getOrderDetail(@PathVariable String salesOrderId) {
         OrderHistoryResponse orderDetail = salesOrderQueryService.getOrderDetail(salesOrderId);
+        return ResponseEntity.ok(ApiResponse.success(orderDetail));
+    }
+
+    // 관리자가 사용자 주문 내역 조회하는 기능
+    @GetMapping("/all-orders")
+    public ResponseEntity<ApiResponse<List<AdminOrderHistoryResponse>>> getAllOrderHistory(@ModelAttribute AdminOrderSearchCondition searchCondition) {
+        List<AdminOrderHistoryResponse> orderHistory = salesOrderQueryService.getAllOrderHistory(searchCondition);
+        return ResponseEntity.ok(ApiResponse.success(orderHistory));
+    }
+
+    // 관리자용 상세 주문 내역 조회 기능
+    @GetMapping("/orders/{salesOrderId}/details")
+    public ResponseEntity<ApiResponse<AdminOrderDetailResponse>> getAdminOrderDetail(@PathVariable String salesOrderId) {
+        AdminOrderDetailResponse orderDetail = salesOrderQueryService.getAdminOrderDetail(salesOrderId);
         return ResponseEntity.ok(ApiResponse.success(orderDetail));
     }
 }

@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,7 +27,7 @@ import java.time.LocalDate;
 @Builder
 public class SalesOrder {
     @Id
-    @Column(name = "sales_order_id", length = 20, nullable = false)
+    @Column(name = "sales_order_id", length = 36, nullable = false)
     private String salesOrderId;
 
     @Column(name = "user_email", length = 20, nullable = false)
@@ -49,5 +50,6 @@ public class SalesOrder {
     private BigDecimal totalAmount;
 
     @OneToMany(mappedBy = "salesOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter // CartServiceImpl에서 salesOrderItems를 설정하기 위해 필요
     private java.util.List<SalesOrderItem> salesOrderItems;
 }

@@ -13,14 +13,14 @@ import lombok.*;
 public class SalesSku {
     @Id
     @Column(name = "sku_no", length = 20)
-    private String skuNo;
+    private String skuNo; //sku 번호
 
     @Column(name = "item_name", length = 20)
-    private String itemName;
+    private String itemName; // 품목명
 
     @Column(name = "grade_name", length = 20)
-    private String gradeName;
+    private String gradeName; // 등급명
 
     @Column(name = "variety_name", length = 20)
-    private String varietyName;
+    private String varietyName; // 품종명
 }

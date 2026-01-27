@@ -93,4 +93,30 @@ public class User {
         this.role = role;
         this.fileId = fileId;
     }
+
+    public void updatePassword(String encodePassword) {
+        this.password = encodePassword;
+    }
+
+    public void updateProfile(String name, String phoneNumber,String addressLine1, String addressLine2, String postalCode) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.addressLine1 = addressLine1;
+        this.addressLine2 = addressLine2;
+        this.postalCode = postalCode;
+    }
+
+    public void updateStatus(UserStatus Status) {
+        this.status = Status;
+    }
+
+    public void updateRole(Role role) {
+        this.role = role;
+    }
+
+    public void updateBusinessInfo(String company, String businessNumber, Long fileId) {
+        this.company = company;
+        this.businessNumber = businessNumber;
+        this.fileId = fileId;
+    }
 }

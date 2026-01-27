@@ -35,7 +35,6 @@ public interface OutboundMapper {
 		ORDER BY o.outbound_date DESC
 		LIMIT #{limit}
 		OFFSET #{offset}
-		    
 	""")
 	List<OutboundResponse> findAllOutbounds(
 		@Param("limit") int limit,

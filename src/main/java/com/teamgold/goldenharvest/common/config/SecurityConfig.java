@@ -1,17 +1,15 @@
 package com.teamgold.goldenharvest.common.config;
 
-import com.teamgold.goldenharvest.common.jwt.JwtAuthenticationFilter;
+import com.teamgold.goldenharvest.common.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -36,10 +34,18 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/**"
-                        ).permitAll()
-                        .anyRequest().permitAll()
+                                // 1. 회원가입/로그인
+                                .requestMatchers("/api/auth/**").permitAll()
+
+                                // 2. 관리자 기능은 ADMIN 권한만
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                                // 3. 유저 관련 기능
+                                .requestMatchers("/api/user/**").authenticated()
+
+                                // 4. 그 외 나머지 API
+                                .anyRequest().permitAll()
+
                         // JWT 인증 필터 추가
                 ).addFilterBefore(jwtAuthenticationFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 

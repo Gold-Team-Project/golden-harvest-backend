@@ -9,20 +9,38 @@ spring:
   profiles:
     active: local
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   data:
     redis:
       host: ${SPRING_DATA_REDIS_HOST:localhost}
       port: ${SPRING_DATA_REDIS_PORT:6379}
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
   datasource:
-    url: jdbc:mariadb://localhost:3306/goldenharvest
-    username: goldenharvest
-    password: goldenharvest
+    url: jdbc:mariadb://harvest-db.crmia2oe03uh.ap-northeast-2.rds.amazonaws.com:3306/goldenharvest
+    username: admin
+    password: harvest123
   driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update #수정 금지
     show-sql: true
     properties:
       hibernate:

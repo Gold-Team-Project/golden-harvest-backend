@@ -10,6 +10,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.teamgold.goldenharvest.domain.inventory.command.application.dto.ItemMasterUpdatedData;
+import com.teamgold.goldenharvest.domain.inventory.command.application.dto.ItemOriginPriceUpdateEvent;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.ItemMasterMirrorService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,9 +35,14 @@ public class MasterDataUpdateEventListener {
 		log.info("마스터데이터 mirror 업데이트 완료");
 	}
 
-	// @Async
-	// @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
-	// public void updateItemPrice() {
-	// 	// Todo: Current item origin price mirror update logic
-	// }
+	@Async
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void updateItemPrice(ItemOriginPriceUpdateEvent itemOriginPriceUpdateEvent) {
+		log.info("원가 업데이트 이벤트 수신 완료.");
+
+		itemMasterMirrorService.updateOriginPrice(itemOriginPriceUpdateEvent);
+
+		log.info("원가 업데이트 이벤트 처리 완료");
+	}
 }
