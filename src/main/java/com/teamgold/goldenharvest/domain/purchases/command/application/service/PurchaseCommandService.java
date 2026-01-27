@@ -1,12 +1,17 @@
 package com.teamgold.goldenharvest.domain.purchases.command.application.service;
 
+import com.teamgold.goldenharvest.common.broker.KafkaProducerHelper;
+import com.teamgold.goldenharvest.domain.inventory.command.application.dto.PurchaseOrderEvent;
 import com.teamgold.goldenharvest.domain.notification.command.domain.repository.NotificationRepository;
+import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
+import com.teamgold.goldenharvest.domain.purchases.command.application.event.SpringDomainEventPublisher;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.OrderStatus;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.PurchaseOrder;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.OrderStatusRepository;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.PurchaseOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +27,7 @@ public class PurchaseCommandService {
     private final OrderStatusRepository OrderStatusRepository;
     private final NotificationRepository notificationRepository;
     private final ModelMapper modelMapper;
+    private final SpringDomainEventPublisher eventPublisher;
 
     @Transactional
     public String createPurchaseOrder(Long quantity, String skuNo) {
@@ -55,6 +61,14 @@ public class PurchaseCommandService {
 
         // 5) 저장
         PurchaseOrderRepository.save(po);
+
+        eventPublisher.publish(PurchaseOrderCreatedEvent.builder()
+                        .purchaseOrderId(poId)
+                        .skuNo(skuNo)
+                        .createdAt("sample date")
+                        .quantity(po.getQuantity())
+                .build());
+
 
 
         return po.getPurchase_order_id();

@@ -4,8 +4,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 public abstract class BaseDomainEvent implements DomainEvent {
-    private final UUID eventId= UUID.randomUUID();
-    private final Instant occurredAt= Instant.now();
+    UUID eventId= UUID.randomUUID();
+    Instant occurredAt= Instant.now();
 
     @Override
     public UUID eventId() {return eventId; }

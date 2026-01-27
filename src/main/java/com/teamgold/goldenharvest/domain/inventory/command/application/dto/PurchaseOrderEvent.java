@@ -3,11 +3,13 @@ package com.teamgold.goldenharvest.domain.inventory.command.application.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 
 /*
 * 구매 주문 처리의 완료 이후 입고 및 재고 등록을 위해
 * Inventory 도메인으로 전달될 이벤트 데이터 DTO이다
 * */
+@Builder
 public record PurchaseOrderEvent(
 	@NotBlank
 	@Pattern(regexp = "^po.*", message = "ID는 'po'로 시작해야 합니다.")

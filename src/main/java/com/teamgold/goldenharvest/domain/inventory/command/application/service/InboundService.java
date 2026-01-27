@@ -35,11 +35,12 @@ public class InboundService {
 
 		// 입고 데이터 구성
 		Inbound inbound = Inbound.builder()
-			.inboundId(inboundNo)
-			.skuNo(purchaseOrderEvent.skuNo())
-			.quantity(purchaseOrderEvent.quantity())
-			.inboundDate(LocalDate.now())
-			.build();
+				.inboundId(inboundNo)
+				.purchaseOrderItemId(purchaseOrderEvent.purchaseOrderId())
+				.skuNo(purchaseOrderEvent.skuNo())
+				.quantity(purchaseOrderEvent.quantity())
+				.inboundDate(LocalDate.now())
+				.build();
 
 		inboundRepository.save(inbound);
 

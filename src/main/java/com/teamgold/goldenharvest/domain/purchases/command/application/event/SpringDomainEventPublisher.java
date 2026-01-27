@@ -11,7 +11,7 @@ public class SpringDomainEventPublisher implements DomainEventPublisher {
     private final ApplicationEventPublisher publisher;
 
     @Override
-    public void publish(DomainEvent event) {
+    public void publish(PurchaseOrderCreatedEvent event) {
         publisher.publishEvent(event);
     }
 }

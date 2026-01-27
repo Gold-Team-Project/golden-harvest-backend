@@ -1,20 +1,19 @@
 package com.teamgold.goldenharvest.domain.purchases.command.application.event;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Getter
-@RequiredArgsConstructor
-public class PurchaseOrderCreatedEvent extends BaseDomainEvent {
-
-    private final String purchaseOrderId;
-    private final LocalDate createdAt;
-    private final int quantity;
-
-    @Override
-    public String type(){
-        return "PurchaseOrderCreated";
-    }
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PurchaseOrderCreatedEvent {
+    String purchaseOrderId;
+    String skuNo;
+    String createdAt;
+    int quantity;
 }
