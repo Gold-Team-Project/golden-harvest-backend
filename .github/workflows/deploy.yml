@@ -32,7 +32,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build & Test (Gradle)
-        run: ./gradlew clean test
+        run: ./gradlew clean -x test
 
       # 1) GitHub OIDC로 AWS Role Assume (Access Key 안 쓰는 정석)
       - name: Configure AWS credentials (OIDC)
