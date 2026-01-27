@@ -31,7 +31,7 @@ public class DiscardQueryController {
 	* 날짜의 경우 명시되지 않았다면 최근 일주일 사이의 기록을 조회한다
 	* 날짜별 최신순으로 정렬된다
 	 */
-	@GetMapping("/discard")
+	@GetMapping("/discard/list")
 	public ResponseEntity<ApiResponse<?>> getAllDiscard(
 		@RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
 		@RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(50) Integer size,
@@ -48,5 +48,20 @@ public class DiscardQueryController {
 			startDate,
 			endDate
 		)));
+	}
+
+	@GetMapping("/discard/volume")
+	public ResponseEntity<ApiResponse<?>> getDiscardVolume() {
+		return ResponseEntity.ok(ApiResponse.success(discardQueryService.getDiscardVolume()));
+	}
+
+	@GetMapping("/discard/loss")
+	public ResponseEntity<ApiResponse<?>> getDiscardLoss() {
+
+	}
+
+	@GetMapping("/discard/ratio-by-item")
+	public ResponseEntity<ApiResponse<?>> getDiscardRatioByItem() {
+
 	}
 }

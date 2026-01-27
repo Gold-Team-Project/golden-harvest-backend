@@ -44,6 +44,7 @@ public enum ErrorCode {
 	INSUFFICIENT_STOCK("4000", "재고 수량이 부족합니다", HttpStatus.BAD_REQUEST),
 	LOT_NOT_FOUND("4001", "Lot 번호에 맞는 재고를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
 	INVALID_DISCARD_STATUS("4002", "폐기 상태코드를 잘못되었습니다", HttpStatus.BAD_REQUEST),
+	NO_SUCH_SKU("4003", "Sku 번호에 맞는 재고를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
 
     // Sales (5000-5999)
     ORDER_NOT_FOUND("5000", "주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
