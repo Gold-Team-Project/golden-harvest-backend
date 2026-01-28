@@ -23,8 +23,6 @@ public class PurchaseCommandService {
     private final PurchaseOrderRepository PurchaseOrderRepository;
     private final OrderStatusRepository OrderStatusRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final NotificationRepository notificationRepository;
-    private final ModelMapper modelMapper;
 
     @Transactional
     public String createPurchaseOrder(Long quantity, String skuNo) {
