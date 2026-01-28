@@ -30,7 +30,7 @@ public class InventoryQueryController {
 	 * 재고 리스트를 가져올 수 있는 endpoint이다
 	 * sku를 명시하여 필터링이 가능하다
 	 */
-	@GetMapping("/item")
+	@GetMapping("/items")
 	public ResponseEntity<ApiResponse<?>> getAvailableItemList(
 		@RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
 		@RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(50) Integer size,
@@ -44,7 +44,7 @@ public class InventoryQueryController {
 	* 관리자 전용 endpoint이다
 	* sku, 날짜, 상태를 통한 필터링이 가능하다
 	 */
-	@GetMapping("/admin/item")
+	@GetMapping("/admin/items")
 	public ResponseEntity<ApiResponse<?>> getAllItemList(
 		@RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
 		@RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(50) Integer size,

@@ -27,6 +27,7 @@ public class ItemMasterMirrorService {
 				.itemName(data.itemName())
 				.varietyName(data.varietyName())
 				.gradeName(data.gradeName())
+				.fileUrl(data.fileUrl())
 				.baseUnit(data.baseUnit())
 				.isActive(data.isActive())
 				.build()
