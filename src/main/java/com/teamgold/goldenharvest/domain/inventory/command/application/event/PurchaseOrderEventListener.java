@@ -1,5 +1,6 @@
 package com.teamgold.goldenharvest.domain.inventory.command.application.event;
 
+import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,7 +28,7 @@ public class PurchaseOrderEventListener {
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void handlePurchaseOrder(@Valid PurchaseOrderEvent purchaseOrderEvent) {
+	public void handlePurchaseOrder(@Valid PurchaseOrderCreatedEvent purchaseOrderEvent) {
 		log.info("구매 주문 이벤트 수신 완료. 객체: {}", purchaseOrderEvent);
 
 		String createdLotNo = inboundService.processInbound(purchaseOrderEvent);

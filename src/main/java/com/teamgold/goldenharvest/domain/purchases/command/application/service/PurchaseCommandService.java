@@ -1,12 +1,14 @@
 package com.teamgold.goldenharvest.domain.purchases.command.application.service;
 
 import com.teamgold.goldenharvest.domain.notification.command.domain.repository.NotificationRepository;
+import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.OrderStatus;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.PurchaseOrder;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.OrderStatusRepository;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.PurchaseOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ public class PurchaseCommandService {
 
     private final PurchaseOrderRepository PurchaseOrderRepository;
     private final OrderStatusRepository OrderStatusRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final NotificationRepository notificationRepository;
     private final ModelMapper modelMapper;
 
@@ -55,6 +58,16 @@ public class PurchaseCommandService {
 
         // 5) 저장
         PurchaseOrderRepository.save(po);
+
+        applicationEventPublisher.publishEvent(
+                new PurchaseOrderCreatedEvent(
+                        poId,
+                        LocalDate.now(),
+                        skuNo,
+                        quantity.intValue()
+                )
+        );
+
 
 
         return po.getPurchase_order_id();

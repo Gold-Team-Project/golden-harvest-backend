@@ -1,6 +1,5 @@
 package com.teamgold.goldenharvest.domain.notification.command.application.event;
 
-import com.teamgold.goldenharvest.domain.purchases.command.application.event.BaseDomainEvent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
