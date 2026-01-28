@@ -1,8 +1,12 @@
 package com.teamgold.goldenharvest.domain.user.command.application.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
-import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserUpdateRequest;
+import com.teamgold.goldenharvest.domain.user.command.application.event.SpringEventPublisher;
+import com.teamgold.goldenharvest.domain.user.command.application.event.UserUpdatedEvent;
 import com.teamgold.goldenharvest.domain.user.command.domain.RequestStatus;
 import com.teamgold.goldenharvest.domain.user.command.domain.User;
 import com.teamgold.goldenharvest.domain.user.command.domain.UserStatus;
@@ -20,6 +24,7 @@ public class AdminUserCommandServiceImpl implements AdminUserCommandService {
 
     private final UserRepository userRepository;
     private final UserUpdateApprovalRepository userUpdateApprovalRepository;
+	private final SpringEventPublisher springEventPublisher;
 
     @Override
     public void approveUser(String email, UserStatus newStatus) {
@@ -57,5 +62,25 @@ public class AdminUserCommandServiceImpl implements AdminUserCommandService {
                 approval.getRequestFileId()
         );
     }
+
+	@Override
+	public void publishAllUserDetailsEvent() {
+		List<User> users = userRepository.findAll();
+
+		List<UserUpdatedEvent> userUpdatedEvents = users.stream().map(
+			user -> UserUpdatedEvent.builder()
+				.email(user.getEmail())
+				.name(user.getName())
+				.businessNumber(String.valueOf(user.getBusinessNumber()))
+				.addressLine1(user.getAddressLine1())
+				.postalCode(user.getPostalCode())
+				.phoneNumber(String.valueOf(user.getPhoneNumber()))
+				.company(user.getCompany())
+				.addressLine2(user.getAddressLine2())
+				.build()
+		).toList();
+
+		springEventPublisher.publishAllUserDetails(userUpdatedEvents);
+	}
 }
 

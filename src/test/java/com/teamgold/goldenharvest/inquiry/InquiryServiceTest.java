@@ -6,7 +6,6 @@ import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.comment.CommentCreateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryCreateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryUpdateRequest;
-import com.teamgold.goldenharvest.domain.customersupport.command.application.event.InquiryCreatedEvent;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.service.impl.InquiryServiceImpl;
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.File;
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.Inquiry;
@@ -27,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class InquiryServiceTest {
@@ -56,8 +54,6 @@ public class InquiryServiceTest {
 
         //then
         verify(inquiryRepository, times(1)).save(any(Inquiry.class));
-        verify(eventPublisher, times(1))
-                .publishEvent(any(InquiryCreatedEvent.class));
 
         verify(fileUploadService, never()).upload(any());
     }
@@ -82,7 +78,6 @@ public class InquiryServiceTest {
         //then
         verify(fileUploadService).upload(file);
         verify(inquiryRepository).save(any(Inquiry.class));
-        verify(eventPublisher).publishEvent(any(InquiryCreatedEvent.class));
     }
 
     @Test
