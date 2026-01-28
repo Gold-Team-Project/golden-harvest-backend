@@ -5,12 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class SignupPendingEvent extends BaseDomainEvent {
+public class SignupPendingEvent {
 
     private final String userEmail;
-
-    @Override
-    public String type(){
-        return "PurchaseOrderCreated";
-    }
 }
