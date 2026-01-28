@@ -52,4 +52,9 @@ public class SalesOrder {
     @OneToMany(mappedBy = "salesOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter // CartServiceImpl에서 salesOrderItems를 설정하기 위해 필요
     private java.util.List<SalesOrderItem> salesOrderItems;
+
+    public void updateStatus(SalesOrderStatus newStatus) {
+        this.orderStatus = newStatus;
+        this.updatedAt = LocalDate.now();
+    }
 }
