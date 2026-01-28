@@ -5,6 +5,7 @@ public record ItemMasterUpdatedData(
 	String itemName,
 	String gradeName,
 	String varietyName,
+	String fileUrl,
 	String baseUnit,
 	Boolean isActive
 ) { }

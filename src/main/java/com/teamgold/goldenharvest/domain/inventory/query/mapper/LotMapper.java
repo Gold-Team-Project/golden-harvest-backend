@@ -21,7 +21,8 @@ public interface LotMapper {
 		    i.grade_name AS gradeName,
 		    i.variety_name AS varietyName,
 		    i.base_unit AS baseUnit,
-		    ROUND(i.current_origin_price * COALESCE(1 + p.margin_rate, 1.2), 0) AS customerPrice
+		    ROUND(i.current_origin_price * COALESCE(1 + p.margin_rate, 1.2), 0) AS customerPrice,
+			i.file_url AS fileUrl
 		FROM
 		    tb_lot l
 		JOIN
