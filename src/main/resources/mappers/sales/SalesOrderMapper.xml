@@ -117,8 +117,15 @@
             tb_sales_order_item soi ON so.sales_order_id = soi.sales_order_id
                 LEFT JOIN
             tb_sales_sku sku ON soi.sku_no = sku.sku_no
-        WHERE
+        <where>
             so.user_email = #{userEmail}
+            <if test="condition.startDate != null">
+                AND so.created_at >= #{condition.startDate}
+            </if>
+            <if test="condition.endDate != null">
+                AND so.created_at &lt;= #{condition.endDate}
+            </if>
+        </where>
         ORDER BY
             so.created_at DESC
     </select>

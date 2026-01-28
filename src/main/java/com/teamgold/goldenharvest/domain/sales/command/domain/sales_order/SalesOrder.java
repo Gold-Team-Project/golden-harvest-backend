@@ -30,7 +30,7 @@ public class SalesOrder {
     @Column(name = "sales_order_id", length = 36, nullable = false)
     private String salesOrderId;
 
-    @Column(name = "user_email", length = 20, nullable = false)
+    @Column(name = "user_email", length = 255, nullable = false)
     private String userEmail;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,4 +52,9 @@ public class SalesOrder {
     @OneToMany(mappedBy = "salesOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter // CartServiceImpl에서 salesOrderItems를 설정하기 위해 필요
     private java.util.List<SalesOrderItem> salesOrderItems;
+
+    public void updateStatus(SalesOrderStatus newStatus) {
+        this.orderStatus = newStatus;
+        this.updatedAt = LocalDate.now();
+    }
 }

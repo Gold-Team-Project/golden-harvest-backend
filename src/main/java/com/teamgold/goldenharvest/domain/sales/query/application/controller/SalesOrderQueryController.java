@@ -5,6 +5,7 @@ import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderD
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderHistoryResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderSearchCondition;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.MyOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.service.SalesOrderQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +29,11 @@ public class SalesOrderQueryController {
     private final SalesOrderQueryService salesOrderQueryService;
 
     @GetMapping("/my-orders")
-    public ResponseEntity<ApiResponse<?>> getMyOrderHistory() {
+    public ResponseEntity<ApiResponse<?>> getMyOrderHistory(@ModelAttribute MyOrderSearchCondition searchCondition) {
         // 최종 구현 시에는 Spring Security 등의 인증 시스템에서 사용자 이메일을 받아올 예정
         // userEmail 하드코딩으로 받아 옴
                 String userEmail = "testuser@example.com";
-                List<OrderHistoryResponse> orderHistory = salesOrderQueryService.getMyOrderHistory(userEmail);
+                List<OrderHistoryResponse> orderHistory = salesOrderQueryService.getMyOrderHistory(userEmail, searchCondition);
         return ResponseEntity.ok(ApiResponse.success(orderHistory));
     }
 
