@@ -6,6 +6,7 @@ import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderD
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderHistoryResponse;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryResponse;
+import com.teamgold.goldenharvest.domain.sales.query.application.dto.MyOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.mapper.SalesOrderMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,8 @@ public class SalesOrderQueryServiceImpl implements SalesOrderQueryService {
     private final SalesOrderMapper salesOrderMapper;
 
     @Override
-    public List<OrderHistoryResponse> getMyOrderHistory(String userEmail) {
-        return salesOrderMapper.findOrderHistoryByUserEmail(userEmail);
+    public List<OrderHistoryResponse> getMyOrderHistory(String userEmail, MyOrderSearchCondition searchCondition) {
+        return salesOrderMapper.findOrderHistoryByUserEmail(userEmail, searchCondition);
     }
 
     @Override

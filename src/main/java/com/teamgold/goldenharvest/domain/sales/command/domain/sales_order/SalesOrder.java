@@ -30,7 +30,7 @@ public class SalesOrder {
     @Column(name = "sales_order_id", length = 36, nullable = false)
     private String salesOrderId;
 
-    @Column(name = "user_email", length = 20, nullable = false)
+    @Column(name = "user_email", length = 255, nullable = false)
     private String userEmail;
 
     @ManyToOne(fetch = FetchType.LAZY)
