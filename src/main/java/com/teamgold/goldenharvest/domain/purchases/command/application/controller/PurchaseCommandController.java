@@ -17,12 +17,15 @@ public class PurchaseCommandController {
     private final PurchaseCommandService purchaseCommandService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createPurchaseOrder(
+    public ResponseEntity<ApiResponse<Void>> createPurcahseOrder(
             @RequestParam Long quantity
             , @RequestParam String skuNo
     ) {
         purchaseCommandService.createPurchaseOrder(quantity, skuNo);
+
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+
 
 }

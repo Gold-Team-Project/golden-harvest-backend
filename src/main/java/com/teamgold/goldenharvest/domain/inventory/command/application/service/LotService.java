@@ -3,6 +3,7 @@ package com.teamgold.goldenharvest.domain.inventory.command.application.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class LotService {
 	private final OutboundService outboundService;
 
 	@Transactional
-	public String createLot(PurchaseOrderEvent purchaseOrderEvent, String inboundNo) {
+	public String createLot(PurchaseOrderCreatedEvent purchaseOrderEvent, String inboundNo) {
 		String lotNo = IdGenerator.createId("lot");
 
 		Lot lot = Lot.builder()
