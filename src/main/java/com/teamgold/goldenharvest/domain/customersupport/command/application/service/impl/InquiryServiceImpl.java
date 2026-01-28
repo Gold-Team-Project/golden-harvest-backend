@@ -6,7 +6,6 @@ import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.comment.CommentCreateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryCreateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryUpdateRequest;
-import com.teamgold.goldenharvest.domain.customersupport.command.application.event.InquiryCreatedEvent;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.service.InquiryService;
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.Inquiry;
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.ProcessingStatus;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -57,9 +55,6 @@ public class InquiryServiceImpl implements InquiryService {
 
         inquiryRepository.save(inquiry);
 
-        eventPublisher.publishEvent(
-                new InquiryCreatedEvent(inquiryId, userId)
-        );
     }
 
     @Override

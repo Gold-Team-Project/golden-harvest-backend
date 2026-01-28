@@ -29,4 +29,10 @@ public class AdminUserController {
         adminUserCommandService.approveProfileUpdate(requestId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+	@PostMapping("/publish/all")
+	public ResponseEntity<ApiResponse<?>> publishUserDetails() {
+		adminUserCommandService.publishAllUserDetailsEvent();
+		return ResponseEntity.ok(ApiResponse.success(null));
+	}
 }
