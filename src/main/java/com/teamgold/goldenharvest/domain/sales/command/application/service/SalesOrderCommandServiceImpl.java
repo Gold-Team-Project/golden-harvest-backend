@@ -42,7 +42,7 @@ public class SalesOrderCommandServiceImpl implements SalesOrderCommandService {
 
         // "주문 접수" 상태일 때만 승인 가능
         if (!salesOrder.getOrderStatus().getSalesStatusId().equals(ORDER_RECEIVED_STATUS_ID)) {
-            throw new BusinessException(ErrorCode.INVALID_ORDER_STATUS);
+            throw new BusinessException(ErrorCode.INVALID_ORDER_STATUS, "주문 접수 상태에서만 승인이 가능합니다.");
         }
 
         SalesOrderStatus preparingStatus = salesOrderStatusRepository.findById(PREPARING_STATUS_ID)

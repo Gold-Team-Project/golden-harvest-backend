@@ -16,12 +16,14 @@ public class SalesOrderCommandController {
 
     private final SalesOrderCommandService salesOrderCommandService;
 
+    // 관리자가 사용자 주문 취소하는 기능
     @PatchMapping("/orders/{salesOrderId}/cancel")
     public ResponseEntity<ApiResponse<Void>> cancelOrder(@PathVariable String salesOrderId) {
         salesOrderCommandService.cancelOrder(salesOrderId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    // 관리자가 사용자 주문 승인하는 기능
     @PatchMapping("/orders/{salesOrderId}/approve")
     public ResponseEntity<ApiResponse<Void>> approveOrder(@PathVariable String salesOrderId) {
         salesOrderCommandService.approveOrder(salesOrderId);
