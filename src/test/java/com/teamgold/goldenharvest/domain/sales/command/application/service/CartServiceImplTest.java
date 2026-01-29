@@ -130,8 +130,7 @@ class CartServiceImplTest {
         verify(salesSkuRepository, times(1)).findById(skuNo);
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
         // 반환된 RedisCartItem의 수량이 올바르게 업데이트되었는지 검증한다.
-        // 실제 객체인 `redisCartItem.addQuantity(request.getQuantity());`에 대해서는
-        // mockito.times(1)로 호출 횟수를 검증할 수 없다.
+        // 실제 객체인 `redisCartItem.addQuantity(request.getQuantity());`에 대해서는 mockito.times(1)로 호출 횟수를 검증할 수 없다.
         assertThat(redisCartItem.getQuantity()).isEqualTo(3); // 1 (initial) + 2 (added)
         verify(hashOperations, times(1)).put(anyString(), eq(skuNo), eq(redisCartItem));
         verify(redisTemplate, times(1)).expire(anyString(), anyLong(), any(TimeUnit.class));
