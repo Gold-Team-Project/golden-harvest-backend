@@ -38,9 +38,9 @@ public class ItemMasterMirrorService {
 		List<ItemMasterMirror> itemMasterMirrors = itemMasterMirrorRepository.findBySkuNo(
 			itemOriginPriceUpdateEvent.skuNo());
 
-		if (!itemOriginPriceUpdateEvent.updatedDate().equals(LocalDate.now())) {
-			throw new BusinessException(ErrorCode.INVALID_REQUEST);
-		} // 원가 정보가 당일 데이터가 아닌 경우 오류
+//		if (!itemOriginPriceUpdateEvent.updatedDate().equals(LocalDate.now())) {
+//			throw new BusinessException(ErrorCode.INVALID_REQUEST);
+//		} // 원가 정보가 당일 데이터가 아닌 경우 오류
 
 		if (itemMasterMirrors.size() != 1) {
 			throw new BusinessException(ErrorCode.INVALID_REQUEST);

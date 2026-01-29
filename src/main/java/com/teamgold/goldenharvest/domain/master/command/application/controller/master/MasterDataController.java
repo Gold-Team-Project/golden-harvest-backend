@@ -5,6 +5,7 @@ import com.teamgold.goldenharvest.domain.master.command.application.dto.request.
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataUpdatedRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.service.master.MasterDataService;
+import com.teamgold.goldenharvest.domain.master.command.application.service.price.OriginPriceService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("/api/master-data")
 public class MasterDataController {
+
     private final MasterDataService masterDataService;
+    private final OriginPriceService originPriceService;
 
     @PostMapping(
             value = "/{itemCode}",
@@ -63,8 +66,15 @@ public class MasterDataController {
     }
 
     @PostMapping("/distribute")
-    public ResponseEntity<ApiResponse<?>> invokeEvent() {
+    public ResponseEntity<ApiResponse<?>> invokeMasterDataEvent() {
         masterDataService.publishAllMasterDataEvent();
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/origin-price/distribute")
+    public ResponseEntity<ApiResponse<?>> invokeOriginPriceEvent() {
+        originPriceService.publishAllOriginPriceEvent();
 
         return ResponseEntity.ok(ApiResponse.success(null));
     }

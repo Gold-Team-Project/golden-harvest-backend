@@ -11,4 +11,5 @@ public interface OriginPriceService {
     //원가 정보 등록
     void saveOriginPrice(Sku sku, PriceResponse price);
     void save (List<PriceResponse> responses);
+    void publishAllOriginPriceEvent();
 }
