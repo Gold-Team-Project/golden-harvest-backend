@@ -1,6 +1,8 @@
 package com.teamgold.goldenharvest.domain.sales.command.infra;
 
+import com.teamgold.goldenharvest.common.response.ApiResponse;
 import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
@@ -9,6 +11,7 @@ import org.springframework.web.client.RestClient;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class InventoryApiClient {
 
@@ -18,24 +21,24 @@ public class InventoryApiClient {
         this.restClient = builder.baseUrl(inventoryBaseUrl).build();
     }
 
-    public Optional<AvailableItemResponse> findAvailableItemBySkuNo(String skuNo) {
+    public Optional<AvailableItemResponse> findAvailableItemBySkuNo(String authorizationHeader, String skuNo) {
         try {
-            List<AvailableItemResponse> response = restClient.get()
+            ApiResponse<List<AvailableItemResponse>> response = restClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/api/item")
                             .queryParam("skuNo", skuNo)
                             .build())
                     .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", authorizationHeader)
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {});
 
-            if (response != null && !response.isEmpty()) {
-                // The response from /api/item is a list, so we take the first element.
-                return Optional.of(response.get(0));
+            if (response != null && response.isSuccess() && response.getData() != null && !response.getData().isEmpty()) {
+                // The response from /api/item is a list within ApiResponse, so we take the first element.
+                return Optional.of(response.getData().get(0));
             }
         } catch (Exception e) {
-            // Log the exception, handle it as per application's error handling strategy.
-            // For now, we return empty to indicate the item was not found or an error occurred.
+            log.error("Error fetching item from inventory service for skuNo: {}. Error: {}", skuNo, e.getMessage());
         }
         return Optional.empty();
     }

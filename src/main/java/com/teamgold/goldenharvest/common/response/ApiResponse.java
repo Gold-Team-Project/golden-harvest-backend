@@ -1,7 +1,10 @@
 package com.teamgold.goldenharvest.common.response;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor; // Add this import
 
 import java.time.LocalDateTime;
 
@@ -9,6 +12,8 @@ import com.teamgold.goldenharvest.common.exception.ErrorCode;
 
 @Builder
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // Added for deserialization
+@AllArgsConstructor // Added to resolve builder conflict
 public class ApiResponse<T> {
     private boolean success;    // 요청 성공 여부
     private T data;             // 실제 데이터 (성공 시만 사용)

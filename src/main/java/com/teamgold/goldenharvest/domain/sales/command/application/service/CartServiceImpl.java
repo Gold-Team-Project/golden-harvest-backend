@@ -46,7 +46,7 @@ public class CartServiceImpl implements CartService {
     private static final long CART_EXPIRE_DAYS = 30;
 
     @Override
-    public void addItemToCart(String userEmail, AddToCartRequest request) {
+    public void addItemToCart(String authorizationHeader, String userEmail, AddToCartRequest request) {
         String cartKey = CART_PREFIX + userEmail;
         HashOperations<String, String, RedisCartItem> hashOperations = redisTemplate.opsForHash();
 
@@ -59,7 +59,7 @@ public class CartServiceImpl implements CartService {
             hashOperations.put(cartKey, request.getSkuNo(), existingItem);
         } else {
             // 2b. 상품이 없으면 Inventory 서비스를 통해 상품 정보 조회
-            AvailableItemResponse item = inventoryApiClient.findAvailableItemBySkuNo(request.getSkuNo())
+            AvailableItemResponse item = inventoryApiClient.findAvailableItemBySkuNo(authorizationHeader, request.getSkuNo())
                     .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
             // 3. 상품 정보를 바탕으로 장바구니 아이템 생성
