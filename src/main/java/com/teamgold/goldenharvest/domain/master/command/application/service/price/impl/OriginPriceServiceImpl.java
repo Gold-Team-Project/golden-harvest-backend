@@ -61,5 +61,20 @@ public class OriginPriceServiceImpl implements OriginPriceService {
                     .ifPresent(price -> saveOriginPrice(sku, price));
         }
     }
+
+    @Transactional
+    @Override
+    public void publishAllOriginPriceEvent() {
+        List<OriginPrice> prices = originPriceRepository.findAllWithSku();
+
+        prices.forEach(
+                price -> eventPublisher.publishItemOriginPriceUpdatedEvent(
+                        ItemOriginPriceUpdateEvent.builder()
+                                .originPrice(price.getOriginPrice())
+                                .updatedDate(price.getCreatedAt())
+                                .skuNo(price.getSku().getSkuNo())
+                                .build()
+                ));
+    }
 }
 

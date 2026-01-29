@@ -3,6 +3,7 @@ package com.teamgold.goldenharvest.domain.master.command.application.controller.
 import com.teamgold.goldenharvest.common.infra.harvest.collector.PriceCollector;
 import com.teamgold.goldenharvest.common.response.ApiResponse;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.price.PriceRequest;
+import com.teamgold.goldenharvest.domain.master.command.application.service.price.OriginPriceService;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.Sku;
 import com.teamgold.goldenharvest.domain.master.command.infrastucture.mater.SkuRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 public class OriginPriceController {
 
     private final PriceCollector priceCollector;
+    private final OriginPriceService originPriceService;
 
     @PostMapping("/origin-price")
     public ResponseEntity<Void> collectOriginPrice() {
@@ -35,5 +37,12 @@ public class OriginPriceController {
 
         priceCollector.collect(request);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/origin-price/distribute")
+    public ResponseEntity<ApiResponse<?>> invokeOriginPriceEvent() {
+        originPriceService.publishAllOriginPriceEvent();
+
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }
