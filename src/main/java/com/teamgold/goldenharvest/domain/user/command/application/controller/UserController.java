@@ -8,10 +8,15 @@ import com.teamgold.goldenharvest.domain.user.command.application.dto.request.Us
 import com.teamgold.goldenharvest.domain.user.command.application.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.attribute.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/user")
@@ -40,14 +45,16 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("회원 정보가 성공적으로 수정되었습니다."));
     }
 
-    @PostMapping("/me/business-update") // URL도 명확하게 구분하는 것이 좋습니다.
-    public ResponseEntity<ApiResponse<Void>> requestBusinessUpdate(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody UserUpdateRequest dto) {
+    @PostMapping(value = "/business-update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<String>> requestBusinessUpdate(
+            @AuthenticationPrincipal CustomUserDetails userDetails, // 💡 타입을 CustomUserDetails로 변경
+            @RequestPart("data") @Valid UserUpdateRequest userUpdateRequest,
+            @RequestPart("file") MultipartFile file
+    ) throws IOException {
 
-        // updateProfile이 아니라 requestBusinessUpdate를 호출해야 합니다!
-        userService.requestBusinessUpdate(userDetails.getEmail(), dto);
+        // CustomUserDetails의 @Getter 덕분에 getEmail()을 바로 사용할 수 있습니다.
+        userService.requestBusinessUpdate(userDetails.getEmail(), userUpdateRequest, file);
 
-        return ResponseEntity.ok(ApiResponse.success(null));
+        return ResponseEntity.ok(ApiResponse.success("사업자 정보 수정 요청이 성공적으로 접수되었습니다."));
     }
 }

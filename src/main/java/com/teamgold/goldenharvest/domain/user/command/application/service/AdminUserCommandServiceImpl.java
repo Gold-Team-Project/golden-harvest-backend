@@ -82,5 +82,19 @@ public class AdminUserCommandServiceImpl implements AdminUserCommandService {
 
 		springEventPublisher.publishAllUserDetails(userUpdatedEvents);
 	}
+
+    @Override
+    @Transactional
+    public void updateUserStatus(String targetEmail, UserStatus newStatus, String adminEmail) {
+        // 본인 계정인지 확인
+    if (targetEmail.equals(adminEmail)) {
+        throw new BusinessException(ErrorCode.INVALID_REQUEST);
+    }
+
+    User user = userRepository.findByEmail(targetEmail)
+            .orElseThrow(()->new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+    user.updateStatus(newStatus);
+    }
 }
 
