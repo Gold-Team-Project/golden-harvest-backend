@@ -11,7 +11,7 @@ import java.util.List;
 
 @Mapper
 public interface MasterMapper {
-        @Select("""
+    @Select("""
             <script>
             SELECT
                 s.sku_no         AS skuNo,
@@ -57,15 +57,15 @@ public interface MasterMapper {
             OFFSET #{offset}
             </script>
             """)
-        List<MasterDataListResponse> findAllMasterData(
-                @Param("itemName") String itemName,
-                @Param("varietyName") String varietyName, // 추가됨
-                @Param("itemCode") String itemCode,
-                @Param("gradeName") String gradeName,
-                @Param("isActive") Boolean isActive,
-                @Param("limit") int limit,
-                @Param("offset") int offset
-        );
+    List<MasterDataListResponse> findAllMasterData(
+            @Param("itemName") String itemName,
+            @Param("varietyName") String varietyName, // 추가됨
+            @Param("itemCode") String itemCode,
+            @Param("gradeName") String gradeName,
+            @Param("isActive") Boolean isActive,
+            @Param("limit") int limit,
+            @Param("offset") int offset
+    );
 
 
     @Select("""
@@ -84,7 +84,8 @@ public interface MasterMapper {
                     pm.shelf_life_days   AS shelfLifeDays,
                     pm.storage_temp_min  AS storageTempMin,
                     pm.storage_temp_max  AS storageTempMax,
-                    f.file_url           AS fileUrl
+                    pm.file_url          AS fileUrl
+            
                 FROM tb_sku s
                 INNER JOIN tb_variety v
                     ON s.item_code = v.item_code
@@ -93,11 +94,10 @@ public interface MasterMapper {
                     ON s.item_code = pm.item_code
                 INNER JOIN tb_grade g
                     ON s.grade_code = g.grade_code
-                LEFT JOIN tb_inquiry_file f
-                    ON pm.file_id = f.file_id
                 WHERE s.sku_no = #{skuNo}
             """)
     MasterDataDetailResponse findDetailMasterData(@Param("skuNo") String skuNo);
+
 
     @Select("""
                 SELECT

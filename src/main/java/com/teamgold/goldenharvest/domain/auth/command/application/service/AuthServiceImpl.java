@@ -2,6 +2,7 @@ package com.teamgold.goldenharvest.domain.auth.command.application.service;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
+import com.teamgold.goldenharvest.common.infra.file.domain.File;
 import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
 import com.teamgold.goldenharvest.common.security.jwt.JwtProperties;
 import com.teamgold.goldenharvest.common.security.jwt.JwtTokenProvider;
@@ -58,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         //  파일 업로드 tb_inquiry_file 테이블에 데이터가 쌓이고 File 객체가 반환
-        com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.File uploadedFile;
+        File uploadedFile;
         try {
             uploadedFile = fileUploadService.upload(file);
         } catch (IOException e) {
@@ -80,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
                 .phoneNumber(signUpRequest.getPhoneNumber())
                 .status(UserStatus.PENDING)
                 .role(role)
-                .fileId(uploadedFile.getFileId())
+                .fileUrl(uploadedFile.getFileUrl())
                 .build();
 
         userRepository.save(user);

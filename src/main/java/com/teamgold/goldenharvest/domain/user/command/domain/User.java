@@ -60,8 +60,8 @@ public class User {
     @JoinColumn(name = "role_status_id", nullable = false)
     private Role role;
 
-    @Column(name = "file_id", nullable = false)
-    private Long fileId;
+    @Column(nullable = false, name = "file_url")
+    private String fileUrl;
 
     @Builder
     public User(String email,
@@ -77,7 +77,7 @@ public class User {
                 String addressLine2,
                 String postalCode,
                 Role role,
-                Long fileId) {
+                String fileUrl) {
         this.email = email;
         this.password = password;
         this.company = company;
@@ -91,7 +91,7 @@ public class User {
         this.addressLine2 = addressLine2;
         this.postalCode = postalCode;
         this.role = role;
-        this.fileId = fileId;
+        this.fileUrl = fileUrl;
     }
 
     public void updatePassword(String encodePassword) {
@@ -114,9 +114,9 @@ public class User {
         this.role = role;
     }
 
-    public void updateBusinessInfo(String company, String businessNumber, Long fileId) {
+    public void updateBusinessInfo(String company, String businessNumber, String fileUrl) {
         this.company = company;
         this.businessNumber = businessNumber;
-        this.fileId = fileId;
+        this.fileUrl = fileUrl;
     }
 }

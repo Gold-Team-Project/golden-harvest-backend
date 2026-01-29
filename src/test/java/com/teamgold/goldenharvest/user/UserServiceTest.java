@@ -86,7 +86,7 @@ class UserServiceTest {
         // given
         String email = "test@example.com";
         User user = User.builder().email(email).build();
-        UserUpdateRequest request = new UserUpdateRequest("회사", "123-45", 1L);
+        UserUpdateRequest request = new UserUpdateRequest("회사", "123-45", "ASDasdasd");
 
         given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
         // 이미 PENDING 상태가 있다고 가정

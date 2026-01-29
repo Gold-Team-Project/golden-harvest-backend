@@ -60,26 +60,26 @@ public interface LotMapper {
 	);
 
 	@Select("""
-		SELECT
-		    l.lot_no AS lotNo,
-		    l.sku_no AS skuNo,
-		    l.quantity AS quantity,
-		    i.item_name AS itemName,
-		    i.grade_name AS gradeName,
-		    i.variety_name AS varietyName,
-		    i.base_unit AS baseUnit
-		FROM
-		    tb_lot AS l
-		JOIN
-			tb_item_master_mirror AS i
-		ON
-			l.sku_no = i.sku_no
-		WHERE
-		    (#{skuNo} IS NULL OR l.sku_no = #{skuNo})
-			AND
-		    l.inbound_date BETWEEN #{startDate} AND #{endDate}
-		ORDER BY
-		    l.inbound_date DESC
+            SELECT
+                l.lot_no AS lotNo,
+                l.sku_no AS skuNo,
+                l.quantity AS quantity,
+                i.item_name AS itemName,
+                i.grade_name AS gradeName,
+                i.variety_name AS varietyName,
+                i.base_unit AS baseUnit
+            FROM
+                tb_lot AS l
+            JOIN
+                tb_item_master_mirror AS i
+            ON
+                l.sku_no = i.sku_no
+            WHERE
+                (#{skuNo} IS NULL OR l.sku_no = #{skuNo})
+                AND
+                l.inbound_date BETWEEN #{startDate} AND #{endDate}
+            ORDER BY
+                l.inbound_date DESC
 		LIMIT
 			#{limit}
 		OFFSET

@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class UserUpdateRequest {
     private String requestCompany;  // 변경 희망 회사명
     private String requestBusinessNumber;   // 변경 희망 사업자번호
-    private Long requestFileId; // 새로 업로드한 증빙서류
+    private String requestFileUrl; // 새로 업로드한 증빙서류
 }

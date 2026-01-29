@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry;
+package com.teamgold.goldenharvest.common.infra.file.domain;
 
 import java.util.Arrays;
 

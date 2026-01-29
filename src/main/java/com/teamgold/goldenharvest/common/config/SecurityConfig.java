@@ -41,7 +41,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/admin/**").permitAll()
 
                                 // 3. 유저 관련 기능
-                                .requestMatchers("/api/user/**").authenticated()
+                                .requestMatchers("/api/user/**").permitAll()
 
                                 // 4. 그 외 나머지 API
                                 .anyRequest().permitAll()

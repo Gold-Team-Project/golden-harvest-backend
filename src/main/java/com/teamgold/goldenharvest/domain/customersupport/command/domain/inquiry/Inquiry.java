@@ -1,5 +1,6 @@
 package com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry;
 
+import com.teamgold.goldenharvest.common.infra.file.domain.File;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,7 +33,7 @@ public class Inquiry {
 
     private String comment;
 
-    private Long fileId;
+    private String fileUrl;
 
     @Enumerated(EnumType.STRING)
     private ProcessingStatus processingStatus = ProcessingStatus.N;
@@ -46,39 +47,39 @@ public class Inquiry {
                    String salesOrderId,
                    String title,
                    String body,
-                   Long fileId,
+                   String fileUrl,
                    String comment,
                    ProcessingStatus processingStatus,
-                   LocalDateTime createdAt,
-                   File file) {
+                   LocalDateTime createdAt) {
         this.inquiryId = inquiryId;
         this.userId = userId;
         this.salesOrderId = salesOrderId;
         this.title = title;
         this.body = body;
-        this.fileId = fileId;
+        this.fileUrl = fileUrl;
         this.comment = comment;
         this.processingStatus = processingStatus;
         this.createdAt = createdAt;
     }
 
     //활성화 상태 변경
-    public void updatedProcessingStatus(){
+    public void updatedProcessingStatus() {
         this.processingStatus = ProcessingStatus.Y;
     }
 
     //문의 수정(제목, 내용)
-    public void updatedInquiry(String title, String body){
+    public void updatedInquiry(String title, String body) {
         if (title != null) this.title = title;
-        if (body !=null) this.body = body;
+        if (body != null) this.body = body;
     }
+
     //문의 수정(제목, 내용)
-    public void updatedComment(String comment){
+    public void updatedComment(String comment) {
         this.comment = comment;
     }
 
-    public void updateFile(Long fileId) {
-        this.fileId = fileId;
+    public void updateFile(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 
 }

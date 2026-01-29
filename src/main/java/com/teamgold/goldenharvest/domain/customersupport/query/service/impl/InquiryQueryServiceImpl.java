@@ -25,13 +25,7 @@ public class InquiryQueryServiceImpl implements InquiryQueryService {
 
     @Override
     public InquiryDetailResponse getDetailInquiry(String inquiryNo) {
-        InquiryDetailResponse dto = inquiryMapper.findDetailInquiry(inquiryNo);
-
-        if (dto.getFileId() != null) {
-            dto.updateUrl("/files/" + dto.getFileId());
-        }
-
-        return dto;
+        return inquiryMapper.findDetailInquiry(inquiryNo); // 매퍼에서 이미 URL과 파일명을 담아옴
     }
 
     @Override
@@ -40,15 +34,8 @@ public class InquiryQueryServiceImpl implements InquiryQueryService {
         int offset = (page - 1) * limit;
         return inquiryMapper.findAllAdminInquiry(limit, offset);
     }
-
     @Override
     public AdminInquiryDetailResponse getDetailAdminInquiry(String inquiryNo) {
-        AdminInquiryDetailResponse dto = inquiryMapper.findDetailAdminInquiry(inquiryNo);
-
-        if (dto.getFileId() != null) {
-            dto.updateUrl("/files/" + dto.getFileId());
-        }
-
-        return dto;
+        return inquiryMapper.findDetailAdminInquiry(inquiryNo);
     }
 }

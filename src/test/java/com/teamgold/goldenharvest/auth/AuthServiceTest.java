@@ -2,6 +2,7 @@ package com.teamgold.goldenharvest.auth;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
+import com.teamgold.goldenharvest.common.infra.file.domain.File;
 import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
 import com.teamgold.goldenharvest.common.security.jwt.JwtProperties;
 import com.teamgold.goldenharvest.common.security.jwt.JwtTokenProvider;
@@ -82,8 +83,8 @@ public class AuthServiceTest {
         given(valueOperations.get("EMAIL_VERIFIED:" + email)).willReturn("true");
 
         // File 클래스가 Inquiry 도메인에 있으므로 정확한 경로로 Mocking
-        com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.File mockFile =
-                mock(com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.File.class);
+        File mockFile =
+                mock(File.class);
         given(mockFile.getFileId()).willReturn(50L);
         given(fileUploadService.upload(file)).willReturn(mockFile);
 

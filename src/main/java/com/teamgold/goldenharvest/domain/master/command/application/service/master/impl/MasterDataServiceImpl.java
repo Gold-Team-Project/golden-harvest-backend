@@ -102,11 +102,11 @@ public class MasterDataServiceImpl implements MasterDataService {
             String itemCode,
             MasterDataAppendRequest request,
             MultipartFile file) throws IOException {
-        Long fileId = null;
+        String fileUrl = null;
 
         if (file != null && !file.isEmpty()) {
             var savedFile = fileUploadService.upload(file);
-            fileId = savedFile.getFileId();
+            fileUrl = savedFile.getFileUrl();
         }
         ProduceMaster master = masterRepository.findById(itemCode)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MASTER_DATA_NOT_FOUND));
@@ -116,7 +116,7 @@ public class MasterDataServiceImpl implements MasterDataService {
                 request.getStorageTempMin(),
                 request.getStorageTempMax(),
                 request.getDescription(),
-                fileId
+                fileUrl
 
         );
     }
@@ -138,11 +138,11 @@ public class MasterDataServiceImpl implements MasterDataService {
             MasterDataUpdatedRequest request,
             MultipartFile file
     ) throws IOException {
-        Long fileId = null;
+      String fileUrl = null;
 
         if (file != null && !file.isEmpty()) {
             var savedFile = fileUploadService.upload(file);
-            fileId = savedFile.getFileId();
+            fileUrl = savedFile.getFileUrl();
         }
         ProduceMaster master = masterRepository.findById(itemCode)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MASTER_DATA_NOT_FOUND));
@@ -152,7 +152,7 @@ public class MasterDataServiceImpl implements MasterDataService {
                 request.getStorageTempMin(),
                 request.getStorageTempMax(),
                 request.getDescription(),
-                fileId
+                fileUrl
         );
 
     }

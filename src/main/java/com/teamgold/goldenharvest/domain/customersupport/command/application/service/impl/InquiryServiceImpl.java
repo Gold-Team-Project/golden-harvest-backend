@@ -23,7 +23,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InquiryServiceImpl implements InquiryService {
     private final InquiryRepository inquiryRepository;
-    private final ApplicationEventPublisher eventPublisher;
     private final FileUploadService fileUploadService;
 
     @Override
@@ -34,11 +33,11 @@ public class InquiryServiceImpl implements InquiryService {
             MultipartFile file
     ) throws IOException {
 
-        Long fileId = null;
+        String fileUrl = null;
 
         if (file != null && !file.isEmpty()) {
             var savedFile = fileUploadService.upload(file);
-            fileId = savedFile.getFileId();
+            fileUrl = savedFile.getFileUrl();
         }
 
         String inquiryId = UUID.randomUUID().toString();
@@ -49,7 +48,7 @@ public class InquiryServiceImpl implements InquiryService {
                 .salesOrderId(request.salesOrderId())
                 .title(request.title())
                 .body(request.body())
-                .fileId(fileId)
+                .fileUrl(fileUrl)
                 .processingStatus(ProcessingStatus.N)
                 .build();
 
@@ -84,7 +83,7 @@ public class InquiryServiceImpl implements InquiryService {
 
         if (file != null && !file.isEmpty()) {
             var savedFile = fileUploadService.upload(file);
-            inquiry.updateFile(savedFile.getFileId());
+            inquiry.updateFile(savedFile.getFileUrl());
         }
     }
 
