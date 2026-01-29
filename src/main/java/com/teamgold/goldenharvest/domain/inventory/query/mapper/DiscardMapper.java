@@ -53,7 +53,7 @@ public interface DiscardMapper {
 		SELECT
 		    COALESCE(SUM(CASE WHEN discarded_at BETWEEN #{thisMonthStart} AND #{now} THEN quantity ELSE 0 END), 0) AS currentQuantity,
 		    COALESCE(SUM(CASE WHEN discarded_at BETWEEN #{lastMonthStart} AND #{lastMonthUntilNow} THEN quantity ELSE 0 END), 0) AS lastQuantity
-      	FROM tb_discard
+			FROM tb_discard
       	WHERE discarded_at BETWEEN #{lastMonthStart} AND #{now}
 	""")
 	DiscardVolumeResponse findDiscardVolume(
@@ -81,11 +81,11 @@ public interface DiscardMapper {
 		SELECT
 		    SUM(d. quantity) AS totalQuantity,
 		    i.item_name AS itemName
-		FROM 
+		FROM
 		    tb_discard AS d
-		JOIN 
+		JOIN
 			tb_lot l
-		ON 
+		ON
 		    l.lot_no = d.lot_no
 		JOIN
 		    tb_item_master_mirror i
