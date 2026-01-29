@@ -28,7 +28,7 @@ public class PurchaseOrderEventListener {
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void handlePurchaseOrder(@Valid PurchaseOrderCreatedEvent purchaseOrderEvent) {
+	public void handlePurchaseOrder(PurchaseOrderCreatedEvent purchaseOrderEvent) {
 		log.info("구매 주문 이벤트 수신 완료. 객체: {}", purchaseOrderEvent);
 
 		String createdLotNo = inboundService.processInbound(purchaseOrderEvent);
