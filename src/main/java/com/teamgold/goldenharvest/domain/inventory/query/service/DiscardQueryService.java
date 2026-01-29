@@ -35,14 +35,13 @@ public class DiscardQueryService {
 		LocalDate startDate,
 		LocalDate endDate
 	) {
-		if (isInvalidDate(startDate, endDate)) {
-			startDate = LocalDate.now().minusWeeks(1);
-			endDate = LocalDate.now(); // 날짜 필터링 기본 설정 (최근 일주일)
-		}
-
-		if (Objects.isNull(startDate) || Objects.isNull(endDate)) {
+		if (startDate == null || endDate == null) {
 			startDate = LocalDate.now().minusWeeks(1);
 			endDate = LocalDate.now();
+		}
+
+		if (startDate.isAfter(endDate)) {
+			throw new BusinessException(ErrorCode.INVALID_DATE_FILTER);
 		}
 
 		Integer limit = size;
@@ -97,12 +96,5 @@ public class DiscardQueryService {
 				thisMonthStart,
 				now
 		);
-	}
-
-	private boolean isInvalidDate(LocalDate startDate, LocalDate endDate) {
-		if (Objects.isNull(startDate) || Objects.isNull(endDate)) {
-			return true;
-		}
-		else return startDate.isAfter(endDate);
 	}
 }

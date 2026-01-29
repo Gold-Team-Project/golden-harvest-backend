@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+import com.teamgold.goldenharvest.common.exception.BusinessException;
+import com.teamgold.goldenharvest.common.exception.ErrorCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
@@ -38,21 +41,25 @@ public class InventoryQueryService {
 	public List<ItemResponse> getAllItem(
 		Integer page,
 		Integer size,
-		String skuNo,
+		String itemName,
 		LocalDate startDate,
-		LocalDate endDate) {
+		LocalDate endDate,
+		String status) {
+
+		if (startDate == null || endDate == null) {
+			startDate = LocalDate.now().minusWeeks(1);
+			endDate = LocalDate.now();
+		}
+
+		if (startDate.isAfter(endDate)) {
+			throw new BusinessException(ErrorCode.INVALID_DATE_FILTER);
+		}
+
 		int limit = size;
 		int offset = (page - 1) * limit;
 
-		if (isInvalidDate(startDate, endDate)) {
-			startDate = LocalDate.now().minusWeeks(1);
-			endDate = LocalDate.now(); // 날짜 필터링 기본 설정 (최근 일주일)
-		}
 
-		startDate = LocalDate.now().minusYears(10);
-		endDate = LocalDate.now().plusDays(1);
-
-		return lotMapper.findAllItems(limit, offset, skuNo, startDate, endDate);
+		return lotMapper.findAllItems(limit, offset, itemName, startDate, endDate, status);
 	}
 
 	public List<InboundResponse> getInbounds(
@@ -65,9 +72,13 @@ public class InventoryQueryService {
 		int limit = size;
 		int offset = (page - 1) * limit;
 
-		if (isInvalidDate(startDate, endDate)) {
+		if (startDate == null || endDate == null) {
 			startDate = LocalDate.now().minusWeeks(1);
-			endDate = LocalDate.now(); // 날짜 필터링 기본 설정 (최근 일주일)
+			endDate = LocalDate.now();
+		}
+
+		if (startDate.isAfter(endDate)) {
+			throw new BusinessException(ErrorCode.INVALID_DATE_FILTER);
 		}
 
 		return inboundMapper.findAllInbounds(
@@ -90,9 +101,13 @@ public class InventoryQueryService {
 		int limit = size;
 		int offset = (page - 1) * limit;
 
-		if (isInvalidDate(startDate, endDate)) {
-			startDate = LocalDate.now().minusYears(10);
-			endDate = LocalDate.now(); // 날짜 필터링 기본 설정 (최근 일주일)
+		if (startDate == null || endDate == null) {
+			startDate = LocalDate.now().minusWeeks(1);
+			endDate = LocalDate.now();
+		}
+
+		if (startDate.isAfter(endDate)) {
+			throw new BusinessException(ErrorCode.INVALID_DATE_FILTER);
 		}
 
 		return outboundMapper.findAllOutbounds(
@@ -103,12 +118,5 @@ public class InventoryQueryService {
 			startDate,
 			endDate
 		);
-	}
-
-	private boolean isInvalidDate(LocalDate startDate, LocalDate endDate) {
-		if (Objects.isNull(startDate) || Objects.isNull(endDate)) {
-			return true;
-		}
-		else return startDate.isAfter(endDate);
 	}
 }
