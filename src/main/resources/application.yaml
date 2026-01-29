@@ -33,7 +33,7 @@ spring:
             required: true
 
   datasource:
-    url: jdbc:mariadb://harvest-db.crmia2oe03uh.ap-northeast-2.rds.amazonaws.com:3306/goldenharvest
+    url: jdbc:mariadb://${AMAZON_RDS}:3306/goldenharvest
     username: admin
     password: harvest123
 
