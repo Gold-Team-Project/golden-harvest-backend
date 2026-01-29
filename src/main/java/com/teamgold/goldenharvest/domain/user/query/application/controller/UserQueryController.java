@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserQueryController {
-    private UserQueryService userQueryService;
+    private final UserQueryService userQueryService;
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserProfileResponse>> getMyProfile(

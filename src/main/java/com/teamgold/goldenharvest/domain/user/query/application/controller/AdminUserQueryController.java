@@ -20,7 +20,10 @@ public class AdminUserQueryController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<UserAdminResponse>>> getAllUsers() {
-        return ResponseEntity.ok(ApiResponse.success(adminUserQueryService.getAllUsersForAdmin()));
+        System.out.println("[Backend] 전체 회원 조회 API 호출됨!"); // 로그 추가
+        List<UserAdminResponse> result = adminUserQueryService.getAllUsersForAdmin();
+        System.out.println("[Backend] 조회된 데이터 개수: " + (result != null ? result.size() : 0));
+        return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @GetMapping("/update-requests")

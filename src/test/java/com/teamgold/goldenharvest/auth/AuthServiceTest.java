@@ -10,6 +10,7 @@ import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.Pa
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.SignUpRequest;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.response.TokenResponse;
 import com.teamgold.goldenharvest.domain.auth.command.application.service.AuthServiceImpl;
+import com.teamgold.goldenharvest.domain.user.command.application.event.UserUpdatedEvent;
 import com.teamgold.goldenharvest.domain.user.command.domain.Role; // Role 경로 확인 필요
 import com.teamgold.goldenharvest.domain.user.command.domain.User;
 import com.teamgold.goldenharvest.domain.user.command.domain.UserStatus;
@@ -23,6 +24,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mock.web.MockMultipartFile;
@@ -52,6 +54,7 @@ public class AuthServiceTest {
     @Mock private ValueOperations<String, Object> valueOperations;
     @Mock private JwtTokenProvider jwtTokenProvider;
     @Mock private JwtProperties jwtProperties;
+    @Mock private ApplicationEventPublisher eventPublisher;
 
     private final String email = "testuser@example.com";
     private final String password = "testPassword123!";
@@ -71,6 +74,7 @@ public class AuthServiceTest {
                 .businessNumber("123")
                 .name("리순신")
                 .phoneNumber("010-1234-5678")
+
                 .build();
         MockMultipartFile file = new MockMultipartFile("file", "b.jpg", "image/jpeg", "content".getBytes());
 
@@ -100,6 +104,8 @@ public class AuthServiceTest {
         assertThat(savedUser.getStatus()).isEqualTo(UserStatus.PENDING);
         assertThat(savedUser.getFileId()).isEqualTo(50L);
         verify(redisTemplate).delete("EMAIL_VERIFIED:" + email);
+
+        verify(eventPublisher).publishEvent(any(UserUpdatedEvent.class));
     }
 
     @Test

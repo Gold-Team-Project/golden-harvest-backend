@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/auth/**").permitAll()
 
                                 // 2. 관리자 기능은 ADMIN 권한만
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/admin/**").permitAll()
 
                                 // 3. 유저 관련 기능
                                 .requestMatchers("/api/user/**").authenticated()

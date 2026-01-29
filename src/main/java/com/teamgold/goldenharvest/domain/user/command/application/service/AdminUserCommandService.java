@@ -8,5 +8,7 @@ public interface AdminUserCommandService {
 
     void approveProfileUpdate(Long requestId);
 
+    void updateUserStatus(String targetEmail, UserStatus newStatus, String adminEmail);
+
 	void publishAllUserDetailsEvent();
 }
