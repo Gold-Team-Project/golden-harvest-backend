@@ -1,5 +1,6 @@
 package com.teamgold.goldenharvest.domain.notification.query.dto.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 public class UserNotificationDTO {
 
     private Long userNotificationId;
