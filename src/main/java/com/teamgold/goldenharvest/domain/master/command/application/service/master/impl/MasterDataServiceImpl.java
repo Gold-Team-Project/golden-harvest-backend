@@ -160,22 +160,20 @@ public class MasterDataServiceImpl implements MasterDataService {
     }
 
     @Override
+    @Transactional
     public void publishAllMasterDataEvent() {
-        List<ProduceMaster> masters = masterRepository.findAll();
-        List<Sku> skus = skuRepository.findAll();
+        List<Sku> skus = skuRepository.findAllWithDetails();
 
         for (Sku sku : skus) {
-            ProduceMaster master = sku.getProduceMaster();
-
             eventPublisher.publishItemMasterUpdatedEvent(
                     ItemMasterUpdatedEvent.builder()
                             .skuNo(sku.getSkuNo())
                             .itemName(sku.getProduceMaster().getItemName())
                             .gradeName(sku.getGrade().getGradeName())
                             .varietyName(sku.getVariety().getVarietyName())
-                            .fileUrl(master.getFileUrl())
-                            .baseUnit(master.getBaseUnit())
-                            .isActive(master.getIsActive())
+                            .fileUrl(sku.getProduceMaster().getFileUrl())
+                            .baseUnit(sku.getProduceMaster().getBaseUnit())
+                            .isActive(sku.getProduceMaster().getIsActive())
                             .build()
             );
         }
