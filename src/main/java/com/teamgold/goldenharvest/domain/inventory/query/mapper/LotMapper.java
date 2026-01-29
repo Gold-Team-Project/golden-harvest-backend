@@ -77,7 +77,7 @@ public interface LotMapper {
             WHERE
                 (#{skuNo} IS NULL OR l.sku_no = #{skuNo})
                 AND
-                l.inbound_date BETWEEN #{startDate} AND #{endDate}
+                (l.inbound_date BETWEEN #{startDate} AND #{endDate})
             ORDER BY
                 l.inbound_date DESC
 		LIMIT
