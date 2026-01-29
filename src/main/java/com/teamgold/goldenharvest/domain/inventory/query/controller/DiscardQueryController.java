@@ -57,11 +57,11 @@ public class DiscardQueryController {
 
 	@GetMapping("/discard/loss")
 	public ResponseEntity<ApiResponse<?>> getDiscardLoss() {
-        return null;
+        return ResponseEntity.ok(ApiResponse.success(discardQueryService.getDiscardLoss()));
 	}
 
 	@GetMapping("/discard/ratio-by-item")
 	public ResponseEntity<ApiResponse<?>> getDiscardRatioByItem() {
-        return null;
+        return ResponseEntity.ok(ApiResponse.success(discardQueryService.getDiscardRate()));
 	}
 }

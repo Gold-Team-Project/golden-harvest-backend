@@ -101,7 +101,7 @@ public class InventoryQueryService {
 		);
 	}
 
-	private boolean isInvalidDate(LocalDate startDate,  LocalDate endDate) {
+	private boolean isInvalidDate(LocalDate startDate, LocalDate endDate) {
 		if (Objects.isNull(startDate) || Objects.isNull(endDate)) {
 			return true;
 		}
