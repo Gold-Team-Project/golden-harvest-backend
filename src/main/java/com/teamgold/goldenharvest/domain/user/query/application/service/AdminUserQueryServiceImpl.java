@@ -34,6 +34,7 @@ public class AdminUserQueryServiceImpl implements AdminUserQueryService {
                         .status(user.getStatus().name())
                         .role(user.getRole().getRoleStatusName())
                         .createdAt(user.getCreatedAt())
+                        .fileUrl(user.getFileUrl())
                         .build())
                 .collect(Collectors.toList());
     }

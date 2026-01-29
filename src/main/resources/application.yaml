@@ -36,6 +36,7 @@ spring:
     url: jdbc:mariadb://${AMAZON_RDS}:3306/goldenharvest
     username: admin
     password: harvest123
+    driver-class-name: org.mariadb.jdbc.Driver
 
     hikari:
       maximum-pool-size: 8        # 동시에 "빌릴 수 있는" 최대 커넥션
@@ -46,7 +47,7 @@ spring:
       leak-detection-threshold: 20000  # 20초 넘게 반납 안 하면 로그 경고
       pool-name: goldenharvest-hikari
 
-  driver-class-name: org.mariadb.jdbc.Driver
+
 
   jpa:
     hibernate:
