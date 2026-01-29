@@ -6,6 +6,7 @@ import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.Orde
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.PurchaseOrder;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.OrderStatusRepository;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.PurchaseOrderRepository;
+import com.teamgold.goldenharvest.domain.purchases.command.infrastructure.repository.JpaOrderStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,7 +24,7 @@ public class PurchaseCommandService {
     private final PurchaseOrderRepository PurchaseOrderRepository;
     private final OrderStatusRepository OrderStatusRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
-
+    private final JpaOrderStatusRepository orderStatusRepository;
     @Transactional
     public String createPurchaseOrder(Long quantity, String skuNo) {
         // 1) 입력값 검증
@@ -36,7 +37,8 @@ public class PurchaseCommandService {
         if (quantity > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("수량이 너무 큽니다");
         }
-
+        OrderStatus status = orderStatusRepository.findById("CREATED")
+                .orElseThrow(() -> new IllegalStateException("주문 상태 없음"));
         // 2) 기본 상태 조회 (예: DRAFT)
         // 너 OrderStatus 엔티티/컬럼명에 맞춰 findBy... 는 바꿔야 함
         OrderStatus draft = OrderStatusRepository.findByType("DRAFT");
@@ -49,6 +51,7 @@ public class PurchaseCommandService {
                 .purchase_order_id(poId)
                 .orderStatus(draft)
                 .createdAt(LocalDate.now())
+                .orderStatus(status)
                 .deliveryDate(null)               // 지금은 없으면 null
                 .skuNo(skuNo)
                 .quantity(quantity.intValue())

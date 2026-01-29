@@ -19,7 +19,8 @@ public class PurchaseOrder {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
-            name = "order_status_id",
+            name = "order_status_type",
+            referencedColumnName = "order_status_type",
             nullable = false
     )
     private OrderStatus orderStatus;
