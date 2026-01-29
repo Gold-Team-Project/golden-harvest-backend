@@ -87,7 +87,7 @@ public class InventoryQueryService {
 		int offset = (page - 1) * limit;
 
 		if (isInvalidDate(startDate, endDate)) {
-			startDate = LocalDate.now().minusWeeks(1);
+			startDate = LocalDate.now().minusYears(10);
 			endDate = LocalDate.now(); // 날짜 필터링 기본 설정 (최근 일주일)
 		}
 

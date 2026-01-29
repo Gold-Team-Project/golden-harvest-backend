@@ -61,4 +61,11 @@ public class MasterDataController {
 
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+    @PostMapping("/distribute")
+    public ResponseEntity<ApiResponse<?>> invokeEvent() {
+        masterDataService.publishAllMasterDataEvent();
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 }
