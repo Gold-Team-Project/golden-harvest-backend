@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.inventory.command.application.dto;
+package com.teamgold.goldenharvest.domain.inventory.command.application.event.dto;
 
 /*
 * 구매 주문의 완료를 알리는 이벤트 객체이다

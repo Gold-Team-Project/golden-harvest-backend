@@ -1,5 +1,6 @@
 package com.teamgold.goldenharvest.domain.inventory.command.application.event;
 
+import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -8,10 +9,8 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.validation.annotation.Validated;
 
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.PurchaseOrderEvent;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.InboundService;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,10 +26,10 @@ public class PurchaseOrderEventListener {
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void handlePurchaseOrder(@Valid PurchaseOrderEvent purchaseOrderEvent) {
-		log.info("구매 주문 이벤트 수신 완료. 객체: {}", purchaseOrderEvent);
+	public void handlePurchaseOrder(PurchaseOrderCreatedEvent purchaseOrderCreatedEvent) {
+		log.info("구매 주문 이벤트 수신 완료. 객체: {}", purchaseOrderCreatedEvent);
 
-		String createdLotNo = inboundService.processInbound(purchaseOrderEvent);
+		String createdLotNo = inboundService.processInbound(purchaseOrderCreatedEvent);
 
 		log.info("재고 등록 완료. Lot 번호: {}", createdLotNo);
 	}

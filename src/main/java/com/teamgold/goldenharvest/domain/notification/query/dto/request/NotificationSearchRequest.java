@@ -1,10 +1,12 @@
 package com.teamgold.goldenharvest.domain.notification.query.dto.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class NotificationSearchRequest {
 
     // 기본값 지정

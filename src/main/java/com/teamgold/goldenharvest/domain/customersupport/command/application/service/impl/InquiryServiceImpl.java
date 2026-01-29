@@ -6,7 +6,6 @@ import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.comment.CommentCreateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryCreateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryUpdateRequest;
-import com.teamgold.goldenharvest.domain.customersupport.command.application.event.InquiryCreatedEvent;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.service.InquiryService;
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.Inquiry;
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.ProcessingStatus;
@@ -18,14 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class InquiryServiceImpl implements InquiryService {
     private final InquiryRepository inquiryRepository;
-    private final ApplicationEventPublisher eventPublisher;
     private final FileUploadService fileUploadService;
 
     @Override
@@ -36,11 +33,11 @@ public class InquiryServiceImpl implements InquiryService {
             MultipartFile file
     ) throws IOException {
 
-        Long fileId = null;
+        String fileUrl = null;
 
         if (file != null && !file.isEmpty()) {
             var savedFile = fileUploadService.upload(file);
-            fileId = savedFile.getFileId();
+            fileUrl = savedFile.getFileUrl();
         }
 
         String inquiryId = UUID.randomUUID().toString();
@@ -51,15 +48,12 @@ public class InquiryServiceImpl implements InquiryService {
                 .salesOrderId(request.salesOrderId())
                 .title(request.title())
                 .body(request.body())
-                .fileId(fileId)
+                .fileUrl(fileUrl)
                 .processingStatus(ProcessingStatus.N)
                 .build();
 
         inquiryRepository.save(inquiry);
 
-        eventPublisher.publishEvent(
-                new InquiryCreatedEvent(inquiryId, userId)
-        );
     }
 
     @Override
@@ -89,7 +83,7 @@ public class InquiryServiceImpl implements InquiryService {
 
         if (file != null && !file.isEmpty()) {
             var savedFile = fileUploadService.upload(file);
-            inquiry.updateFile(savedFile.getFileId());
+            inquiry.updateFile(savedFile.getFileUrl());
         }
     }
 

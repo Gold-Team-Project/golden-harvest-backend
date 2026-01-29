@@ -48,7 +48,7 @@ public class AdminUserQueryServiceImpl implements AdminUserQueryService {
                         .requestCompany(approval.getRequestCompany())   // 요청 정보
                         .currentBusinessNumber(approval.getUser().getBusinessNumber())
                         .requestBusinessNumber(approval.getRequestBusinessNumber())
-                        .requestFileId(approval.getRequestFileId())
+                        .requestFileUrl(approval.getRequestFileUrl())
                         .createdAt(approval.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());

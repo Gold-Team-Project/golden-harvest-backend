@@ -2,12 +2,12 @@ package com.teamgold.goldenharvest.domain.inventory.command.application.service;
 
 import java.time.LocalDate;
 
+import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.PurchaseOrderEvent;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.IdGenerator;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Inbound;
 import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.InboundRepository;
@@ -23,7 +23,7 @@ public class InboundService {
 	private final LotService lotService;
 
 	@Transactional
-	public String processInbound(PurchaseOrderEvent purchaseOrderEvent) {
+	public String processInbound(PurchaseOrderCreatedEvent purchaseOrderEvent) {
 
 		if (inboundRepository.findByPurchaseOrderItemId(purchaseOrderEvent.purchaseOrderId()).isPresent()) {
 				throw new BusinessException(ErrorCode.DUPLICATE_REQUEST);
@@ -35,10 +35,11 @@ public class InboundService {
 
 		// 입고 데이터 구성
 		Inbound inbound = Inbound.builder()
-			.inboundId(inboundNo)
-			.skuNo(purchaseOrderEvent.skuNo())
-			.quantity(purchaseOrderEvent.quantity())
-			.inboundDate(LocalDate.now())
+				.inboundId(inboundNo)
+				.purchaseOrderItemId(purchaseOrderEvent.purchaseOrderId())
+				.skuNo(purchaseOrderEvent.skuNo())
+				.quantity(purchaseOrderEvent.quantity())
+				.inboundDate(LocalDate.now())
 			.build();
 
 		inboundRepository.save(inbound);

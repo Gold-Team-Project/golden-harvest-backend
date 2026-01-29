@@ -1,12 +1,15 @@
 package com.teamgold.goldenharvest.domain.purchases.command.application.service;
 
 import com.teamgold.goldenharvest.domain.notification.command.domain.repository.NotificationRepository;
+import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.OrderStatus;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.PurchaseOrder;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.OrderStatusRepository;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.PurchaseOrderRepository;
+import com.teamgold.goldenharvest.domain.purchases.command.infrastructure.repository.JpaOrderStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +23,8 @@ public class PurchaseCommandService {
 
     private final PurchaseOrderRepository PurchaseOrderRepository;
     private final OrderStatusRepository OrderStatusRepository;
-    private final NotificationRepository notificationRepository;
-    private final ModelMapper modelMapper;
-
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final JpaOrderStatusRepository orderStatusRepository;
     @Transactional
     public String createPurchaseOrder(Long quantity, String skuNo) {
         // 1) 입력값 검증
@@ -35,7 +37,8 @@ public class PurchaseCommandService {
         if (quantity > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("수량이 너무 큽니다");
         }
-
+        OrderStatus status = orderStatusRepository.findById("CREATED")
+                .orElseThrow(() -> new IllegalStateException("주문 상태 없음"));
         // 2) 기본 상태 조회 (예: DRAFT)
         // 너 OrderStatus 엔티티/컬럼명에 맞춰 findBy... 는 바꿔야 함
         OrderStatus draft = OrderStatusRepository.findByType("DRAFT");
@@ -48,6 +51,7 @@ public class PurchaseCommandService {
                 .purchase_order_id(poId)
                 .orderStatus(draft)
                 .createdAt(LocalDate.now())
+                .orderStatus(status)
                 .deliveryDate(null)               // 지금은 없으면 null
                 .skuNo(skuNo)
                 .quantity(quantity.intValue())
@@ -56,6 +60,14 @@ public class PurchaseCommandService {
         // 5) 저장
         PurchaseOrderRepository.save(po);
 
+        applicationEventPublisher.publishEvent(
+                new PurchaseOrderCreatedEvent(
+                        poId,
+                        LocalDate.now(),
+                        skuNo,
+                        quantity.intValue()
+                )
+        );
 
         return po.getPurchase_order_id();
     }

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,32 +18,32 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InquiryWriterSnapshot {
 
-    @Id
-    @Column(name = "inquiry_id")
-    private String inquiryId;
+	@Id
+	@Column(name = "user_email")
+    private String userEmail;
 
-    private String userId;
+	@Column(name = "company")
     private String company;
+
+	@Column(name = "name")
     private String name;
+
+	@Column(name = "phone_number")
     private String phoneNumber;
-    private String email;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+	@Builder
     public InquiryWriterSnapshot(
-            String inquiryId,
-            String userId,
+			String userEmail,
             String company,
             String name,
-            String phoneNumber,
-            String email
+            String phoneNumber
     ) {
-        this.inquiryId = inquiryId;
-        this.userId = userId;
+		this.userEmail = userEmail;
         this.company = company;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.email = email;
     }
 }

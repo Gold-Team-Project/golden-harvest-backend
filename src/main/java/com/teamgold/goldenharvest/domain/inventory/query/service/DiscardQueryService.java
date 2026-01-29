@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
+import com.teamgold.goldenharvest.domain.inventory.query.dto.DiscardRateResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +35,9 @@ public class DiscardQueryService {
 		LocalDate startDate,
 		LocalDate endDate
 	) {
-		if (!validateDate(startDate, endDate)) {
-			throw new BusinessException(ErrorCode.INVALID_REQUEST);
+		if (isInvalidDate(startDate, endDate)) {
+			startDate = LocalDate.now().minusWeeks(1);
+			endDate = LocalDate.now(); // 날짜 필터링 기본 설정 (최근 일주일)
 		}
 
 		if (Objects.isNull(startDate) || Objects.isNull(endDate)) {
@@ -87,7 +89,20 @@ public class DiscardQueryService {
 		);
 	}
 
-	private boolean validateDate(LocalDate startDate, LocalDate endDate) {
-		return startDate.isAfter(endDate);
+	public List<DiscardRateResponse> getDiscardRate() {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime thisMonthStart = now.withDayOfMonth(1).with(LocalTime.MIN);
+
+		return discardMapper.findDiscardRate(
+				thisMonthStart,
+				now
+		);
+	}
+
+	private boolean isInvalidDate(LocalDate startDate, LocalDate endDate) {
+		if (Objects.isNull(startDate) || Objects.isNull(endDate)) {
+			return true;
+		}
+		else return startDate.isAfter(endDate);
 	}
 }

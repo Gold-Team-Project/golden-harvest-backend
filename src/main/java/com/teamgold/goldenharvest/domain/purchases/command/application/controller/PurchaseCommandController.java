@@ -22,7 +22,10 @@ public class PurchaseCommandController {
             , @RequestParam String skuNo
     ) {
         purchaseCommandService.createPurchaseOrder(quantity, skuNo);
+
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+
 
 }

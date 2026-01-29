@@ -3,11 +3,14 @@ package com.teamgold.goldenharvest.domain.sales.command.application.service;
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
 import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
+import com.teamgold.goldenharvest.domain.sales.command.application.event.dto.SalesOrderEvent;
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.AddToCartRequest;
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.CartItemResponse;
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.CartResponse;
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.RedisCartItem;
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.UpdateCartItemRequest;
+import com.teamgold.goldenharvest.domain.sales.command.application.event.SalesOrderEventPublisher;
+import com.teamgold.goldenharvest.domain.sales.command.domain.SalesSku;
 import com.teamgold.goldenharvest.domain.sales.command.domain.cart.Cart;
 import com.teamgold.goldenharvest.domain.sales.command.domain.cart.CartItem;
 import com.teamgold.goldenharvest.domain.sales.command.domain.cart.CartStatus;
@@ -42,6 +45,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final SalesOrderRepository salesOrderRepository;
     private final SalesOrderStatusRepository salesOrderStatusRepository;
+    private final SalesOrderEventPublisher eventPublisher;
     private static final String CART_PREFIX = "cart:";
     private static final long CART_EXPIRE_DAYS = 30;
 
@@ -199,6 +203,18 @@ public class CartServiceImpl implements CartService {
         // 3. Redis 장바구니 데이터 삭제
         // ----------------------------------------------------
         redisTemplate.delete(cartKey);
+
+        // 주문 생성 이벤트 발행
+        for (SalesOrderItem item : salesOrderItems) {
+            eventPublisher.publishSalesOrderEvent(
+                    SalesOrderEvent.builder()
+                            .salesOrderItemId(item.getSalesOrderItemId())
+                            .salesPrice(item.getPrice())
+                            .skuNo(item.getSkuNo())
+                            .quantity(item.getQuantity())
+                            .build()
+            );
+        }
 
         return salesOrderId; // 새로 생성된 SalesOrder ID 반환
     }

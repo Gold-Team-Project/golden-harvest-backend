@@ -39,6 +39,9 @@ public class ItemMasterMirror {
 	@Column(name = "is_active")
 	private boolean isActive;
 
+	@Column(name = "file_url")
+	private String fileUrl;
+
 	@Builder
 	public ItemMasterMirror(
 		String skuNo,
@@ -46,6 +49,7 @@ public class ItemMasterMirror {
 		String gradeName,
 		String varietyName,
 		String baseUnit,
+		String fileUrl,
 		BigDecimal currentOriginPrice,
 		boolean isActive) {
 		this.skuNo = skuNo;
@@ -53,6 +57,7 @@ public class ItemMasterMirror {
 		this.gradeName = gradeName;
 		this.varietyName = varietyName;
 		this.baseUnit = baseUnit;
+		this.fileUrl = fileUrl;
 		this.currentOriginPrice = currentOriginPrice;
 		this.isActive = isActive;
 	}

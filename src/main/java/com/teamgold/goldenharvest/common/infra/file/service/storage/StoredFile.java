@@ -1,6 +1,6 @@
 package com.teamgold.goldenharvest.common.infra.file.service.storage;
 
-import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.FileContentType;
+import com.teamgold.goldenharvest.common.infra.file.domain.FileContentType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

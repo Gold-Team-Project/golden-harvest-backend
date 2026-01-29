@@ -1,7 +1,7 @@
 package com.teamgold.goldenharvest.common.infra.file.service;
 
-import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.File;
-import com.teamgold.goldenharvest.domain.customersupport.command.infrastructure.repository.inquiry.FileRepository;
+import com.teamgold.goldenharvest.common.infra.file.domain.File;
+import com.teamgold.goldenharvest.common.infra.file.infrastucture.FileRepository;
 import com.teamgold.goldenharvest.common.infra.file.service.storage.FileStorage;
 import com.teamgold.goldenharvest.common.infra.file.service.storage.StoredFile;
 import lombok.RequiredArgsConstructor;

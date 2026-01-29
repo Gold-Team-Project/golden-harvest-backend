@@ -16,6 +16,6 @@ public class UserUpdateApprovalResponse {
     private String requestCompany;        // 바꾸고 싶은 회사명
     private String currentBusinessNumber; // 현재 사업자번호
     private String requestBusinessNumber; // 바꾸고 싶은 사업자번호
-    private Long requestFileId;           // 증빙서류 ID
+    private String requestFileUrl;           // 증빙서류 ID
     private LocalDateTime createdAt;
 }

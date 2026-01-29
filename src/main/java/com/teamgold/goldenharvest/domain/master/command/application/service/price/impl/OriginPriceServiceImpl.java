@@ -1,6 +1,8 @@
 package com.teamgold.goldenharvest.domain.master.command.application.service.price.impl;
 
 import com.teamgold.goldenharvest.domain.master.command.application.dto.response.price.PriceResponse;
+import com.teamgold.goldenharvest.domain.master.command.application.event.MasterDataEventPublisher;
+import com.teamgold.goldenharvest.domain.master.command.application.event.dto.ItemOriginPriceUpdateEvent;
 import com.teamgold.goldenharvest.domain.master.command.application.service.price.OriginPriceService;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.Sku;
 import com.teamgold.goldenharvest.domain.master.command.domain.price.OriginPrice;
@@ -19,6 +21,7 @@ public class OriginPriceServiceImpl implements OriginPriceService {
 
     private final OriginPriceRepository originPriceRepository;
     private final SkuRepository skuRepository;
+    private final MasterDataEventPublisher eventPublisher;
 
     @Override
     public void saveOriginPrice(Sku sku, PriceResponse price) {
@@ -31,6 +34,14 @@ public class OriginPriceServiceImpl implements OriginPriceService {
                 .build();
 
         originPriceRepository.save(prices);
+
+        eventPublisher.publishItemOriginPriceUpdatedEvent(
+                ItemOriginPriceUpdateEvent.builder()
+                        .skuNo(sku.getSkuNo())
+                        .updatedDate(prices.getCreatedAt())
+                        .originPrice(price.getDpr1())
+                        .build()
+        );
     }
 
     @Override
@@ -49,6 +60,21 @@ public class OriginPriceServiceImpl implements OriginPriceService {
                     .findFirst()
                     .ifPresent(price -> saveOriginPrice(sku, price));
         }
+    }
+
+    @Transactional
+    @Override
+    public void publishAllOriginPriceEvent() {
+        List<OriginPrice> prices = originPriceRepository.findAllWithSku();
+
+        prices.forEach(
+                price -> eventPublisher.publishItemOriginPriceUpdatedEvent(
+                        ItemOriginPriceUpdateEvent.builder()
+                                .originPrice(price.getOriginPrice())
+                                .updatedDate(price.getCreatedAt())
+                                .skuNo(price.getSku().getSkuNo())
+                                .build()
+                ));
     }
 }
 

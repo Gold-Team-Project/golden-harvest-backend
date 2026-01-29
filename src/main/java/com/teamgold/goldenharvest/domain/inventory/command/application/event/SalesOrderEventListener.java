@@ -9,8 +9,8 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.SalesOrderEvent;
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.SalesOrderResultEvent;
+import com.teamgold.goldenharvest.domain.sales.command.application.event.dto.SalesOrderEvent;
+import com.teamgold.goldenharvest.domain.inventory.command.application.event.dto.SalesOrderResultEvent;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.LotService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,13 +33,20 @@ public class SalesOrderEventListener {
 		try {
 			lotService.consumeLot(salesOrderEvent);
 
-			eventPublisher.publishEvent(SalesOrderResultEvent.create(salesOrderEvent.salesOrderItemId(), "SUCCESS"));
+			eventPublisher.publishEvent(SalesOrderResultEvent.builder()
+					.salesOrderItemId(salesOrderEvent.salesOrderItemId())
+					.status("SUCCESS")
+					.build());
+
 			log.info("판매 주문 처리 완료");
 		} catch (Exception e) {
 			// Transaction rollback 처리
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
-			eventPublisher.publishEvent(SalesOrderResultEvent.create(salesOrderEvent.salesOrderItemId(), "FAIL"));
+			eventPublisher.publishEvent(SalesOrderResultEvent.builder()
+							.salesOrderItemId(salesOrderEvent.salesOrderItemId())
+							.status("FAIL")
+							.build());
 			log.info("판매 주문 실패");
 		}
 	}

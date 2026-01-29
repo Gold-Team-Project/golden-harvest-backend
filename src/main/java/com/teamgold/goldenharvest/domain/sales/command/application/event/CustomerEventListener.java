@@ -1,8 +1,8 @@
-package com.teamgold.goldenharvest.domain.sales.command.application.event.listener;
+package com.teamgold.goldenharvest.domain.sales.command.application.event;
 
 import com.teamgold.goldenharvest.domain.sales.command.domain.customer.Customer;
 import com.teamgold.goldenharvest.domain.sales.command.infrastructure.repository.CustomerRepository;
-import com.teamgold.goldenharvest.domain.user.command.application.event.UserUpdatedEvent;
+import com.teamgold.goldenharvest.domain.user.command.application.event.dto.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -18,14 +18,14 @@ public class CustomerEventListener {
     @Transactional
     public void handleUserUpdatedEvent(UserUpdatedEvent event) {
         Customer customer = Customer.builder()
-                .email(event.getEmail())
-                .company(event.getCompany())
-                .businessNumber(event.getBusinessNumber())
-                .name(event.getName())
-                .phoneNumber(event.getPhoneNumber())
-                .addressLine1(event.getAddressLine1())
-                .addressLine2(event.getAddressLine2())
-                .postalCode(event.getPostalCode())
+                .email(event.email())
+                .company(event.company())
+                .businessNumber(event.businessNumber())
+                .name(event.name())
+                .phoneNumber(event.phoneNumber())
+                .addressLine1(event.addressLine1())
+                .addressLine2(event.addressLine2())
+                .postalCode(event.postalCode())
                 .build();
         
         customerRepository.save(customer);

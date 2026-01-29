@@ -3,7 +3,7 @@ package com.teamgold.goldenharvest.masterdata;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
-import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.File;
+import com.teamgold.goldenharvest.common.infra.file.domain.File;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataAppendRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataUpdatedRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.response.master.MasterResponse;
@@ -122,7 +122,7 @@ class MasterDataServiceTest {
         masterDataService.appendMasterData("ITM001", request, file);
         // then
         verify(fileUploadService, times(1)).upload(file);
-        verify(master).appendedMasterData(5, 1.0, 8.0, "저온 보관", 100L);
+        verify(master).appendedMasterData(5, 1.0, 8.0, "저온 보관", "sdsdsd");
     }
 
     @Test
@@ -178,6 +178,6 @@ class MasterDataServiceTest {
         masterDataService.updatedMasterData("ITM001", request, file);
         // then
         verify(fileUploadService, times(1)).upload(file);
-        verify(master).updatedMasterData(5, 1.0, 8.0, "저온 보관", 100L);
+        verify(master).updatedMasterData(5, 1.0, 8.0, "저온 보관", "sdsdsd");
     }
 }

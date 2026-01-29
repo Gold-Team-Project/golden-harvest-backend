@@ -23,7 +23,7 @@ public class UserUpdateApproval {
 
     private String requestCompany;
     private String requestBusinessNumber;
-    private Long requestFileId;
+    private String requestFileUrl;
 
     @Enumerated(EnumType.STRING)
     private RequestStatus status;
@@ -35,7 +35,7 @@ public class UserUpdateApproval {
         this.user = user;
         this.requestCompany = requestCompany;
         this.requestBusinessNumber = requestBusinessNumber;
-        this.requestFileId = requestFileId;
+        this.requestFileUrl= requestFileUrl;
         this.status = RequestStatus.PENDING;
     }
 

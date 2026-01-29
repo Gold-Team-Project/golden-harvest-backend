@@ -18,4 +18,5 @@ public class AvailableItemResponse {
 	String varietyName;
 	String baseUnit;
 	Double customerPrice;
+	String fileUrl;
 }

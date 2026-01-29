@@ -1,10 +1,13 @@
 package com.teamgold.goldenharvest.domain.user.command.application.controller;
 
 import com.teamgold.goldenharvest.common.response.ApiResponse;
+import com.teamgold.goldenharvest.common.security.CustomUserDetails;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserApproveRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.service.AdminUserCommandService;
+import com.teamgold.goldenharvest.domain.user.command.domain.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,4 +32,21 @@ public class AdminUserController {
         adminUserCommandService.approveProfileUpdate(requestId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
+
+    @PatchMapping("/{targetEmail}/status")
+    public ResponseEntity<ApiResponse<Void>> updateUserStatus(
+            @AuthenticationPrincipal CustomUserDetails adminDetails, // 본인 확인용
+            @PathVariable String targetEmail,
+            @RequestParam UserStatus newStatus) {
+
+        adminUserCommandService.updateUserStatus(targetEmail, newStatus, adminDetails.getUsername());
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+	@PostMapping("/publish/all")
+	public ResponseEntity<ApiResponse<?>> publishUserDetails() {
+		adminUserCommandService.publishAllUserDetailsEvent();
+		return ResponseEntity.ok(ApiResponse.success(null));
+	}
 }

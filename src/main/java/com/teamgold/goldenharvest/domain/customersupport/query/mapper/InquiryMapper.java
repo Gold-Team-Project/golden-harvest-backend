@@ -14,18 +14,17 @@ import java.util.List;
 public interface InquiryMapper {
     //문의 상세
     @Select("""
-                SELECT
-                    i.title         AS title,
-                    i.body          AS body,
-                    i.comment       AS comment,
-                    f.file_id       AS fileId,
-                    f.original_name AS fileName,
-                    f.content_type  AS contentType
-                FROM tb_inquiry i
-                LEFT JOIN tb_inquiry_file f
-                  ON i.file_id = f.file_id
-                WHERE i.inquiry_id = #{inquiryNo}
-            """)
+            SELECT
+                i.title         AS title,
+                i.body          AS body,
+                i.comment       AS comment,
+                NULL            AS fileId,     
+                SUBSTRING_INDEX(i.file_url, '/', -1) AS fileName,
+                NULL            AS contentType, 
+                i.file_url      AS downloadUrl
+            FROM tb_inquiry i
+            WHERE i.inquiry_id = #{inquiryNo}
+        """)
     InquiryDetailResponse findDetailInquiry(@Param("inquiryNo") String inquiryNo);
 
     //문의 내역
@@ -46,29 +45,26 @@ public interface InquiryMapper {
             @Param("offset") int offset
     );
 
-    //문의 상세(관리자)
     @Select("""
-                SELECT
-                    i.inquiry_id        AS inquiryNo,
-                    i.created_at        AS createdAt,
-                    s.company           AS company,
-                    s.name              AS name,
-                    s.phone_number      AS phoneNumber,
-                    s.email             AS email,
-                    i.title             AS title,
-                    i.body              AS body,
-                    i.comment           AS comment,
-                    i.processing_status AS processingStatus,
-                    f.file_id       AS fileId,
-                    f.original_name AS fileName,
-                    f.content_type  AS contentType
-                
-                FROM tb_inquiry i
-                LEFT JOIN tb_inquiry_file f
-                  ON i.file_id = f.file_id
-                LEFT JOIN tb_inquiry_writer_snapshot s
-                  ON i.inquiry_id = s.inquiry_id
-                WHERE i.inquiry_id = #{inquiryNo}
+            SELECT
+                i.inquiry_id        AS inquiryNo,
+                i.created_at        AS createdAt,
+                s.company           AS company,
+                s.name              AS name,
+                s.phone_number      AS phoneNumber,
+                s.user_email        AS email,
+                i.title             AS title,
+                i.body              AS body,
+                i.comment           AS comment,
+                i.processing_status AS processingStatus,
+                NULL                AS fileId,
+                SUBSTRING_INDEX(i.file_url, '/', -1) AS fileName,
+                NULL                AS contentType,
+                i.file_url          AS downloadUrl
+            FROM tb_inquiry i
+            LEFT JOIN tb_inquiry_writer_snapshot s
+              ON i.user_id = s.user_email
+            WHERE i.inquiry_id = #{inquiryNo}
             """)
     AdminInquiryDetailResponse findDetailAdminInquiry(@Param("inquiryNo") String inquiryNo);
 
@@ -82,9 +78,13 @@ public interface InquiryMapper {
                     i.processing_status AS processingStatus
                 FROM tb_inquiry i 
                 LEFT JOIN tb_inquiry_writer_snapshot s 
-                  ON i.inquiry_id = s.inquiry_id
+                  ON i.user_id = s.user_email
                 ORDER BY i.created_at DESC
                 LIMIT #{limit} OFFSET #{offset}
             """)
-    List<AdminInquiryListResponse> findAllAdminInquiry(@Param("limit") int limit, @Param("offset") int offset);
+    List<AdminInquiryListResponse> findAllAdminInquiry(
+            @Param("limit") int limit,
+            @Param("offset") int offset
+    );
+
 }

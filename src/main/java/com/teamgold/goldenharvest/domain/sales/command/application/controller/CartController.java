@@ -19,7 +19,7 @@ public class CartController {
     @PostMapping("/items")
     public ResponseEntity<ApiResponse<Void>> addItemToCart(@RequestHeader("Authorization") String authorizationHeader, @RequestBody AddToCartRequest request) {
         // TODO: Spring Security 적용 후, 인증된 사용자 정보에서 이메일을 가져오도록 수정
-        String userEmail = "testuser@example.com";
+        String userEmail = "rrrr@naver.com";
 
         cartService.addItemToCart(authorizationHeader, userEmail, request);
         return ResponseEntity.ok(ApiResponse.success(null));
@@ -28,7 +28,7 @@ public class CartController {
     @GetMapping
     public ResponseEntity<ApiResponse<CartResponse>> getCart() {
         // TODO: Spring Security 적용 후, 인증된 사용자 정보에서 이메일을 가져오도록 수정
-        String userEmail = "testuser@example.com";
+        String userEmail = "rrrr@naver.com";
 
         CartResponse cartResponse = cartService.getCart(userEmail);
         return ResponseEntity.ok(ApiResponse.success(cartResponse));
@@ -37,7 +37,7 @@ public class CartController {
     @PutMapping("/items")
     public ResponseEntity<ApiResponse<Void>> updateCartItemQuantity(@RequestBody UpdateCartItemRequest request) {
         // TODO: Spring Security 적용 후, 인증된 사용자 정보에서 이메일을 가져오도록 수정
-        String userEmail = "testuser@example.com";
+        String userEmail = "rrrr@naver.com";
 
         cartService.updateItemQuantity(userEmail, request);
         return ResponseEntity.ok(ApiResponse.success(null));
@@ -46,7 +46,7 @@ public class CartController {
     @DeleteMapping("/items/{skuNo}")
     public ResponseEntity<ApiResponse<Void>> removeItemFromCart(@PathVariable String skuNo) {
         // TODO: Spring Security 적용 후, 인증된 사용자 정보에서 이메일을 가져오도록 수정
-        String userEmail = "testuser@example.com";
+        String userEmail = "rrrr@naver.com";
 
         cartService.removeItem(userEmail, skuNo);
         return ResponseEntity.ok(ApiResponse.success(null));
@@ -55,7 +55,7 @@ public class CartController {
     @PostMapping("/checkout")
     public ResponseEntity<ApiResponse<String>> checkout() {
         // TODO: Spring Security 적용 후, 인증된 사용자 정보에서 이메일을 가져오도록 수정
-        String userEmail = "testuser@example.com";
+        String userEmail = "rrrr@naver.com";
 
         String cartId = cartService.placeOrder(userEmail);
         return ResponseEntity.ok(ApiResponse.success(cartId));
