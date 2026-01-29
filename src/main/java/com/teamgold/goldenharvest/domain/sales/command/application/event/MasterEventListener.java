@@ -1,6 +1,6 @@
 package com.teamgold.goldenharvest.domain.sales.command.application.event;
 
-import com.teamgold.goldenharvest.domain.sales.command.application.event.dto.SkuInfoChangedEvent;
+import com.teamgold.goldenharvest.domain.master.command.application.event.dto.ItemMasterUpdatedEvent;
 import com.teamgold.goldenharvest.domain.sales.command.domain.SalesSku;
 import com.teamgold.goldenharvest.domain.sales.command.infrastructure.repository.SalesSkuRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +18,15 @@ public class MasterEventListener {
 
     @Async
     @EventListener
-    public void handleSkuInfoChange(SkuInfoChangedEvent skuInfoChangedEvent) {
-        log.info("SKU 정보 변경 이벤트 수신 : {}", skuInfoChangedEvent.getSkuNo());
+    public void handleSkuInfoChange(ItemMasterUpdatedEvent itemMasterUpdatedEvent) {
+        log.info("SKU 정보 변경 이벤트 수신 : {}", itemMasterUpdatedEvent.skuNo());
         SalesSku salesSku = SalesSku.builder()
-                .skuNo(skuInfoChangedEvent.getSkuNo())
-                .itemName(skuInfoChangedEvent.getItemName())
-                .gradeName(skuInfoChangedEvent.getGradeName())
-                .varietyName(skuInfoChangedEvent.getVarietyName())
+                .skuNo(itemMasterUpdatedEvent.skuNo())
+                .itemName(itemMasterUpdatedEvent.itemName())
+                .gradeName(itemMasterUpdatedEvent.gradeName())
+                .varietyName(itemMasterUpdatedEvent.varietyName())
                 .build();
+
         // Sales 서비스의 DB에 저장
         salesSkuRepository.save(salesSku);
     }

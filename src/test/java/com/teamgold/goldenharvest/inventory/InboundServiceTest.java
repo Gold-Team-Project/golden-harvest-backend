@@ -2,8 +2,10 @@ package com.teamgold.goldenharvest.inventory;
 
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
+import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,6 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.PurchaseOrderEvent;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.InboundService;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.LotService;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.IdGenerator;
@@ -38,7 +39,7 @@ class InboundServiceTest {
 	void receive_order_event_duplicate_fail() {
 		// given
 		String duplicateId = "PO_20250115_000002";
-		PurchaseOrderEvent event2 = new PurchaseOrderEvent(duplicateId, "SKU_002", 200);
+		PurchaseOrderCreatedEvent event2 = new PurchaseOrderCreatedEvent(duplicateId, LocalDate.now(), "SKU_002", 200);
 
 		given(inboundRepository.findByPurchaseOrderItemId(duplicateId))
 			.willReturn(Optional.of(Inbound.builder().build())); // 이미 존재함을 가정
@@ -56,7 +57,7 @@ class InboundServiceTest {
 	@DisplayName("구매 주문이 성공적으로 처리된다")
 	void receive_order_event_success() {
 		// given
-		PurchaseOrderEvent event1 = new PurchaseOrderEvent("PO_20250115_000001", "SKU_001", 100);
+		PurchaseOrderCreatedEvent event1 = new PurchaseOrderCreatedEvent("PO_20250115_000001", LocalDate.now(), "SKU_001", 100);
 
 		given(inboundRepository.findByPurchaseOrderItemId(anyString()))
 			.willReturn(Optional.empty());

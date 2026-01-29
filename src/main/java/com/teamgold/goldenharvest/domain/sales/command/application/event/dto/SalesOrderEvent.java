@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.inventory.command.application.dto;
+package com.teamgold.goldenharvest.domain.sales.command.application.event.dto;
 
 import lombok.Builder;
 

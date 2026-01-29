@@ -1,12 +1,9 @@
 package com.teamgold.goldenharvest.domain.user.command.application.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
-import com.teamgold.goldenharvest.domain.user.command.application.event.SpringEventPublisher;
-import com.teamgold.goldenharvest.domain.user.command.application.event.UserUpdatedEvent;
+import com.teamgold.goldenharvest.domain.user.command.application.event.UserUpdateEventPublisher;
+import com.teamgold.goldenharvest.domain.user.command.application.event.dto.UserUpdatedEvent;
 import com.teamgold.goldenharvest.domain.user.command.domain.RequestStatus;
 import com.teamgold.goldenharvest.domain.user.command.domain.User;
 import com.teamgold.goldenharvest.domain.user.command.domain.UserStatus;
@@ -17,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class AdminUserCommandServiceImpl implements AdminUserCommandService {
 
     private final UserRepository userRepository;
     private final UserUpdateApprovalRepository userUpdateApprovalRepository;
-	private final SpringEventPublisher springEventPublisher;
+	private final UserUpdateEventPublisher userUpdateEventPublisher;
 
     @Override
     public void approveUser(String email, UserStatus newStatus) {
@@ -63,26 +62,6 @@ public class AdminUserCommandServiceImpl implements AdminUserCommandService {
         );
     }
 
-	@Override
-	public void publishAllUserDetailsEvent() {
-		List<User> users = userRepository.findAll();
-
-		List<UserUpdatedEvent> userUpdatedEvents = users.stream().map(
-			user -> UserUpdatedEvent.builder()
-				.email(user.getEmail())
-				.name(user.getName())
-				.businessNumber(String.valueOf(user.getBusinessNumber()))
-				.addressLine1(user.getAddressLine1())
-				.postalCode(user.getPostalCode())
-				.phoneNumber(String.valueOf(user.getPhoneNumber()))
-				.company(user.getCompany())
-				.addressLine2(user.getAddressLine2())
-				.build()
-		).toList();
-
-		springEventPublisher.publishAllUserDetails(userUpdatedEvents);
-	}
-
     @Override
     @Transactional
     public void updateUserStatus(String targetEmail, UserStatus newStatus, String adminEmail) {
@@ -95,6 +74,26 @@ public class AdminUserCommandServiceImpl implements AdminUserCommandService {
             .orElseThrow(()->new BusinessException(ErrorCode.USER_NOT_FOUND));
 
     user.updateStatus(newStatus);
+    }
+
+    @Override
+    public void publishAllUserDetailsEvent() {
+        List<User> users = userRepository.findAll();
+
+        for (User user : users) {
+            userUpdateEventPublisher.publishUpdatedUserDetails(
+                    UserUpdatedEvent.builder()
+                            .phoneNumber(user.getPhoneNumber())
+                            .postalCode(user.getPostalCode())
+                            .addressLine1(user.getAddressLine1())
+                            .addressLine2(user.getAddressLine2())
+                            .businessNumber(user.getBusinessNumber())
+                            .name(user.getName())
+                            .company(user.getCompany())
+                            .phoneNumber(user.getPhoneNumber())
+                            .build()
+            );
+        }
     }
 }
 

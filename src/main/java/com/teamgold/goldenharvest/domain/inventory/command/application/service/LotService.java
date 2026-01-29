@@ -9,8 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.PurchaseOrderEvent;
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.SalesOrderEvent;
+import com.teamgold.goldenharvest.domain.sales.command.application.event.dto.SalesOrderEvent;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.IdGenerator;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Lot;
 import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.LotRepository;
