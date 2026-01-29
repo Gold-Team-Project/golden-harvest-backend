@@ -19,7 +19,6 @@ public interface MasterDataService {
     void updateMasterDataStatus(String itemCode);
     //마스터 데이터 수정
     void updatedMasterData(String itemCode,MasterDataUpdatedRequest request,MultipartFile file) throws IOException;
-
-
-
+    //마스터 데이터 업데이트 이벤트 발행
+    void publishAllMasterDataEvent();
 }

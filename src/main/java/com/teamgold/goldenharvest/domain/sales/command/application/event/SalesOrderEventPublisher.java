@@ -1,6 +1,6 @@
 package com.teamgold.goldenharvest.domain.sales.command.application.event;
 
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.SalesOrderEvent;
+import com.teamgold.goldenharvest.domain.sales.command.application.event.dto.SalesOrderEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

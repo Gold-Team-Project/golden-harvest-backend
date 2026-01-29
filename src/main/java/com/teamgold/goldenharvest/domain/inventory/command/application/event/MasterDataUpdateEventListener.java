@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.ItemMasterUpdatedData;
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.ItemOriginPriceUpdateEvent;
+import com.teamgold.goldenharvest.domain.master.command.application.event.dto.ItemMasterUpdatedEvent;
+import com.teamgold.goldenharvest.domain.master.command.application.event.dto.ItemOriginPriceUpdateEvent;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.ItemMasterMirrorService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,10 +27,10 @@ public class MasterDataUpdateEventListener {
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void updateItemMasterMirror(List<ItemMasterUpdatedData> updatedDataList) {
+	public void updateItemMasterMirror(ItemMasterUpdatedEvent itemMasterUpdatedEvent) {
 		log.info("마스터데이터 업데이트 이벤트 수신 완료.");
 
-		itemMasterMirrorService.updateItemMasterMirror(updatedDataList);
+		itemMasterMirrorService.updateItemMasterMirror(itemMasterUpdatedEvent);
 
 		log.info("마스터데이터 mirror 업데이트 완료");
 	}

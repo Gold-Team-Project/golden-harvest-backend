@@ -66,8 +66,6 @@ public class PurchaseCommandService {
                 )
         );
 
-
-
         return po.getPurchase_order_id();
     }
 

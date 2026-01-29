@@ -2,7 +2,7 @@ package com.teamgold.goldenharvest.domain.sales.command.application.service;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
-import com.teamgold.goldenharvest.domain.inventory.command.application.dto.SalesOrderEvent;
+import com.teamgold.goldenharvest.domain.sales.command.application.event.dto.SalesOrderEvent;
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.AddToCartRequest;
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.CartItemResponse;
 import com.teamgold.goldenharvest.domain.sales.command.application.dto.CartResponse;

@@ -6,11 +6,14 @@ import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataAppendRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.request.master.MasterDataUpdatedRequest;
 import com.teamgold.goldenharvest.domain.master.command.application.dto.response.master.MasterResponse;
+import com.teamgold.goldenharvest.domain.master.command.application.event.MasterDataEventPublisher;
+import com.teamgold.goldenharvest.domain.master.command.application.event.dto.ItemMasterUpdatedEvent;
 import com.teamgold.goldenharvest.domain.master.command.application.service.master.MasterDataService;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.Grade;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.ProduceMaster;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.Sku;
 import com.teamgold.goldenharvest.domain.master.command.domain.master.Variety;
+import com.teamgold.goldenharvest.domain.master.command.domain.price.OriginPrice;
 import com.teamgold.goldenharvest.domain.master.command.infrastucture.mater.GradeRepository;
 import com.teamgold.goldenharvest.domain.master.command.infrastucture.mater.MasterRepository;
 import com.teamgold.goldenharvest.domain.master.command.infrastucture.mater.SkuRepository;
@@ -34,6 +37,7 @@ public class MasterDataServiceImpl implements MasterDataService {
     private final GradeRepository gradeRepository;
     private final SkuRepository skuRepository;
     private final FileUploadService fileUploadService;
+    private final MasterDataEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -91,8 +95,6 @@ public class MasterDataServiceImpl implements MasterDataService {
                         .build();
                 skuRepository.save(sku);
             }
-
-
         }
     }
 
@@ -155,5 +157,27 @@ public class MasterDataServiceImpl implements MasterDataService {
                 fileUrl
         );
 
+    }
+
+    @Override
+    public void publishAllMasterDataEvent() {
+        List<ProduceMaster> masters = masterRepository.findAll();
+        List<Sku> skus = skuRepository.findAll();
+
+        for (Sku sku : skus) {
+            ProduceMaster master = sku.getProduceMaster();
+
+            eventPublisher.publishItemMasterUpdatedEvent(
+                    ItemMasterUpdatedEvent.builder()
+                            .skuNo(sku.getSkuNo())
+                            .itemName(sku.getProduceMaster().getItemName())
+                            .gradeName(sku.getGrade().getGradeName())
+                            .varietyName(sku.getVariety().getVarietyName())
+                            .fileUrl(master.getFileUrl())
+                            .baseUnit(master.getBaseUnit())
+                            .isActive(master.getIsActive())
+                            .build()
+            );
+        }
     }
 }

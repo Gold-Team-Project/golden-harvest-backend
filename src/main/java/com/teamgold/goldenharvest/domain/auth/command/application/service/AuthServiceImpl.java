@@ -9,7 +9,7 @@ import com.teamgold.goldenharvest.common.security.jwt.JwtTokenProvider;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.LoginRequest;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.PasswordResetRequest;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.SignUpRequest;
-import com.teamgold.goldenharvest.domain.user.command.application.event.UserUpdatedEvent;
+import com.teamgold.goldenharvest.domain.user.command.application.event.dto.UserUpdatedEvent;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.response.TokenResponse;
 import com.teamgold.goldenharvest.domain.user.command.domain.Role;
 import com.teamgold.goldenharvest.domain.user.command.domain.User;
