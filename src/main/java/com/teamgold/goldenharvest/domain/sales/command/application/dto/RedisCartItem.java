@@ -1,5 +1,6 @@
 package com.teamgold.goldenharvest.domain.sales.command.application.dto;
 
+import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
 import com.teamgold.goldenharvest.domain.sales.command.domain.SalesSku;
 import lombok.*;
 
@@ -28,6 +29,17 @@ public class RedisCartItem implements Serializable {
                 .varietyName(salesSku.getVarietyName())
                 .quantity(quantity)
                 .unitPrice(unitPrice)
+                .build();
+    }
+
+    public static RedisCartItem from(AvailableItemResponse item, int quantity) {
+        return RedisCartItem.builder()
+                .skuNo(item.getSkuNo())
+                .itemName(item.getItemName())
+                .gradeName(item.getGradeName())
+                .varietyName(item.getVarietyName())
+                .quantity(quantity)
+                .unitPrice(BigDecimal.valueOf(item.getCustomerPrice()))
                 .build();
     }
 
