@@ -3,7 +3,6 @@ package com.teamgold.goldenharvest.domain.user.command.application.service;
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
 import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
-import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.File;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserProfileUpdateRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.PasswordChangeRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserUpdateRequest;
@@ -91,7 +90,7 @@ public class UserServiceImpl implements UserService {
                     .user(user)
                     .requestCompany(userUpdateRequest.getRequestCompany())
                     .requestBusinessNumber(userUpdateRequest.getRequestBusinessNumber())
-                    .requestFileId(uploadedFile.getFileId()) // 💡 DB에 저장된 파일 PK 값
+                    .requestFileUrl(uploadedFile.getFileUrl()) // 💡 DB에 저장된 파일 PK 값
                     .status(RequestStatus.PENDING)
                     .build();
 

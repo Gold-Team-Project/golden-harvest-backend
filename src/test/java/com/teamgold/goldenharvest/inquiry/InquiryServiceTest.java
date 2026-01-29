@@ -7,7 +7,7 @@ import com.teamgold.goldenharvest.domain.customersupport.command.application.dto
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryCreateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.dto.request.inquiry.InquiryUpdateRequest;
 import com.teamgold.goldenharvest.domain.customersupport.command.application.service.impl.InquiryServiceImpl;
-import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.File;
+import com.teamgold.goldenharvest.common.infra.file.domain.File;
 import com.teamgold.goldenharvest.domain.customersupport.command.domain.inquiry.Inquiry;
 import com.teamgold.goldenharvest.domain.customersupport.command.infrastructure.repository.inquiry.InquiryRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -38,8 +38,6 @@ public class InquiryServiceTest {
     @Mock
     private FileUploadService fileUploadService;
 
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
 
     @Test
     @DisplayName("파일 없이 문의가 생성되고 이벤트가 발행된다.")
@@ -152,7 +150,7 @@ public class InquiryServiceTest {
 
         // then
         verify(fileUploadService).upload(file);
-        verify(inquiry).updateFile(20L);
+        verify(inquiry).updateFile("Asdasdasd");
     }
 
     @Test

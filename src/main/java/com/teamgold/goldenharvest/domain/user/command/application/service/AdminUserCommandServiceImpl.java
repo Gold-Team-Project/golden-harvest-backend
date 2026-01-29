@@ -59,7 +59,7 @@ public class AdminUserCommandServiceImpl implements AdminUserCommandService {
         user.updateBusinessInfo(
                 approval.getRequestCompany(),
                 approval.getRequestBusinessNumber(),
-                approval.getRequestFileId()
+                approval.getRequestFileUrl()
         );
     }
 
