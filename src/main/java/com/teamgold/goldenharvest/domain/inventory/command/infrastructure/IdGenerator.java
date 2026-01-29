@@ -1,4 +1,4 @@
-package com.teamgold.goldenharvest.domain.inventory.command.domain;
+package com.teamgold.goldenharvest.domain.inventory.command.infrastructure;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

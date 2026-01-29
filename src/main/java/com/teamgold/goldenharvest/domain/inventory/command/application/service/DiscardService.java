@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
 import com.teamgold.goldenharvest.domain.inventory.command.application.dto.DiscardItemRequest;
-import com.teamgold.goldenharvest.domain.inventory.command.domain.IdGenerator;
+import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.IdGenerator;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.discard.Discard;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.discard.DiscardStatus;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Lot;

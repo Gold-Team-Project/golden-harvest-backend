@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.InboundService;
 import com.teamgold.goldenharvest.domain.inventory.command.application.service.LotService;
-import com.teamgold.goldenharvest.domain.inventory.command.domain.IdGenerator;
+import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.IdGenerator;
 import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Inbound;
 import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.InboundRepository;
 

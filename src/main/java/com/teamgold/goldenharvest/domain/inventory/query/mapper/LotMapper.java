@@ -67,7 +67,9 @@ public interface LotMapper {
                 i.item_name AS itemName,
                 i.grade_name AS gradeName,
                 i.variety_name AS varietyName,
-                i.base_unit AS baseUnit
+                i.base_unit AS baseUnit,
+                l.lot_status AS status,
+                l.inbound_date AS inboundDate
             FROM
                 tb_lot AS l
             JOIN
@@ -75,9 +77,11 @@ public interface LotMapper {
             ON
                 l.sku_no = i.sku_no
             WHERE
-                (#{skuNo} IS NULL OR l.sku_no = #{skuNo})
+                (#{itemName} IS NULL OR i.item_name LIKE CONCAT('%', #{itemName}, '%'))
                 AND
                 (l.inbound_date BETWEEN #{startDate} AND #{endDate})
+                AND
+                (#{status} IS NULL OR l.lot_status = #{status})
             ORDER BY
                 l.inbound_date DESC
 		LIMIT
@@ -88,8 +92,9 @@ public interface LotMapper {
 	List<ItemResponse> findAllItems(
 		@Param("limit") int limit,
 		@Param("offset") int offset,
-		@Param("skuNo") String skuNo,
+		@Param("itemName") String itemName,
 		@Param("startDate") LocalDate startDate,
-		@Param("endDate") LocalDate endDate
+		@Param("endDate") LocalDate endDate,
+		@Param("status") String status
 	);
 }

@@ -45,6 +45,7 @@ public enum ErrorCode {
 	LOT_NOT_FOUND("4001", "Lot 번호에 맞는 재고를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
 	INVALID_DISCARD_STATUS("4002", "폐기 상태코드를 잘못되었습니다", HttpStatus.BAD_REQUEST),
 	NO_SUCH_SKU("4003", "Sku 번호에 맞는 재고를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+    INVALID_DATE_FILTER("4004", "날짜 범위 설정이 잘못되었습니다." , HttpStatus.BAD_REQUEST),
 
     // Sales (5000-5999)
     ORDER_NOT_FOUND("5000", "주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
