@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
@@ -47,6 +48,9 @@ public class InventoryQueryService {
 			startDate = LocalDate.now().minusWeeks(1);
 			endDate = LocalDate.now(); // 날짜 필터링 기본 설정 (최근 일주일)
 		}
+
+		startDate = LocalDate.now().minusYears(10);
+		endDate = LocalDate.now().plusDays(1);
 
 		return lotMapper.findAllItems(limit, offset, skuNo, startDate, endDate);
 	}
