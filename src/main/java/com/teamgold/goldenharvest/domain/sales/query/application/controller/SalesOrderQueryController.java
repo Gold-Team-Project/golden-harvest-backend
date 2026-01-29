@@ -8,6 +8,8 @@ import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderS
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.MyOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.service.SalesOrderQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page; // Page import
+import org.springframework.data.domain.Pageable; // Pageable import
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,11 +31,11 @@ public class SalesOrderQueryController {
     private final SalesOrderQueryService salesOrderQueryService;
 
     @GetMapping("/my-orders")
-    public ResponseEntity<ApiResponse<?>> getMyOrderHistory(@ModelAttribute MyOrderSearchCondition searchCondition) {
+    public ResponseEntity<ApiResponse<Page<OrderHistoryResponse>>> getMyOrderHistory(@ModelAttribute MyOrderSearchCondition searchCondition, Pageable pageable) {
         // 최종 구현 시에는 Spring Security 등의 인증 시스템에서 사용자 이메일을 받아올 예정
         // userEmail 하드코딩으로 받아 옴
                 String userEmail = "testuser@example.com";
-                List<OrderHistoryResponse> orderHistory = salesOrderQueryService.getMyOrderHistory(userEmail, searchCondition);
+                Page<OrderHistoryResponse> orderHistory = salesOrderQueryService.getMyOrderHistory(userEmail, searchCondition, pageable);
         return ResponseEntity.ok(ApiResponse.success(orderHistory));
     }
 
@@ -45,8 +47,8 @@ public class SalesOrderQueryController {
 
     // 관리자가 사용자 주문 내역 조회하는 기능
     @GetMapping("/all-orders")
-    public ResponseEntity<ApiResponse<List<AdminOrderHistoryResponse>>> getAllOrderHistory(@ModelAttribute AdminOrderSearchCondition searchCondition) {
-        List<AdminOrderHistoryResponse> orderHistory = salesOrderQueryService.getAllOrderHistory(searchCondition);
+    public ResponseEntity<ApiResponse<Page<AdminOrderHistoryResponse>>> getAllOrderHistory(@ModelAttribute AdminOrderSearchCondition searchCondition, Pageable pageable) {
+        Page<AdminOrderHistoryResponse> orderHistory = salesOrderQueryService.getAllOrderHistory(searchCondition, pageable);
         return ResponseEntity.ok(ApiResponse.success(orderHistory));
     }
 

@@ -27,6 +27,11 @@ public class SalesOrderCommandServiceImpl implements SalesOrderCommandService {
         SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
 
+        // 이미 취소된 주문인지 확인
+        if (salesOrder.getOrderStatus().getSalesStatusId().equals(CANCELLED_STATUS_ID)) {
+            throw new BusinessException(ErrorCode.ORDER_ALREADY_CANCELLED, "이미 취소된 주문입니다.");
+        }
+
         SalesOrderStatus cancelledStatus = salesOrderStatusRepository.findById(CANCELLED_STATUS_ID)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_STATUS_NOT_FOUND));
 
@@ -42,7 +47,7 @@ public class SalesOrderCommandServiceImpl implements SalesOrderCommandService {
 
         // "주문 접수" 상태일 때만 승인 가능
         if (!salesOrder.getOrderStatus().getSalesStatusId().equals(ORDER_RECEIVED_STATUS_ID)) {
-            throw new BusinessException(ErrorCode.INVALID_ORDER_STATUS);
+            throw new BusinessException(ErrorCode.INVALID_ORDER_STATUS, "주문 접수 상태에서만 승인이 가능합니다.");
         }
 
         SalesOrderStatus preparingStatus = salesOrderStatusRepository.findById(PREPARING_STATUS_ID)

@@ -9,6 +9,9 @@ import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistor
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.MyOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.mapper.SalesOrderMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +25,10 @@ public class SalesOrderQueryServiceImpl implements SalesOrderQueryService {
     private final SalesOrderMapper salesOrderMapper;
 
     @Override
-    public List<OrderHistoryResponse> getMyOrderHistory(String userEmail, MyOrderSearchCondition searchCondition) {
-        return salesOrderMapper.findOrderHistoryByUserEmail(userEmail, searchCondition);
+    public Page<OrderHistoryResponse> getMyOrderHistory(String userEmail, MyOrderSearchCondition searchCondition, Pageable pageable) {
+        long totalCount = salesOrderMapper.countOrderHistoryByUserEmail(userEmail, searchCondition);
+        List<OrderHistoryResponse> orderHistory = salesOrderMapper.findOrderHistoryByUserEmail(userEmail, searchCondition, pageable);
+        return new PageImpl<>(orderHistory, pageable, totalCount);
     }
 
     @Override
@@ -36,8 +41,10 @@ public class SalesOrderQueryServiceImpl implements SalesOrderQueryService {
     }
 
     @Override
-    public List<AdminOrderHistoryResponse> getAllOrderHistory(AdminOrderSearchCondition searchCondition) {
-        return salesOrderMapper.findAllOrderHistory(searchCondition);
+    public Page<AdminOrderHistoryResponse> getAllOrderHistory(AdminOrderSearchCondition searchCondition, Pageable pageable) {
+        long totalCount = salesOrderMapper.countAllOrderHistory(searchCondition);
+        List<AdminOrderHistoryResponse> orderHistory = salesOrderMapper.findAllOrderHistory(searchCondition, pageable);
+        return new PageImpl<>(orderHistory, pageable, totalCount);
     }
 
     @Override

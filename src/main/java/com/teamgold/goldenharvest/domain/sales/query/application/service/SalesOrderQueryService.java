@@ -5,16 +5,18 @@ import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderH
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.AdminOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.MyOrderSearchCondition;
 import com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface SalesOrderQueryService {
 
-    List<OrderHistoryResponse> getMyOrderHistory(String userEmail, MyOrderSearchCondition searchCondition);
+    Page<OrderHistoryResponse> getMyOrderHistory(String userEmail, MyOrderSearchCondition searchCondition, Pageable pageable);
 
     OrderHistoryResponse getOrderDetail(String salesOrderId);
 
-    List<AdminOrderHistoryResponse> getAllOrderHistory(AdminOrderSearchCondition searchCondition);
+    Page<AdminOrderHistoryResponse> getAllOrderHistory(AdminOrderSearchCondition searchCondition, Pageable pageable);
 
     AdminOrderDetailResponse getAdminOrderDetail(String salesOrderId);
 }
