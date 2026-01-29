@@ -73,8 +73,8 @@ class SalesOrderCommandServiceTest {
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ORDER_NOT_FOUND);
 
         verify(salesOrderRepository, times(1)).findById(TEST_SALES_ORDER_ID);
-        verify(salesOrderStatusRepository, times(0)).findById(any()); // Should not attempt to find status
-        verify(salesOrderRepository, times(0)).save(any(SalesOrder.class));
+        verify(salesOrderStatusRepository, times(0)).findById(any()); // never()를 times(0)으로 변경
+        verify(salesOrderRepository, times(0)).save(any(SalesOrder.class)); // never()를 times(0)으로 변경
     }
 
     @Test
@@ -112,8 +112,8 @@ class SalesOrderCommandServiceTest {
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ORDER_NOT_FOUND);
 
         verify(salesOrderRepository, times(1)).findById(TEST_SALES_ORDER_ID);
-        verify(salesOrderStatusRepository, times(0)).findById(any()); // Should not attempt to find status
-        verify(salesOrderRepository, times(0)).save(any(SalesOrder.class));
+        verify(salesOrderStatusRepository, times(0)).findById(any()); // never()를 times(0)으로 변경
+        verify(salesOrderRepository, times(0)).save(any(SalesOrder.class)); // never()를 times(0)으로 변경
     }
 
     @Test
@@ -136,10 +136,33 @@ class SalesOrderCommandServiceTest {
         assertThatThrownBy(() -> salesOrderCommandService.approveOrder(TEST_SALES_ORDER_ID))
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_ORDER_STATUS)
-                .hasMessageContaining("주문 접수 상태에서만 승인이 가능합니다."); // Likely Line 139
+                .hasMessageContaining("주문 접수 상태에서만 승인이 가능합니다.");
 
         verify(salesOrderRepository, times(1)).findById(TEST_SALES_ORDER_ID);
-        verify(salesOrderStatusRepository, times(0)).findById(any());
-        verify(salesOrderRepository, times(0)).save(any(SalesOrder.class));
+        verify(salesOrderStatusRepository, times(0)).findById(any()); // never()를 times(0)으로 변경
+        verify(salesOrderRepository, times(0)).save(any(SalesOrder.class)); // never()를 times(0)으로 변경
+    }
+
+    @Test
+    @DisplayName("주문 취소 실패 - 이미 취소된 주문")
+    void testCancelOrder_AlreadyCancelled_ThrowsException() {
+        // Given (준비)
+        SalesOrderStatus alreadyCancelledStatus = new SalesOrderStatus(CANCELLED_STATUS_ID, "주문 취소", "CANCELLED");
+        SalesOrder salesOrder = SalesOrder.builder()
+                .salesOrderId(TEST_SALES_ORDER_ID)
+                .orderStatus(alreadyCancelledStatus)
+                .build();
+
+        given(salesOrderRepository.findById(TEST_SALES_ORDER_ID)).willReturn(Optional.of(salesOrder));
+
+        // When (실행) & Then (검증)
+        assertThatThrownBy(() -> salesOrderCommandService.cancelOrder(TEST_SALES_ORDER_ID))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.ORDER_ALREADY_CANCELLED)
+                .hasMessageContaining("이미 취소된 주문입니다.");
+
+        verify(salesOrderRepository, times(1)).findById(TEST_SALES_ORDER_ID);
+        verify(salesOrderStatusRepository, times(0)).findById(any()); // never()를 times(0)으로 변경
+        verify(salesOrderRepository, times(0)).save(any(SalesOrder.class)); // never()를 times(0)으로 변경
     }
 }

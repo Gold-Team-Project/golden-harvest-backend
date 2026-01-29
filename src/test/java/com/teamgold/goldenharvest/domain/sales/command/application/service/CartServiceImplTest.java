@@ -110,7 +110,7 @@ class CartServiceImplTest {
         // Then
         verify(salesSkuRepository, times(1)).findById(skuNo);
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
-        verify(hashOperations, times(1)).put(anyString(), eq(skuNo), any(Object.class)); // Changed to any(Object.class)
+        verify(hashOperations, times(1)).put(anyString(), eq(skuNo), any(Object.class)); // any(Object.class)로 변경
         verify(redisTemplate, times(1)).expire(anyString(), anyLong(), any(TimeUnit.class));
     }
 
@@ -129,8 +129,9 @@ class CartServiceImplTest {
         // Then
         verify(salesSkuRepository, times(1)).findById(skuNo);
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
-        // Verify that the quantity in the returned RedisCartItem is correctly updated.
-        // We cannot verify mockito.times(1) on a real object `redisCartItem.addQuantity(request.getQuantity());`
+        // 반환된 RedisCartItem의 수량이 올바르게 업데이트되었는지 검증한다.
+        // 실제 객체인 `redisCartItem.addQuantity(request.getQuantity());`에 대해서는
+        // mockito.times(1)로 호출 횟수를 검증할 수 없다.
         assertThat(redisCartItem.getQuantity()).isEqualTo(3); // 1 (initial) + 2 (added)
         verify(hashOperations, times(1)).put(anyString(), eq(skuNo), eq(redisCartItem));
         verify(redisTemplate, times(1)).expire(anyString(), anyLong(), any(TimeUnit.class));
@@ -149,7 +150,7 @@ class CartServiceImplTest {
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PRODUCT_NOT_FOUND);
 
         verify(salesSkuRepository, times(1)).findById(skuNo);
-        verify(hashOperations, never()).get(anyString(), anyString()); // Should not proceed to Redis
+        verify(hashOperations, never()).get(anyString(), anyString()); // Redis로 진행되면 안 된다
     }
 
     // --- getCart Tests ---
@@ -157,7 +158,7 @@ class CartServiceImplTest {
     @DisplayName("장바구니 조회 성공 - 상품 존재")
     void testGetCart_Success_WithItems() {
         // Given
-        Map<Object, Object> redisCartItems = new HashMap<>(); // Changed to Object, Object
+        Map<Object, Object> redisCartItems = new HashMap<>(); // Object, Object로 변경함
         redisCartItems.put(skuNo, redisCartItem);
         given(hashOperations.entries(anyString())).willReturn(redisCartItems);
 
@@ -167,8 +168,8 @@ class CartServiceImplTest {
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getUserEmail()).isEqualTo(userEmail);
-        assertThat(response.getItems()).hasSize(1); // Changed to getItems()
-        assertThat(response.getItems().get(0).getSkuNo()).isEqualTo(skuNo); // Changed to getItems()
+        assertThat(response.getItems()).hasSize(1); // getItems()로 변경함
+        assertThat(response.getItems().get(0).getSkuNo()).isEqualTo(skuNo); // getItems()로 변경함
         verify(redisTemplate, times(1)).expire(anyString(), anyLong(), any(TimeUnit.class));
     }
 
@@ -184,7 +185,7 @@ class CartServiceImplTest {
         // Then
         assertThat(response).isNotNull();
         assertThat(response.getUserEmail()).isEqualTo(userEmail);
-        assertThat(response.getItems()).isEmpty(); // Changed to getItems()
+        assertThat(response.getItems()).isEmpty(); // getItems()로 변경함
         verify(redisTemplate, times(0)).expire(anyString(), anyLong(), any(TimeUnit.class)); // No need to expire empty cart
     }
 
@@ -201,7 +202,7 @@ class CartServiceImplTest {
 
         // Then
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
-        assertThat(redisCartItem.getQuantity()).isEqualTo(5); // Assert actual quantity change
+        assertThat(redisCartItem.getQuantity()).isEqualTo(5); // 실제 수량 변경이 발생했는지 검증한다.
         verify(hashOperations, times(1)).put(anyString(), eq(skuNo), eq(redisCartItem));
         verify(redisTemplate, times(1)).expire(anyString(), anyLong(), any(TimeUnit.class));
     }
@@ -219,7 +220,7 @@ class CartServiceImplTest {
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.RESOURCE_NOT_FOUND);
 
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
-        verify(hashOperations, never()).put(anyString(), anyString(), any(Object.class)); // Changed to Object
+        verify(hashOperations, never()).put(anyString(), anyString(), any(Object.class)); // Object로 변경함
     }
 
     @Test
@@ -234,8 +235,8 @@ class CartServiceImplTest {
 
         // Then
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
-        verify(hashOperations, times(1)).delete(anyString(), eq(skuNo)); // Item should be deleted
-        verify(hashOperations, never()).put(anyString(), anyString(), any(Object.class)); // Changed to Object
+        verify(hashOperations, times(1)).delete(anyString(), eq(skuNo)); // 해당 항목은 삭제되어야 한다
+        verify(hashOperations, never()).put(anyString(), anyString(), any(Object.class)); // Object로 변경함
         verify(redisTemplate, times(1)).expire(anyString(), anyLong(), any(TimeUnit.class));
     }
 
@@ -244,7 +245,7 @@ class CartServiceImplTest {
     @DisplayName("장바구니 상품 제거 성공")
     void testRemoveItem_Success() {
         // Given
-        // No specific setup for hashOperations.delete needed beyond default mock behavior
+        // hashOperations.delete에 대해서는 기본적인 mock 동작 외에 별도의 설정이 필요하지 않다.
 
         // When
         cartService.removeItem(userEmail, skuNo);
@@ -259,7 +260,7 @@ class CartServiceImplTest {
     @DisplayName("주문 생성 성공 - 장바구니 상품 존재")
     void testPlaceOrder_Success_WithItems() {
         // Given
-        Map<Object, Object> redisCartItems = new HashMap<>(); // Changed to Object, Object
+        Map<Object, Object> redisCartItems = new HashMap<>(); // Object, Object로 변경함
         redisCartItems.put(skuNo, redisCartItem);
         String skuNo2 = "SKU002";
         RedisCartItem redisCartItem2 = new RedisCartItem(skuNo2, "Test Item 2", "B", "Variety", 2, BigDecimal.valueOf(5000));
@@ -306,7 +307,7 @@ class CartServiceImplTest {
     @DisplayName("주문 생성 실패 - PENDING 상태를 찾을 수 없음")
     void testPlaceOrder_PendingStatusNotFound_ThrowsException() {
         // Given
-        Map<Object, Object> redisCartItems = new HashMap<>(); // Changed to Object, Object
+        Map<Object, Object> redisCartItems = new HashMap<>(); // Object, Object로 변경함
         redisCartItems.put(skuNo, redisCartItem);
         given(hashOperations.entries(anyString())).willReturn(redisCartItems);
         given(salesOrderStatusRepository.findBySalesStatusType("PENDING")).willReturn(Optional.empty());
@@ -317,8 +318,8 @@ class CartServiceImplTest {
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.RESOURCE_NOT_FOUND);
 
         verify(hashOperations, times(1)).entries(anyString());
-        verify(cartRepository, times(1)).save(any(Cart.class)); // Changed from never() to times(1)
-        verify(salesOrderStatusRepository, times(1)).findBySalesStatusType("PENDING"); // Assert it's called once
+        verify(cartRepository, times(1)).save(any(Cart.class)); // never()에서 times(1)로 변경함
+        verify(salesOrderStatusRepository, times(1)).findBySalesStatusType("PENDING"); // 한 번 호출되었는지 검증한다
         verify(salesOrderRepository, never()).save(any(SalesOrder.class));
         verify(redisTemplate, never()).delete(anyString());
     }

@@ -27,6 +27,11 @@ public class SalesOrderCommandServiceImpl implements SalesOrderCommandService {
         SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
 
+        // 이미 취소된 주문인지 확인
+        if (salesOrder.getOrderStatus().getSalesStatusId().equals(CANCELLED_STATUS_ID)) {
+            throw new BusinessException(ErrorCode.ORDER_ALREADY_CANCELLED, "이미 취소된 주문입니다.");
+        }
+
         SalesOrderStatus cancelledStatus = salesOrderStatusRepository.findById(CANCELLED_STATUS_ID)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_STATUS_NOT_FOUND));
 
