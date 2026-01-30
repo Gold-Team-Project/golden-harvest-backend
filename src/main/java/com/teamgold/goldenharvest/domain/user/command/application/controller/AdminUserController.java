@@ -44,6 +44,18 @@ public class AdminUserController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    @PatchMapping("/{targetEmail}/role")
+    public ResponseEntity<ApiResponse<Void>> updateUserRole(
+            @AuthenticationPrincipal CustomUserDetails adminDetails,
+            @PathVariable String targetEmail,
+            @RequestParam String newRole) { // 또는 프로젝트의 Role Enum 타입 사용
+
+        // adminUserCommandService에도 해당 기능을 수행하는 메서드를 만들어야 합니다.
+        adminUserCommandService.updateUserRole(targetEmail, newRole, adminDetails.getUsername());
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
 	@PostMapping("/publish/all")
 	public ResponseEntity<ApiResponse<?>> publishUserDetails() {
 		adminUserCommandService.publishAllUserDetailsEvent();

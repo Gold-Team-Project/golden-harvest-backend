@@ -11,4 +11,6 @@ public interface AdminUserCommandService {
     void updateUserStatus(String targetEmail, UserStatus newStatus, String adminEmail);
 
 	void publishAllUserDetailsEvent();
+
+    void updateUserRole(String targetEmail, String newRole, String adminEmail);
 }

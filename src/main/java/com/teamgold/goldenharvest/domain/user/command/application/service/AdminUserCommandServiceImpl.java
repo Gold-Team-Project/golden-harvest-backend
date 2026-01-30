@@ -4,18 +4,18 @@ import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
 import com.teamgold.goldenharvest.domain.user.command.application.event.UserUpdateEventPublisher;
 import com.teamgold.goldenharvest.domain.user.command.application.event.dto.UserUpdatedEvent;
-import com.teamgold.goldenharvest.domain.user.command.domain.RequestStatus;
-import com.teamgold.goldenharvest.domain.user.command.domain.User;
-import com.teamgold.goldenharvest.domain.user.command.domain.UserStatus;
-import com.teamgold.goldenharvest.domain.user.command.domain.UserUpdateApproval;
+import com.teamgold.goldenharvest.domain.user.command.domain.*;
+import com.teamgold.goldenharvest.domain.user.command.infrastructure.repository.RoleRepository;
 import com.teamgold.goldenharvest.domain.user.command.infrastructure.repository.UserRepository;
 import com.teamgold.goldenharvest.domain.user.command.infrastructure.repository.UserUpdateApprovalRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -24,6 +24,7 @@ public class AdminUserCommandServiceImpl implements AdminUserCommandService {
     private final UserRepository userRepository;
     private final UserUpdateApprovalRepository userUpdateApprovalRepository;
 	private final UserUpdateEventPublisher userUpdateEventPublisher;
+    private final RoleRepository roleRepository;
 
     @Override
     public void approveUser(String email, UserStatus newStatus) {
@@ -94,6 +95,25 @@ public class AdminUserCommandServiceImpl implements AdminUserCommandService {
                             .build()
             );
         }
+    }
+    @Override
+    public void updateUserRole(String targetEmail, String newRole, String adminEmail) {
+        // 1. 대상 유저 조회
+        User user = userRepository.findByEmail(targetEmail)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        // 2. 관리자 본인의 권한 변경 방지 (보안 로직)
+        if (targetEmail.equals(adminEmail)) {
+            throw new BusinessException(ErrorCode.INVALID_REQUEST);
+        }
+
+       Role role = roleRepository.findById(newRole)
+               .orElseThrow(() -> new BusinessException(ErrorCode.FORBIDDEN_ACCESS));
+
+        user.updateRole(role);
+
+        // @Transactional이 걸려있으므로 메서드 종료 시 자동 더티 체킹(save) 됩니다.
+        log.info("Admin {} changed role of {} to {}", adminEmail, targetEmail, newRole);
     }
 }
 
