@@ -12,8 +12,8 @@ import com.teamgold.goldenharvest.common.exception.ErrorCode;
 
 @Builder
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // Added for deserialization
-@AllArgsConstructor // Added to resolve builder conflict
+@NoArgsConstructor // Changed from protected to public access
+@AllArgsConstructor
 public class ApiResponse<T> {
     private boolean success;    // 요청 성공 여부
     private T data;             // 실제 데이터 (성공 시만 사용)
