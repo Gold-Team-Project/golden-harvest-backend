@@ -42,6 +42,7 @@ public class InventoryQueryService {
 		Integer page,
 		Integer size,
 		String itemName,
+		String lotNo,
 		LocalDate startDate,
 		LocalDate endDate,
 		String status) {
@@ -59,7 +60,7 @@ public class InventoryQueryService {
 		int offset = (page - 1) * limit;
 
 
-		return lotMapper.findAllItems(limit, offset, itemName, startDate, endDate, status);
+		return lotMapper.findAllItems(limit, offset, itemName, lotNo, startDate, endDate, status);
 	}
 
 	public List<InboundResponse> getInbounds(

@@ -79,6 +79,8 @@ public interface LotMapper {
             WHERE
                 (#{itemName} IS NULL OR i.item_name LIKE CONCAT('%', #{itemName}, '%'))
                 AND
+                (#{lotNo} IS NULL OR l.lot_no LIKE CONCAT('%', #{lotNo}, '%'))
+                AND
                 (l.inbound_date BETWEEN #{startDate} AND #{endDate})
                 AND
                 (#{status} IS NULL OR l.lot_status = #{status})
@@ -93,6 +95,7 @@ public interface LotMapper {
 		@Param("limit") int limit,
 		@Param("offset") int offset,
 		@Param("itemName") String itemName,
+		@Param("lotNo") String lotNo,
 		@Param("startDate") LocalDate startDate,
 		@Param("endDate") LocalDate endDate,
 		@Param("status") String status
