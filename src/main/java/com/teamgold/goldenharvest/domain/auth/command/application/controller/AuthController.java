@@ -4,6 +4,7 @@ import com.teamgold.goldenharvest.common.mail.MailService;
 import com.teamgold.goldenharvest.common.response.ApiResponse;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.request.*;
 import com.teamgold.goldenharvest.domain.auth.command.application.dto.response.TokenResponse;
+import com.teamgold.goldenharvest.domain.auth.command.application.dto.response.UserResponse;
 import com.teamgold.goldenharvest.domain.auth.command.application.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -74,4 +75,14 @@ public class AuthController {
 
         return ResponseEntity.ok(ApiResponse.success("비밀번호가 성공적으로 재설정 되었습니다."));
     }
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> me() {
+
+        String email = "rbwls1100@naver.com";
+
+        UserResponse user = authService.getUserByEmail(email);
+        return ResponseEntity.ok(ApiResponse.success(user));
+    }
+
+
 }

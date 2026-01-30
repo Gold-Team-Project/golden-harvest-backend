@@ -19,4 +19,5 @@ public class UserAdminResponse {
     private String status;
     private String role;
     private LocalDateTime createdAt;
+    private String fileUrl;
 }
