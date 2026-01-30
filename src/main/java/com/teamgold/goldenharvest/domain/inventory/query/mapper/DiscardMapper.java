@@ -23,15 +23,20 @@ public interface DiscardMapper {
 		    d.discarded_at AS discardedAt,
 		    d.approved_by AS approvedEmailId,
 		    d.discard_status AS discardStatus,
-		    d.discard_rate AS discardRate
+		    d.discard_rate AS discardRate,
+		    i.item_name AS itemName
 		FROM
 		    tb_discard AS d
 		JOIN
 			tb_lot AS l
 		ON
 			l.lot_no = d.lot_no
+		JOIN
+			tb_item_master_mirror AS i
+		ON
+			l.sku_no = i.sku_no
 		WHERE
-		    (#{skuNo} IS NULL OR l.sku_no = #{skuNo})
+		    (#{itemName} IS NULL OR i.item_name LIKE CONCAT('%', #{itemName}, '%'))
 		    AND
 		    (#{discardStatus} IS NULL OR d.discard_status = #{discardStatus})
 		    AND
@@ -43,7 +48,7 @@ public interface DiscardMapper {
 	List<DiscardResponse> findAllDiscard(
 		@Param("limit") Integer limit,
 		@Param("offset") Integer offset,
-		@Param("skuNo") String skuNo,
+		@Param("itemName") String itemName,
 		@Param("discardStatus") String discardStatus,
 		@Param("startDate") LocalDateTime startDate,
 		@Param("endDate") LocalDateTime endDate

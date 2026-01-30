@@ -13,5 +13,6 @@ public class DiscardResponse {
 	LocalDateTime discardedAt;
 	String approvedEmailId;
 	String discardStatus;
-	BigDecimal discardRate;
+	Double discardRate;
+	String itemName;
 }
