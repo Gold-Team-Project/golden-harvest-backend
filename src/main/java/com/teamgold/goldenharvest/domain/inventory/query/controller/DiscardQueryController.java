@@ -35,7 +35,7 @@ public class DiscardQueryController {
 	public ResponseEntity<ApiResponse<?>> getAllDiscard(
 		@RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
 		@RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(50) Integer size,
-		@RequestParam(name = "skuNo", required = false) String skuNo,
+		@RequestParam(name = "itemName", required = false) String itemName,
 		@RequestParam(name = "status", required = false) String discardStatus,
 		@RequestParam(name = "startDate", required = false) LocalDate startDate,
 		@RequestParam(name = "endDate", required = false) LocalDate endDate
@@ -43,7 +43,7 @@ public class DiscardQueryController {
 		return ResponseEntity.ok(ApiResponse.success(discardQueryService.getAllDiscard(
 			page,
 			size,
-			skuNo,
+			itemName,
 			discardStatus,
 			startDate,
 			endDate

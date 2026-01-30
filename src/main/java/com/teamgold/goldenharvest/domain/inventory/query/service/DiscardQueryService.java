@@ -30,7 +30,7 @@ public class DiscardQueryService {
 	public List<DiscardResponse> getAllDiscard(
 		Integer page,
 		Integer size,
-		String skuNo,
+		String itemName,
 		String discardStatus,
 		LocalDate startDate,
 		LocalDate endDate
@@ -53,7 +53,7 @@ public class DiscardQueryService {
 		return discardMapper.findAllDiscard(
 			limit,
 			offset,
-			skuNo,
+			itemName,
 			discardStatus,
 			startDateTime,
 			endDateTime
