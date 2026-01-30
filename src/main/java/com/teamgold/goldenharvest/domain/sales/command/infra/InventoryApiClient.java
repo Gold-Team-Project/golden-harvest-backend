@@ -25,7 +25,7 @@ public class InventoryApiClient {
         try {
             ApiResponse<List<AvailableItemResponse>> response = restClient.get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/api/item")
+                            .path("/api/items")
                             .queryParam("skuNo", skuNo)
                             .build())
                     .accept(MediaType.APPLICATION_JSON)

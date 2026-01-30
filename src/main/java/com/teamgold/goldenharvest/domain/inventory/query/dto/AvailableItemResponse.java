@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor; // Add this import
 
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // Added for deserialization
-@AllArgsConstructor // Added for builder compatibility
+@NoArgsConstructor // Changed from protected to public access
+@AllArgsConstructor
 public class AvailableItemResponse {
 	String skuNo;
 	Integer quantity;
