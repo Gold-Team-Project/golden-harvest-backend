@@ -61,4 +61,10 @@ public class Discard {
         this.discardRate = discardRate;
 		this.totalPrice = totalPrice;
     }
+
+    public BigDecimal updateTotalPrice(BigDecimal originPrice) {
+        this.totalPrice = originPrice.multiply(BigDecimal.valueOf(quantity));
+
+        return this.totalPrice;
+    }
 }

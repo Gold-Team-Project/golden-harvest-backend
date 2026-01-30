@@ -37,6 +37,9 @@ public class Lot {
     @Column(name = "lot_status", nullable = false)
     private LotStatus lotStatus;
 
+    @Version
+    private Long version = 0L;
+
 	public enum LotStatus {
 		AVAILABLE,
 		ALLOCATED,

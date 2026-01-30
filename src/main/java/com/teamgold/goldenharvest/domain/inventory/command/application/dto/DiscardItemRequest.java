@@ -4,9 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class DiscardItemRequest {
-	private String lotNo;
-	private Integer quantity;
-	private String discardStatus;
-	private String description;
-	private String approvedAdminEmail;
+	String lotNo;
+	Integer quantity;
+	String discardStatus;
+	String description;
 }

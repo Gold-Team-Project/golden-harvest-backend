@@ -21,7 +21,7 @@ public class DiscardController {
 
 	private final DiscardService discardService;
 
-	@PostMapping("/discard")
+	@PostMapping("/admin/discard")
 	public ResponseEntity<ApiResponse<?>> discardItem(@RequestBody @Validated DiscardItemRequest discardItemRequest) {
 		return ResponseEntity.ok(ApiResponse.success(discardService.discardItem(discardItemRequest)));
 	}

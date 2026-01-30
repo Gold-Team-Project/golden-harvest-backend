@@ -3,6 +3,7 @@ package com.teamgold.goldenharvest.domain.inventory.command.application.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,8 @@ public class DiscardService {
 		lot.consumeQuantity(discardItemRequest.getQuantity());
 
 		String discardId = IdGenerator.createId("DIS");
-		DiscardStatus status = discardStatusRepository.findByDiscardStatus(discardItemRequest.getDiscardStatus()).orElseThrow(
+		DiscardStatus status = discardStatusRepository.findByDiscardStatus(discardItemRequest.getDiscardStatus())
+				.orElseThrow(
 			() -> new BusinessException(ErrorCode.INVALID_DISCARD_STATUS)
 		);
 
@@ -58,10 +60,14 @@ public class DiscardService {
 			.discardStatus(status)
 			.quantity(discardItemRequest.getQuantity())
 			.discardedAt(LocalDateTime.now())
-			.approvedBy(discardItemRequest.getApprovedAdminEmail())
+			.approvedBy("sampleuser@sample.com")
 			.discardRate(BigDecimal.valueOf(discardItemRequest.getQuantity() / lot.getQuantity()))
-			.totalPrice(itemMaster.getCurrentOriginPrice().multiply(BigDecimal.valueOf(discardItemRequest.getQuantity())))
 			.build();
+
+		BigDecimal originPrice = Optional.ofNullable(itemMaster.getCurrentOriginPrice())
+				.orElse(BigDecimal.ZERO);
+
+		discard.updateTotalPrice(originPrice);
 
 		return discardRepository.save(discard).getLotNo();
 	}
