@@ -21,7 +21,7 @@ public class InventoryApiClient {
         this.restClient = builder.baseUrl(inventoryBaseUrl).build();
     }
 
-    public Optional<AvailableItemResponse> findAvailableItemBySkuNo(String authorizationHeader, String skuNo) {
+    public Optional<AvailableItemResponse> findAvailableItemBySkuNo(String skuNo) {
         try {
             ApiResponse<List<AvailableItemResponse>> response = restClient.get()
                     .uri(uriBuilder -> uriBuilder
@@ -29,7 +29,7 @@ public class InventoryApiClient {
                             .queryParam("skuNo", skuNo)
                             .build())
                     .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", authorizationHeader)
+                    // .header("Authorization", authorizationHeader) // 임시적으로 인증 헤더 전송 비활성화
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {});
 

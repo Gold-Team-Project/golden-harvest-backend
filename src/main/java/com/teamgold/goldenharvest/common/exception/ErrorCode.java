@@ -53,6 +53,7 @@ public enum ErrorCode {
     ORDER_STATUS_NOT_FOUND("5002", "주문 상태를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     INVALID_ORDER_STATUS("5003", "주문 상태를 변경할 수 없습니다.", HttpStatus.BAD_REQUEST),
     ORDER_ALREADY_CANCELLED("5004", "이미 취소된 주문입니다.", HttpStatus.BAD_REQUEST),
+    CART_EMPTY("5005", "상품이 없습니다.", HttpStatus.BAD_REQUEST),
 
     //Inquiry (7000-7999)
     INQUIRY_NOT_FOUND("7000", "문의를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
