@@ -18,12 +18,16 @@ import com.teamgold.goldenharvest.domain.sales.command.infrastructure.cart.CartR
 import com.teamgold.goldenharvest.domain.sales.command.infrastructure.sales_order.SalesOrderRepository;
 import com.teamgold.goldenharvest.domain.sales.command.infrastructure.sales_order.SalesOrderStatusRepository;
 import com.teamgold.goldenharvest.domain.sales.command.infrastructure.repository.SalesSkuRepository;
+import com.teamgold.goldenharvest.domain.sales.command.infra.InventoryApiClient;
+import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import com.teamgold.goldenharvest.domain.sales.command.application.event.dto.SalesOrderEvent;
+import com.teamgold.goldenharvest.domain.sales.command.application.event.SalesOrderEventPublisher;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -63,9 +67,6 @@ class CartServiceImplTest {
     private HashOperations<String, Object, Object> hashOperations; // Object 제네릭으로 변경
 
     @Mock
-    private SalesSkuRepository salesSkuRepository;
-
-    @Mock
     private CartRepository cartRepository;
 
     @Mock
@@ -74,10 +75,17 @@ class CartServiceImplTest {
     @Mock
     private SalesOrderStatusRepository salesOrderStatusRepository;
 
+    @Mock
+    private InventoryApiClient inventoryApiClient; // Add this mock
+
+    @Mock
+    private SalesOrderEventPublisher eventPublisher;
+
     private String userEmail;
     private String skuNo;
     private SalesSku salesSku;
     private RedisCartItem redisCartItem;
+    private AvailableItemResponse availableItemResponse; // Added
 
     @BeforeEach
     void setUp() {
@@ -90,6 +98,13 @@ class CartServiceImplTest {
                 .varietyName("Variety")
                 .build();
         redisCartItem = new RedisCartItem(skuNo, "Test Item", "A", "Variety", 1, BigDecimal.valueOf(10000));
+        availableItemResponse = AvailableItemResponse.builder() // Added
+                .skuNo(skuNo)
+                .itemName("Test Item")
+                .gradeName("A")
+                .varietyName("Variety")
+                .customerPrice(10000.0)
+                .build();
 
         // Mock common RedisTemplate behavior
         given(redisTemplate.opsForHash()).willReturn(hashOperations);
@@ -101,16 +116,16 @@ class CartServiceImplTest {
     void testAddItemToCart_NewItem_Success() {
         // Given
         AddToCartRequest request = new AddToCartRequest(skuNo, 1);
-        given(salesSkuRepository.findById(skuNo)).willReturn(Optional.of(salesSku));
         given(hashOperations.get(anyString(), anyString())).willReturn(null);
+        given(inventoryApiClient.findAvailableItemBySkuNo(skuNo)).willReturn(Optional.of(availableItemResponse));
 
         // When
         cartService.addItemToCart(userEmail, request);
 
         // Then
-        verify(salesSkuRepository, times(1)).findById(skuNo);
+        verify(inventoryApiClient, times(1)).findAvailableItemBySkuNo(skuNo);
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
-        verify(hashOperations, times(1)).put(anyString(), eq(skuNo), any(Object.class)); // any(Object.class)로 변경
+        verify(hashOperations, times(1)).put(anyString(), eq(skuNo), any(RedisCartItem.class));
         verify(redisTemplate, times(1)).expire(anyString(), anyLong(), any(TimeUnit.class));
     }
 
@@ -120,14 +135,12 @@ class CartServiceImplTest {
         // Given
         AddToCartRequest request = new AddToCartRequest(skuNo, 2);
         redisCartItem.setQuantity(1); // Initial quantity
-        given(salesSkuRepository.findById(skuNo)).willReturn(Optional.of(salesSku));
         given(hashOperations.get(anyString(), anyString())).willReturn(redisCartItem);
 
         // When
         cartService.addItemToCart(userEmail, request);
 
         // Then
-        verify(salesSkuRepository, times(1)).findById(skuNo);
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
         // 반환된 RedisCartItem의 수량이 올바르게 업데이트되었는지 검증한다.
         // 실제 객체인 `redisCartItem.addQuantity(request.getQuantity());`에 대해서는 mockito.times(1)로 호출 횟수를 검증할 수 없다.
@@ -141,23 +154,24 @@ class CartServiceImplTest {
     void testAddItemToCart_ProductNotFound_ThrowsException() {
         // Given
         AddToCartRequest request = new AddToCartRequest(skuNo, 1);
-        given(salesSkuRepository.findById(skuNo)).willReturn(Optional.empty());
+        given(inventoryApiClient.findAvailableItemBySkuNo(skuNo)).willReturn(Optional.empty());
 
         // When & Then
         assertThatThrownBy(() -> cartService.addItemToCart(userEmail, request))
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PRODUCT_NOT_FOUND);
 
-        verify(salesSkuRepository, times(1)).findById(skuNo);
-        verify(hashOperations, never()).get(anyString(), anyString()); // Redis로 진행되면 안 된다
+        verify(inventoryApiClient, times(1)).findAvailableItemBySkuNo(skuNo);
+        verify(hashOperations, times(1)).get(anyString(), anyString()); // 상품을 찾을 수 없어도 장바구니 확인은 먼저 한다.
+        verify(hashOperations, never()).put(anyString(), anyString(), any(RedisCartItem.class));
     }
 
     // --- getCart Tests ---
     @Test
     @DisplayName("장바구니 조회 성공 - 상품 존재")
-    void testGetCart_Success_WithItems() {
-        // Given
-        Map<Object, Object> redisCartItems = new HashMap<>(); // Object, Object로 변경함
+            void testGetCart_Success_WithItems() {
+                // Given
+                Map<Object, Object> redisCartItems = new HashMap<>(); // Object, Object로 변경함
         redisCartItems.put(skuNo, redisCartItem);
         given(hashOperations.entries(anyString())).willReturn(redisCartItems);
 
@@ -219,7 +233,7 @@ class CartServiceImplTest {
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.RESOURCE_NOT_FOUND);
 
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
-        verify(hashOperations, never()).put(anyString(), anyString(), any(Object.class)); // Object로 변경함
+        verify(hashOperations, never()).put(anyString(), anyString(), any(RedisCartItem.class));
     }
 
     @Test
@@ -235,7 +249,7 @@ class CartServiceImplTest {
         // Then
         verify(hashOperations, times(1)).get(anyString(), eq(skuNo));
         verify(hashOperations, times(1)).delete(anyString(), eq(skuNo)); // 해당 항목은 삭제되어야 한다
-        verify(hashOperations, never()).put(anyString(), anyString(), any(Object.class)); // Object로 변경함
+        verify(hashOperations, never()).put(anyString(), anyString(), any(RedisCartItem.class));
         verify(redisTemplate, times(1)).expire(anyString(), anyLong(), any(TimeUnit.class));
     }
 
@@ -282,6 +296,8 @@ class CartServiceImplTest {
         verify(salesOrderStatusRepository, times(1)).findBySalesStatusType("PENDING");
         verify(salesOrderRepository, times(1)).save(any(SalesOrder.class));
         verify(redisTemplate, times(1)).delete(anyString());
+        // Then: 주문 생성 이벤트 발행 검증
+        verify(eventPublisher, times(2)).publishSalesOrderEvent(any(SalesOrderEvent.class));
     }
 
     @Test
@@ -293,7 +309,7 @@ class CartServiceImplTest {
         // When & Then
         assertThatThrownBy(() -> cartService.placeOrder(userEmail))
                 .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_REQUEST);
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.CART_EMPTY);
 
         verify(hashOperations, times(1)).entries(anyString());
         verify(cartRepository, never()).save(any(Cart.class));

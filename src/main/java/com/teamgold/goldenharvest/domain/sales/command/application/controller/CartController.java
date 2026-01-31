@@ -17,11 +17,11 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/items")
-    public ResponseEntity<ApiResponse<Void>> addItemToCart(@RequestHeader("Authorization") String authorizationHeader, @RequestBody AddToCartRequest request) {
+    public ResponseEntity<ApiResponse<Void>> addItemToCart(/* @RequestHeader("Authorization") String authorizationHeader, */ @RequestBody AddToCartRequest request) {
         // TODO: Spring Security 적용 후, 인증된 사용자 정보에서 이메일을 가져오도록 수정
         String userEmail = "rrrr@naver.com";
 
-        cartService.addItemToCart(authorizationHeader, userEmail, request);
+        cartService.addItemToCart(/* authorizationHeader, */ userEmail, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
