@@ -1,29 +1,30 @@
 package com.teamgold.goldenharvest.inventory;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
+import com.teamgold.goldenharvest.common.exception.BusinessException;
+import com.teamgold.goldenharvest.common.exception.ErrorCode;
+import com.teamgold.goldenharvest.domain.inventory.command.application.service.LotService;
+import com.teamgold.goldenharvest.domain.inventory.command.application.service.OutboundService;
+import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Lot;
+import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.LotRepository;
+import com.teamgold.goldenharvest.domain.sales.command.application.event.dto.SalesOrderEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
-import com.teamgold.goldenharvest.common.exception.BusinessException;
-import com.teamgold.goldenharvest.common.exception.ErrorCode;
-import com.teamgold.goldenharvest.domain.sales.command.application.event.dto.SalesOrderEvent;
-import com.teamgold.goldenharvest.domain.inventory.command.application.service.LotService;
-import com.teamgold.goldenharvest.domain.inventory.command.application.service.OutboundService;
-import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Lot;
-import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.LotRepository;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 class OutboundServiceTest {
 
 	@InjectMocks

@@ -1,10 +1,8 @@
 package com.teamgold.goldenharvest.inventory;
 
-import static org.mockito.BDDMockito.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
+import com.teamgold.goldenharvest.domain.inventory.query.mapper.LotMapper;
+import com.teamgold.goldenharvest.domain.inventory.query.service.InventoryQueryService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,13 +10,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
-import com.teamgold.goldenharvest.domain.inventory.query.mapper.LotMapper;
-import com.teamgold.goldenharvest.domain.inventory.query.service.InventoryQueryService;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 class LotQueryServiceTest {
 
 	@Mock

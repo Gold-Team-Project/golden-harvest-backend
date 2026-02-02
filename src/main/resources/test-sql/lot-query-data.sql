@@ -1,11 +1,11 @@
 -- 품목 마스터 미러 데이터
-INSERT INTO tb_item_master_mirror (sku_no, item_name, grade_name, variety_name, base_unit, current_origin_price, is_active)
+INSERT INTO tb_item_master_mirror (sku_no, item_name, grade_name, variety_name, base_unit, current_origin_price, is_active, file_url)
 VALUES
-    ('SKU_20260120_000001', '부사 사과', '특급', '부사', 'BOX', 30000.00, 1),
-    ('SKU_20260120_000002', '신고 배', '특급', '신고', 'BOX', 45000.00, 1),
-    ('SKU_20260120_000003', '샤인머스켓', '1등급', '샤인', 'KG', 25000.00, 1),
-    ('SKU_20260120_000004', '제주 감귤', '2등급', '조생', 'BOX', 15000.00, 1),
-    ('SKU_20260120_000005', '단감', '특급', '부유', 'BOX', 20000.00, 0);
+    ('SKU_20260120_000001', '부사 사과', '특급', '부사', 'BOX', 30000.00, 1, 'file_url_1'),
+    ('SKU_20260120_000002', '신고 배', '특급', '신고', 'BOX', 45000.00, 1, 'file_url_2'),
+    ('SKU_20260120_000003', '샤인머스켓', '1등급', '샤인', 'KG', 25000.00, 1, 'file_url_3'),
+    ('SKU_20260120_000004', '제주 감귤', '2등급', '조생', 'BOX', 15000.00, 1, 'file_url_4'),
+    ('SKU_20260120_000005', '단감', '특급', '부유', 'BOX', 20000.00, 0, 'file_url_5');
 
 -- 가격 정책 데이터 (마진율 15%)
 INSERT INTO tb_price_policy (sku_no, margin_rate, is_active)
