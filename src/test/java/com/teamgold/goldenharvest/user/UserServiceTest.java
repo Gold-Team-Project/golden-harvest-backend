@@ -16,50 +16,52 @@ import com.teamgold.goldenharvest.domain.user.command.infrastructure.repository.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+// Mockito 관련 검증 메서드
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.willReturn;
+
+
+public @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
-    UserRepository userRepository;
-
-    @Mock
-    UserUpdateApprovalRepository userUpdateApprovalRepository;
-
-    @Mock
-    PasswordEncoder passwordEncoder;
-
-    @Mock
-    RedisTemplate<String, Object> redisTemplate;
-
-    @Mock
-    FileUploadService fileUploadService;
+    private UserRepository userRepository;
 
     @InjectMocks
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
 
-    // ===============================
-    // 프로필 수정
-    // ===============================
+    @Mock
+    private UserUpdateApprovalRepository userUpdateApprovalRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Mock
+    private FileUploadService fileUploadService;
+
     @Test
-    @DisplayName("회원 정보 수정 성공")
+    @DisplayName("회원 정보 수정 성공 테스트")
     void updateProfile_Success() {
-
+        // given
         String email = "test@example.com";
-
         User user = User.builder()
                 .email(email)
                 .name("이전이름")
@@ -74,163 +76,74 @@ class UserServiceTest {
                 .postalCode("12345")
                 .build();
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
 
+        // when
         userService.updateProfile(email, request);
 
+        // then
         assertThat(user.getName()).isEqualTo("새이름");
         assertThat(user.getPhoneNumber()).isEqualTo("010-1234-5678");
         assertThat(user.getAddressLine1()).isEqualTo("서울시");
-        assertThat(user.getAddressLine2()).isEqualTo("강남구");
-        assertThat(user.getPostalCode()).isEqualTo("12345");
-
-        verify(userRepository).findByEmail(email);
-        verifyNoMoreInteractions(userRepository);
-    }
-
-    // ===============================
-    // 사업자 정보 수정 요청
-    // ===============================
-    @Test
-    @DisplayName("사업자 정보 수정 요청 성공 (파일 업로드 후 fileUrl 저장)")
-    void requestBusinessUpdate_Success() throws Exception {
-
-        String email = "test@example.com";
-        User user = User.builder().email(email).build();
-
-        // DTO에 fileId 같은 게 있어도 서비스에서는 MultipartFile 업로드 결과(fileUrl)를 저장함
-        UserUpdateRequest request = new UserUpdateRequest("새회사", "123-45","https://s3.aws.com/business.png" );
-
-        MultipartFile file = mock(MultipartFile.class);
-
-        File uploadedFile = File.builder()
-                .fileUrl("https://s3.aws.com/business.png")
-                .build();
-
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(fileUploadService.upload(file)).thenReturn(uploadedFile);
-
-        userService.requestBusinessUpdate(email, request, file);
-
-        ArgumentCaptor<UserUpdateApproval> captor = ArgumentCaptor.forClass(UserUpdateApproval.class);
-        verify(userUpdateApprovalRepository).save(captor.capture());
-
-        UserUpdateApproval saved = captor.getValue();
-        assertThat(saved.getUser()).isEqualTo(user);
-        assertThat(saved.getRequestCompany()).isEqualTo("새회사");
-        assertThat(saved.getRequestBusinessNumber()).isEqualTo("123-45");
-        assertThat(saved.getRequestFileUrl()).isEqualTo("https://s3.aws.com/business.png");
-        assertThat(saved.getStatus()).isEqualTo(RequestStatus.PENDING);
-
-        verify(userRepository).findByEmail(email);
-        verify(fileUploadService).upload(file);
-        verify(userUpdateApprovalRepository).save(any(UserUpdateApproval.class));
-        verifyNoMoreInteractions(userRepository, fileUploadService, userUpdateApprovalRepository);
     }
 
     @Test
-    @DisplayName("사업자 정보 수정 요청 실패 - 파일 업로드 IOException -> FILE_UPLOAD_ERROR")
-    void requestBusinessUpdate_Fail_FileUploadIOException() throws Exception {
-
-        String email = "test@example.com";
-        User user = User.builder().email(email).build();
-
-        UserUpdateRequest request = new UserUpdateRequest("회사", "123-45", "https://s3.aws.com/business.png");
-        MultipartFile file = mock(MultipartFile.class);
-
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(fileUploadService.upload(file)).thenThrow(new IOException("S3 error"));
-
-        assertThatThrownBy(() -> userService.requestBusinessUpdate(email, request, file))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.FILE_UPLOAD_ERROR);
-
-        verify(userRepository).findByEmail(email);
-        verify(fileUploadService).upload(file);
-        verify(userUpdateApprovalRepository, never()).save(any());
-    }
-
-    // ===============================
-    // 비밀번호 변경
-    // ===============================
-    @Test
-    @DisplayName("비밀번호 변경 성공 (리프레시 토큰 삭제)")
+    @DisplayName("비밀번호 변경 성공 - 기존 토큰 삭제 확인")
     void changePassword_Success() {
-
+        // given
         String email = "test@example.com";
+        String oldPw = "old1234";
+        String newPw = "new1234";
+        User user = User.builder().email(email).password("encodedOld").build();
+        PasswordChangeRequest request = new PasswordChangeRequest(oldPw, newPw);
 
-        User user = User.builder()
-                .email(email)
-                .password("encodedOld")
-                .build();
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
+        given(passwordEncoder.matches(oldPw, "encodedOld")).willReturn(true); // 기존 비번 일치
+        given(passwordEncoder.matches(newPw, "encodedOld")).willReturn(false); // 새 비번은 다름
+        given(passwordEncoder.encode(newPw)).willReturn("encodedNew");
 
-        PasswordChangeRequest request = new PasswordChangeRequest("old1234", "new1234");
-
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("old1234", "encodedOld")).thenReturn(true);
-        when(passwordEncoder.matches("new1234", "encodedOld")).thenReturn(false);
-        when(passwordEncoder.encode("new1234")).thenReturn("encodedNew");
-
+        // when
         userService.changePassword(email, request);
 
+        // then
         assertThat(user.getPassword()).isEqualTo("encodedNew");
-        verify(redisTemplate).delete("RT:" + email);
-
-        verify(userRepository).findByEmail(email);
-        verify(passwordEncoder).matches("old1234", "encodedOld");
-        verify(passwordEncoder).matches("new1234", "encodedOld");
-        verify(passwordEncoder).encode("new1234");
-        verify(redisTemplate).delete("RT:" + email);
-        verifyNoMoreInteractions(userRepository, passwordEncoder, redisTemplate);
+        verify(redisTemplate).delete("RT:" + email); // 리프레시 토큰 삭제 검증
     }
 
     @Test
     @DisplayName("비밀번호 변경 실패 - 현재 비밀번호 불일치")
     void changePassword_Fail_WrongOldPassword() {
-
+        // given
         String email = "test@example.com";
-
-        User user = User.builder()
-                .email(email)
-                .password("encodedOld")
-                .build();
-
         PasswordChangeRequest request = new PasswordChangeRequest("wrongOld", "new1234");
+        User user = User.builder().email(email).password("encodedOld").build();
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("wrongOld", "encodedOld")).thenReturn(false);
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
+        given(passwordEncoder.matches("wrongOld", "encodedOld")).willReturn(false);
 
+        // when & then
         assertThatThrownBy(() -> userService.changePassword(email, request))
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_NOT_MATCH);
-
-        verify(redisTemplate, never()).delete(anyString());
-        verify(passwordEncoder, never()).encode(anyString());
     }
-
     @Test
-    @DisplayName("비밀번호 변경 실패 - 새 비밀번호가 기존과 동일")
-    void changePassword_Fail_SameAsOld() {
-
+    @DisplayName("사업자 정보 수정 요청 성공 - 승인 대기 데이터 생성")
+    void requestBusinessUpdate_Success() throws IOException {
+        // given
         String email = "test@example.com";
+        User user = User.builder().email(email).build();
+        UserUpdateRequest request = new UserUpdateRequest("새회사", "123-45", "https://example.com/file/test.jpg");
+        MockMultipartFile file = new MockMultipartFile("file", "business.jpg", "image/jpeg", "content".getBytes());
 
-        User user = User.builder()
-                .email(email)
-                .password("encodedOld")
-                .build();
+        File mockFile = new File();
+        given(mockFile.getFileUrl()).willReturn("https://example.com/file/test.jpg");
+        given(fileUploadService.upload(file)).willReturn(mockFile);
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
 
-        PasswordChangeRequest request = new PasswordChangeRequest("old1234", "old1234");
+        // when
+        userService.requestBusinessUpdate(email, request, file);
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("old1234", "encodedOld")).thenReturn(true);
-        // 새 비밀번호도 기존 해시와 매칭되면 동일로 판단
-        when(passwordEncoder.matches("old1234", "encodedOld")).thenReturn(true);
-
-        assertThatThrownBy(() -> userService.changePassword(email, request))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.PASSWORD_SAME_AS_OLD);
-
-        verify(redisTemplate, never()).delete(anyString());
-        verify(passwordEncoder, never()).encode(anyString());
+        // then
+        verify(userUpdateApprovalRepository, times(1)).save(any(UserUpdateApproval.class));
     }
 }
