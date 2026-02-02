@@ -56,6 +56,10 @@ dependencies {
     implementation 'commons-io:commons-io:2.20.0'
 }
 
+test {
+    jvmArgs "-javaagent:${configurations.testRuntimeClasspath.find { it.name.contains('mockito-core') }.absolutePath}"
+}
+
 
 tasks.named('test') {
     useJUnitPlatform()

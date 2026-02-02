@@ -21,10 +21,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PurchaseCommandService {
 
-    private final PurchaseOrderRepository PurchaseOrderRepository;
-    private final OrderStatusRepository OrderStatusRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
+    private final JpaOrderStatusRepository orderStatusRepository; // 유지
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final JpaOrderStatusRepository orderStatusRepository;
+
     @Transactional
     public String createPurchaseOrder(Long quantity, String skuNo) {
         // 1) 입력값 검증
@@ -37,29 +37,28 @@ public class PurchaseCommandService {
         if (quantity > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("수량이 너무 큽니다");
         }
-        OrderStatus status = orderStatusRepository.findById("CREATED")
-                .orElseThrow(() -> new IllegalStateException("주문 상태 없음"));
-        // 2) 기본 상태 조회 (예: DRAFT)
-        // 너 OrderStatus 엔티티/컬럼명에 맞춰 findBy... 는 바꿔야 함
-        OrderStatus draft = OrderStatusRepository.findByType("DRAFT");
 
-        // 3) PO ID 생성 (20자 제한 고려)
-        String poId = generatePoId(); // 예: PO20260112A1B2C3D4 (18자)
+        // 2) 상태 조회 (초기 상태: DRAFT)
+        OrderStatus draft = orderStatusRepository.findById("DRAFT")
+                .orElseThrow(() -> new IllegalStateException("주문 상태 없음: DRAFT"));
 
-        // 4) 엔티티 생성 (Builder)
+        // 3) PO ID 생성
+        String poId = generatePoId();
+
+        // 4) 엔티티 생성 (orderStatus는 한 번만!)
         PurchaseOrder po = PurchaseOrder.builder()
                 .purchase_order_id(poId)
                 .orderStatus(draft)
                 .createdAt(LocalDate.now())
-                .orderStatus(status)
-                .deliveryDate(null)               // 지금은 없으면 null
+                .deliveryDate(null)
                 .skuNo(skuNo)
                 .quantity(quantity.intValue())
                 .build();
 
         // 5) 저장
-        PurchaseOrderRepository.save(po);
+        purchaseOrderRepository.save(po);
 
+        // 6) 이벤트 발행
         applicationEventPublisher.publishEvent(
                 new PurchaseOrderCreatedEvent(
                         poId,
@@ -69,12 +68,13 @@ public class PurchaseCommandService {
                 )
         );
 
-        return po.getPurchase_order_id();
+        return poId;
     }
 
     private String generatePoId() {
-        String date = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE); // yyyymmdd
+        String date = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
         String rand = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
         return "PO" + date + rand;
     }
 }
+

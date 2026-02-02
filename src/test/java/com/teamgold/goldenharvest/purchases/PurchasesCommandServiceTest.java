@@ -4,8 +4,8 @@ import com.teamgold.goldenharvest.domain.purchases.command.application.event.Pur
 import com.teamgold.goldenharvest.domain.purchases.command.application.service.PurchaseCommandService;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.OrderStatus;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.aggregate.PurchaseOrder;
-import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.OrderStatusRepository;
 import com.teamgold.goldenharvest.domain.purchases.command.domain.repository.PurchaseOrderRepository;
+import com.teamgold.goldenharvest.domain.purchases.command.infrastructure.repository.JpaOrderStatusRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,7 +34,7 @@ public class PurchasesCommandServiceTest {
     private PurchaseOrderRepository purchaseOrderRepository;
 
     @Mock
-    private OrderStatusRepository orderStatusRepository;
+    private JpaOrderStatusRepository orderStatusRepository;
 
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
@@ -42,11 +44,18 @@ public class PurchasesCommandServiceTest {
         // given
         Long quantity = 100L;
         String skuNo = "SKU-12345";
+
         OrderStatus draftStatus = OrderStatus.builder()
                 .type("DRAFT")
                 .build();
 
-        given(orderStatusRepository.findByType("DRAFT")).willReturn(draftStatus);
+        // FIX: 서비스가 findById를 쓰면 여기도 findById로 스텁
+        given(orderStatusRepository.findById("DRAFT"))
+                .willReturn(Optional.of(draftStatus));
+
+        // (선택) 서비스가 CREATED도 조회하면 이것도 필요
+        // OrderStatus createdStatus = OrderStatus.builder().type("CREATED").build();
+        // given(orderStatusRepository.findById("CREATED")).willReturn(Optional.of(createdStatus));
 
         // when
         String poId = purchaseCommandService.createPurchaseOrder(quantity, skuNo);
@@ -60,7 +69,13 @@ public class PurchasesCommandServiceTest {
         assertThat(savedPo.getPurchase_order_id()).hasSize(18);
         assertThat(savedPo.getSkuNo()).isEqualTo(skuNo);
         assertThat(savedPo.getQuantity()).isEqualTo(100);
+
+        // 주의: 서비스에서 orderStatus를 DRAFT로 넣는지 CREATED로 덮는지에 따라 기대값이 달라짐
+        // 서비스가 DRAFT만 set한다면:
         assertThat(savedPo.getOrderStatus()).isEqualTo(draftStatus);
+        // 서비스가 CREATED로 마지막에 덮어쓴다면:
+        // assertThat(savedPo.getOrderStatus()).isEqualTo(createdStatus);
+
         assertThat(savedPo.getCreatedAt()).isNotNull();
         assertThat(savedPo.getDeliveryDate()).isNull();
 
@@ -73,11 +88,18 @@ public class PurchasesCommandServiceTest {
         // given
         Long quantity = 50L;
         String skuNo = "SKU-67890";
+
         OrderStatus draftStatus = OrderStatus.builder()
                 .type("DRAFT")
                 .build();
 
-        given(orderStatusRepository.findByType("DRAFT")).willReturn(draftStatus);
+        // FIX
+        given(orderStatusRepository.findById("DRAFT"))
+                .willReturn(Optional.of(draftStatus));
+
+        // (선택) 서비스가 CREATED도 조회하면 이것도 필요
+        // OrderStatus createdStatus = OrderStatus.builder().type("CREATED").build();
+        // given(orderStatusRepository.findById("CREATED")).willReturn(Optional.of(createdStatus));
 
         // when
         purchaseCommandService.createPurchaseOrder(quantity, skuNo);
@@ -110,11 +132,9 @@ public class PurchasesCommandServiceTest {
 
     @Test
     void createPurchaseOrder_throwsException_whenQuantityIsZero() {
-        // given
         Long quantity = 0L;
         String skuNo = "SKU-12345";
 
-        // when & then
         assertThatThrownBy(() -> purchaseCommandService.createPurchaseOrder(quantity, skuNo))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("수량은 0 보다 커야 합니다");
@@ -125,11 +145,9 @@ public class PurchasesCommandServiceTest {
 
     @Test
     void createPurchaseOrder_throwsException_whenQuantityIsNegative() {
-        // given
         Long quantity = -10L;
         String skuNo = "SKU-12345";
 
-        // when & then
         assertThatThrownBy(() -> purchaseCommandService.createPurchaseOrder(quantity, skuNo))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("수량은 0 보다 커야 합니다");
@@ -140,11 +158,9 @@ public class PurchasesCommandServiceTest {
 
     @Test
     void createPurchaseOrder_throwsException_whenSkuNoIsNull() {
-        // given
         Long quantity = 100L;
         String skuNo = null;
 
-        // when & then
         assertThatThrownBy(() -> purchaseCommandService.createPurchaseOrder(quantity, skuNo))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상품명을 찾을 수 없습니다");
@@ -155,11 +171,9 @@ public class PurchasesCommandServiceTest {
 
     @Test
     void createPurchaseOrder_throwsException_whenSkuNoIsBlank() {
-        // given
         Long quantity = 100L;
         String skuNo = "   ";
 
-        // when & then
         assertThatThrownBy(() -> purchaseCommandService.createPurchaseOrder(quantity, skuNo))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상품명을 찾을 수 없습니다");
@@ -170,11 +184,9 @@ public class PurchasesCommandServiceTest {
 
     @Test
     void createPurchaseOrder_throwsException_whenQuantityExceedsIntMax() {
-        // given
         Long quantity = (long) Integer.MAX_VALUE + 1L;
         String skuNo = "SKU-12345";
 
-        // when & then
         assertThatThrownBy(() -> purchaseCommandService.createPurchaseOrder(quantity, skuNo))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("수량이 너무 큽니다");
@@ -188,11 +200,18 @@ public class PurchasesCommandServiceTest {
         // given
         Long quantity = (long) Integer.MAX_VALUE;
         String skuNo = "SKU-12345";
+
         OrderStatus draftStatus = OrderStatus.builder()
                 .type("DRAFT")
                 .build();
 
-        given(orderStatusRepository.findByType("DRAFT")).willReturn(draftStatus);
+        // FIX: 이게 정답
+        given(orderStatusRepository.findById("DRAFT"))
+                .willReturn(Optional.of(draftStatus));
+
+        // (선택) 서비스가 CREATED도 조회하면 이것도 필요
+        // OrderStatus createdStatus = OrderStatus.builder().type("CREATED").build();
+        // given(orderStatusRepository.findById("CREATED")).willReturn(Optional.of(createdStatus));
 
         // when
         String poId = purchaseCommandService.createPurchaseOrder(quantity, skuNo);
