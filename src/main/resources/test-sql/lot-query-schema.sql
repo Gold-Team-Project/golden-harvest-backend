@@ -7,6 +7,7 @@ CREATE TABLE tb_item_master_mirror (
                                        base_unit VARCHAR(255),
                                        current_origin_price DECIMAL(10, 2),
                                        is_active BOOLEAN NOT NULL,
+                                       file_url VARCHAR(255),
                                        PRIMARY KEY (sku_no)
 );
 

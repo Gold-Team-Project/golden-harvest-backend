@@ -1,27 +1,27 @@
 package com.teamgold.goldenharvest.inventory;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-
 import com.teamgold.goldenharvest.domain.inventory.query.dto.AvailableItemResponse;
 import com.teamgold.goldenharvest.domain.inventory.query.dto.InboundResponse;
 import com.teamgold.goldenharvest.domain.inventory.query.dto.OutboundResponse;
 import com.teamgold.goldenharvest.domain.inventory.query.mapper.InboundMapper;
 import com.teamgold.goldenharvest.domain.inventory.query.mapper.LotMapper;
 import com.teamgold.goldenharvest.domain.inventory.query.mapper.OutboundMapper;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실 DB가 아닌 설정된 H2 사용
 @ActiveProfiles("test") // application-test.yml 적용, given: ddl 및 더미데이터 삽입
+@MapperScan("com.teamgold.goldenharvest.domain.inventory.query.mapper")
 class LotQueryMapperTest {
 
 	@Autowired
@@ -52,7 +52,7 @@ class LotQueryMapperTest {
 			10,
 			0,
 			"SKU_20260120_000003",
-			LocalDate.now().minusWeeks(2),
+			LocalDate.now().minusMonths(2),
 			LocalDate.now()
 		);
 
@@ -60,7 +60,7 @@ class LotQueryMapperTest {
 			10,
 			0,
 			null,
-			LocalDate.now().minusDays(1),
+			LocalDate.of(2026, 1, 19),
 			LocalDate.now()
 		);
 
@@ -78,7 +78,7 @@ class LotQueryMapperTest {
 			0,
 			null,
 			"LOT_20260120_000003",
-			LocalDate.now().minusWeeks(2),
+			LocalDate.now().minusMonths(2),
 			LocalDate.now()
 		);
 
@@ -87,7 +87,7 @@ class LotQueryMapperTest {
 			0,
 			null,
 			null,
-			LocalDate.now(),
+			LocalDate.of(2026, 1, 20),
 			LocalDate.now()
 		);
 

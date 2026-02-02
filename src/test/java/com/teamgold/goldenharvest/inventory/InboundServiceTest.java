@@ -1,10 +1,11 @@
 package com.teamgold.goldenharvest.inventory;
 
-import static org.mockito.BDDMockito.*;
-
-import java.time.LocalDate;
-import java.util.Optional;
-
+import com.teamgold.goldenharvest.common.exception.BusinessException;
+import com.teamgold.goldenharvest.domain.inventory.command.application.service.InboundService;
+import com.teamgold.goldenharvest.domain.inventory.command.application.service.LotService;
+import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Inbound;
+import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.IdGenerator;
+import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.InboundRepository;
 import com.teamgold.goldenharvest.domain.purchases.command.application.event.PurchaseOrderCreatedEvent;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,15 +15,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
-import com.teamgold.goldenharvest.common.exception.BusinessException;
-import com.teamgold.goldenharvest.domain.inventory.command.application.service.InboundService;
-import com.teamgold.goldenharvest.domain.inventory.command.application.service.LotService;
-import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.IdGenerator;
-import com.teamgold.goldenharvest.domain.inventory.command.domain.lot.Inbound;
-import com.teamgold.goldenharvest.domain.inventory.command.infrastructure.InboundRepository;
+import java.time.LocalDate;
+import java.util.Optional;
+
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 class InboundServiceTest {
 
 	@InjectMocks
