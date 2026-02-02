@@ -103,7 +103,7 @@ public class AuthServiceTest {
 
         User savedUser = userCaptor.getValue();
         assertThat(savedUser.getStatus()).isEqualTo(UserStatus.PENDING);
-        assertThat(savedUser.getFileId()).isEqualTo(50L);
+        assertThat(savedUser.getFileUrl()).isNotBlank();
         verify(redisTemplate).delete("EMAIL_VERIFIED:" + email);
 
         verify(eventPublisher).publishEvent(any(UserUpdatedEvent.class));
