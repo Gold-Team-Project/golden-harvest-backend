@@ -61,7 +61,6 @@ class AdminUserServiceTest {
                 .user(user)
                 .requestCompany("황금농장")
                 .requestBusinessNumber("111-22-33333")
-                .requestFileId(50L)
                 .status(RequestStatus.PENDING)
                 .build();
 

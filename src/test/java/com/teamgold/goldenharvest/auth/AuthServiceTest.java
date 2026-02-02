@@ -85,7 +85,7 @@ public class AuthServiceTest {
         // File 클래스가 Inquiry 도메인에 있으므로 정확한 경로로 Mocking
         File mockFile =
                 mock(File.class);
-        given(mockFile.getFileId()).willReturn(50L);
+        given(mockFile.getFileUrl()).willReturn("https://example.com/file/test.jpg");
         given(fileUploadService.upload(file)).willReturn(mockFile);
 
         Role role = Role.builder()
@@ -103,7 +103,7 @@ public class AuthServiceTest {
 
         User savedUser = userCaptor.getValue();
         assertThat(savedUser.getStatus()).isEqualTo(UserStatus.PENDING);
-        assertThat(savedUser.getFileId()).isEqualTo(50L);
+        assertThat(savedUser.getFileUrl()).isEqualTo("https://example.com/file/test.jpg");
         verify(redisTemplate).delete("EMAIL_VERIFIED:" + email);
 
         verify(eventPublisher).publishEvent(any(UserUpdatedEvent.class));

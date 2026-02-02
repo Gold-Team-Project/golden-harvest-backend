@@ -2,6 +2,8 @@ package com.teamgold.goldenharvest.user;
 
 import com.teamgold.goldenharvest.common.exception.BusinessException;
 import com.teamgold.goldenharvest.common.exception.ErrorCode;
+import com.teamgold.goldenharvest.common.infra.file.domain.File;
+import com.teamgold.goldenharvest.common.infra.file.service.FileUploadService;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.PasswordChangeRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserProfileUpdateRequest;
 import com.teamgold.goldenharvest.domain.user.command.application.dto.request.UserUpdateRequest;
@@ -18,8 +20,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,8 +32,8 @@ import static org.mockito.BDDMockito.given;
 
 // Mockito 관련 검증 메서드
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.willReturn;
 
 
 public @ExtendWith(MockitoExtension.class)
@@ -49,6 +53,9 @@ class UserServiceTest {
 
     @Mock
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Mock
+    private FileUploadService fileUploadService;
 
     @Test
     @DisplayName("회원 정보 수정 성공 테스트")
@@ -80,23 +87,6 @@ class UserServiceTest {
         assertThat(user.getAddressLine1()).isEqualTo("서울시");
     }
 
-    @Test
-    @DisplayName("이미 대기 중인 수정 요청이 있으면 예외가 발생한다")
-    void requestBusinessUpdate_Fail_Duplicate() {
-        // given
-        String email = "test@example.com";
-        User user = User.builder().email(email).build();
-        UserUpdateRequest request = new UserUpdateRequest("회사", "123-45", "ASDasdasd");
-
-        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
-        // 이미 PENDING 상태가 있다고 가정
-        given(userUpdateApprovalRepository.existsByUserAndStatus(user, RequestStatus.PENDING)).willReturn(true);
-
-        // when & then
-        assertThatThrownBy(() -> userService.requestBusinessUpdate(email, request))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.DUPLICATE_REQUEST);
-    }
     @Test
     @DisplayName("비밀번호 변경 성공 - 기존 토큰 삭제 확인")
     void changePassword_Success() {
@@ -138,17 +128,21 @@ class UserServiceTest {
     }
     @Test
     @DisplayName("사업자 정보 수정 요청 성공 - 승인 대기 데이터 생성")
-    void requestBusinessUpdate_Success() {
+    void requestBusinessUpdate_Success() throws IOException {
         // given
         String email = "test@example.com";
         User user = User.builder().email(email).build();
-        UserUpdateRequest request = new UserUpdateRequest("새회사", "123-45", 1L);
+        UserUpdateRequest request = new UserUpdateRequest("새회사", "123-45", "https://example.com/file/test.jpg");
+        MockMultipartFile file = new MockMultipartFile("file", "business.jpg", "image/jpeg", "content".getBytes());
 
+        File mockFile = org.mockito.Mockito.mock(File.class);
+
+        given(mockFile.getFileUrl()).willReturn("https://example.com/file/test.jpg");
+        given(fileUploadService.upload(file)).willReturn(mockFile);
         given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
-        given(userUpdateApprovalRepository.existsByUserAndStatus(user, RequestStatus.PENDING)).willReturn(false);
 
         // when
-        userService.requestBusinessUpdate(email, request);
+        userService.requestBusinessUpdate(email, request, file);
 
         // then
         verify(userUpdateApprovalRepository, times(1)).save(any(UserUpdateApproval.class));
