@@ -1,0 +1,38 @@
+{
+  "family": "harvest-task",
+  "executionRoleArn": "arn:aws:iam::686255985190:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "3072",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "containerDefinitions": [
+    {
+      "name": "test-container",
+      "image": "686255985190.dkr.ecr.ap-northeast-2.amazonaws.com/gold/harvest:PLACEHOLDER",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "test-container-port-protocol",
+          "containerPort": 8088,
+          "hostPort": 8088,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/harvest-task",
+          "awslogs-create-group": "true",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

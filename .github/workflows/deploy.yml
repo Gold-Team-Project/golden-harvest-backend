@@ -11,8 +11,13 @@ env:
   ECR_REPOSITORY: gold/harvest
   IMAGE_TAG: ${{ github.sha }}
 
+  ECS_CLUSTER: harvest-cl
+  ECS_SERVICE: harvest-task-service-14ejfaz3
+  ECS_TASK_DEFINITION: ecs/task-definition.json
+  ECS_CONTAINER_NAME: test-container
+
 jobs:
-  build-and-push:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,7 +34,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      # 테스트는 일단 스킵한 상태(원하면 build로 바꿔도 됨)
+      # 테스트는 스킵
       - name: Build (Gradle)
         run: ./gradlew clean build -x test
 
@@ -46,8 +51,8 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # Docker build & push
-      - name: Build, tag, and push image to ECR
+      # Docker build & push (SHA 태그)
+      - name: Build, tag, and push image to ECR (sha)
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
@@ -55,5 +60,29 @@ jobs:
           docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} .
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
-          docker tag  $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:latest
+      # (선택) latest도 같이 유지하고 싶으면 남겨도 됨. 방법2에 필수는 아님.
+      - name: Tag and push latest (optional)
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker tag  $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} \
+                      $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:latest
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:latest
+
+      # task-definition.json에서 컨테이너 'test-container'의 image만 SHA로 치환
+      - name: Render ECS task definition
+        id: render-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.ECS_CONTAINER_NAME }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+
+      # 새 리비전 등록 + 서비스 롤링 배포
+      - name: Deploy ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
