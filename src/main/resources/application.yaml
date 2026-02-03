@@ -72,6 +72,7 @@ management:
     redis:
       enabled: false
 
+
 file:
   upload-dir: ./uploads
 
