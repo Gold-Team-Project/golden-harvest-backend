@@ -8,6 +8,16 @@
         <result property="orderStatus" column="sales_status_name"/>
         <result property="createdAt" column="created_at"/>
         <result property="totalAmount" column="total_amount"/>
+        <association property="customerInfo" javaType="com.teamgold.goldenharvest.domain.sales.query.application.dto.SalesCustomerInfo">
+            <result property="email" column="customer_email"/>
+            <result property="company" column="customer_company"/>
+            <result property="businessNumber" column="business_number"/>
+            <result property="name" column="customer_name"/>
+            <result property="phoneNumber" column="customer_phone"/>
+            <result property="addressLine1" column="address_line1"/>
+            <result property="addressLine2" column="address_line2"/>
+            <result property="postalCode" column="postal_code"/>
+        </association>
         <collection property="orderItems" ofType="com.teamgold.goldenharvest.domain.sales.query.application.dto.OrderHistoryItem">
             <result property="itemName" column="item_name"/>
             <result property="gradeName" column="grade_name"/>
@@ -181,6 +191,14 @@
             sos.sales_status_name,
             so.created_at,
             so.total_amount,
+            sci.customer_email,
+            sci.customer_company,
+            sci.business_number,
+            sci.customer_name,
+            sci.customer_phone,
+            sci.address_line1,
+            sci.address_line2,
+            sci.postal_code,
             sku.item_name,
             sku.grade_name,
             sku.variety_name,
@@ -190,6 +208,8 @@
             tb_sales_order so
                 JOIN
             tb_sales_order_status sos ON so.order_status_id = sos.sales_status_id
+                LEFT JOIN
+            tb_sales_customer_info sci ON so.user_email = sci.customer_email
                 LEFT JOIN
             tb_sales_order_item soi ON so.sales_order_id = soi.sales_order_id
                 LEFT JOIN
