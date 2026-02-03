@@ -34,7 +34,7 @@ public class SalesOrderQueryController {
     public ResponseEntity<ApiResponse<Page<OrderHistoryResponse>>> getMyOrderHistory(@ModelAttribute MyOrderSearchCondition searchCondition, Pageable pageable) {
         // 최종 구현 시에는 Spring Security 등의 인증 시스템에서 사용자 이메일을 받아올 예정
         // userEmail 하드코딩으로 받아 옴
-                String userEmail = "testuser@example.com";
+                String userEmail = "rbwls1100@naver.com";
                 Page<OrderHistoryResponse> orderHistory = salesOrderQueryService.getMyOrderHistory(userEmail, searchCondition, pageable);
         return ResponseEntity.ok(ApiResponse.success(orderHistory));
     }
