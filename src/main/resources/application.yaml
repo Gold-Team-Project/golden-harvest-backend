@@ -101,5 +101,5 @@ aws:
     region: ap-northeast-2
     base-url: https://goldenharvest-bucket.s3.ap-northeast-2.amazonaws.com/uploads/
   credentials:
-    access-key: ${AWS_ACCESS_KEY_ID}
-    secret-key: ${AWS_SECRET_ACCESS_KEY}
+    access-key: ${ACCESS_KEY_ID}
+    secret-key: ${SECRET_ACCESS_KEY}
