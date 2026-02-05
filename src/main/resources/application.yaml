@@ -20,7 +20,10 @@ spring:
       port: ${REDIS_PORT}
       ssl:
         enabled: true
-      timeout: 2s
+      timeout: 2s          # command timeout
+      connect-timeout: 2s  # ✅ connect/TLS timeout (중요)
+      lettuce:
+        shutdown-timeout: 2s
 
   mail:
     host: smtp.gmail.com
