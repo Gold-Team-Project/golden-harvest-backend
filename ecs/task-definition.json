@@ -1,6 +1,5 @@
 {
   "family": "harvest-task",
-  "taskRoleArn": "arn:aws:iam::686255985190:role/harvest-ecs-task-role",
   "executionRoleArn": "arn:aws:iam::686255985190:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
