@@ -38,43 +38,46 @@ public class MailServiceImpl implements MailService {
 
         log.info("[MailDebug] 입력받은 이메일: {}, 입력받은 타입: [{}]", toEmail, type);
 
-        //  가입 여부 확인
+        long t0 = System.currentTimeMillis();
         boolean isExist = userRepository.existsByEmail(toEmail);
-        if (type.equals("signup") && isExist) {
-            //  회원가입 시 이미 계정이 있는 경우
-            throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
-        } else if(type.equals("password") && !isExist) {
-            //  계정이 없는경우
-            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
-        }
+        log.info("[Timing] existsByEmail={}ms", System.currentTimeMillis() - t0);
+
+        if (type.equals("signup") && isExist) throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        if (type.equals("password") && !isExist) throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 
         String code = EmailVerificationCode.getCode();
 
-        try{
-            String subject = type.equals("signup")
-                    ? "[골든하베스트] 회원가입 인증번호 안내"
-                    : "[골든하베스트] 비밀번호 재설정 인증번호 안내";
+        String subject = type.equals("signup")
+                ? "[골든하베스트] 회원가입 인증번호 안내"
+                : "[골든하베스트] 비밀번호 재설정 인증번호 안내";
+        String title = type.equals("signup") ? "회원가입" : "비밀번호 재설정";
+        String description = type.equals("signup") ? "안전한 회원가입을 위해" : "비밀번호 재설정을 위해";
 
-            String title = type.equals("signup") ? "회원가입" : "비밀번호 재설정";
-            String description = type.equals("signup")
-                    ? "안전한 회원가입을 위해"
-                    : "비밀번호 재설정을 위해";
+        try {
+            // 1) Redis에 먼저 저장 (성공해야 메일 발송)
+            t0 = System.currentTimeMillis();
+            redisTemplate.opsForValue().set("EMAIL_CODE:" + toEmail, code, Duration.ofMinutes(5));
+            log.info("[Timing] redisSet={}ms", System.currentTimeMillis() - t0);
 
+            // 2) 메일 발송
+            t0 = System.currentTimeMillis();
             MimeMessage message = createEmailForm(toEmail, code, subject, title, description);
             mailSender.send(message);
+            log.info("[Timing] smtpSend={}ms", System.currentTimeMillis() - t0);
 
-            //  redis에 5분간 저장
-            redisTemplate.opsForValue().set(
-                    "EMAIL_CODE:" + toEmail,
-                    code,
-                    Duration.ofMinutes(5)
-            );
             log.info("[Golden Harvest] 인증 메일 전송 성공: {}", toEmail);
-        } catch (Exception e){
-            log.error("[Golden Harvest] 메일 발송 실패: {}", e.getMessage());
+
+        } catch (Exception e) {
+            // 원인 파악 가능하게 스택트레이스도 남기기
+            log.error("[Golden Harvest] 메일/Redis 처리 실패", e);
+
+            // Redis 저장은 됐는데 메일이 실패하면 code가 남을 수 있음 → 정리(선택)
+            // redisTemplate.delete("EMAIL_CODE:" + toEmail);
+
             throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
         }
     }
+
 
     @Override
     public void verifyCode(String email, String code) {
