@@ -32,7 +32,7 @@
         { "name": "MAIL_PASSWORD", "valueFrom": "arn:aws:ssm:ap-northeast-2:686255985190:parameter/MAIL_PASSWORD" },
         { "name": "AMAZON_RDS", "valueFrom": "arn:aws:ssm:ap-northeast-2:686255985190:parameter/AMAZON_RDS" },
         { "name": "JWT_SECRET_KEY", "valueFrom": "arn:aws:ssm:ap-northeast-2:686255985190:parameter/JWT_SECRET_KEY" },
-        { "name": "REDIS_HOST", "valueFrom": "arn:aws:ssm:ap-northeast-2:686255985190:parameter/AWS_REDIS_HOST" }
+        { "name": "REDIS_HOST", "valueFrom": "arn:aws:ssm:ap-northeast-2:686255985190:parameter/REDIS_HOST" }
       ],
       "essential": true,
       "logConfiguration": {
