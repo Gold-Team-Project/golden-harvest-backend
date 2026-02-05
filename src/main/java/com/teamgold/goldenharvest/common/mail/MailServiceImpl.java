@@ -8,7 +8,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,10 @@ import java.time.Duration;
 public class MailServiceImpl implements MailService {
 
     private final JavaMailSender mailSender;
-    private final RedisTemplate<String,Object> redisTemplate;
+    private final StringRedisTemplate redis;     // ✅ StringRedisTemplate로 변경
     private final UserRepository userRepository;
     private final Environment env;
 
-
-    // 메일 발송 및 redis 저장
     @Override
     public void sendVerificationEmail(String toEmail, String type) {
 
@@ -35,121 +33,126 @@ public class MailServiceImpl implements MailService {
                 env.getProperty("spring.data.redis.port"),
                 env.getProperty("spring.data.redis.ssl.enabled")
         );
+        log.info("[MailDebug] toEmail={}, type={}", toEmail, type);
 
-        log.info("[MailDebug] 입력받은 이메일: {}, 입력받은 타입: [{}]", toEmail, type);
+        // 1) DB 조회는 최대한 빨리 끝내기 (메일/레디스 이전에 끝)
+        boolean isExist = checkUserExistFast(toEmail);
 
-        // 1) 가입 여부 확인 (DB)
-        long t0 = System.nanoTime();
-        boolean isExist;
-        try {
-            isExist = userRepository.existsByEmail(toEmail);
-            long ms = (System.nanoTime() - t0) / 1_000_000;
-            log.info("[Timing] existsByEmail={}ms", ms);
-        } catch (Exception e) {
-            log.error("[Fail] existsByEmail query failed", e);
-            throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
-        }
+        // 2) 타입 검증
+        validateType(type, isExist);
 
-        if (type.equals("signup") && isExist) throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
-        if (type.equals("password") && !isExist) throw new BusinessException(ErrorCode.USER_NOT_FOUND);
-
+        // 3) 코드 생성
         String code = EmailVerificationCode.getCode();
 
-        // 2) 메일 폼 생성
-        MimeMessage message;
-        try {
-            String subject = type.equals("signup")
-                    ? "[골든하베스트] 회원가입 인증번호 안내"
-                    : "[골든하베스트] 비밀번호 재설정 인증번호 안내";
+        // 4) 메일 작성
+        MimeMessage message = buildMessage(toEmail, type, code);
 
-            String title = type.equals("signup") ? "회원가입" : "비밀번호 재설정";
-            String description = type.equals("signup") ? "안전한 회원가입을 위해" : "비밀번호 재설정을 위해";
-
-            message = createEmailForm(toEmail, code, subject, title, description);
-            log.info("[Step] createEmailForm=OK");
-        } catch (Exception e) {
-            log.error("[Fail] createEmailForm failed", e);
-            throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
-        }
-
-        // 3) SMTP 전송 (여기서 멈추는지 확인)
+        // 5) SMTP 전송 (느릴 수 있음)
         long t1 = System.nanoTime();
         try {
             log.info("[Step] smtpSend=START to={}", toEmail);
             mailSender.send(message);
-            long ms = (System.nanoTime() - t1) / 1_000_000;
-            log.info("[Step] smtpSend=OK {}ms", ms);
+            log.info("[Step] smtpSend=OK {}ms", (System.nanoTime() - t1) / 1_000_000);
         } catch (Exception e) {
-            long ms = (System.nanoTime() - t1) / 1_000_000;
-            log.error("[Fail] smtpSend failed after {}ms", ms, e);
+            log.error("[Fail] smtpSend failed", e);
             throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
         }
 
-        // 4) Redis 저장 (여기서 멈추는지 확인)
+        // 6) Redis 저장 (문자열로 단순 저장)
+        String key = emailCodeKey(toEmail);
         long t2 = System.nanoTime();
-        String key = "EMAIL_CODE:" + toEmail;
         try {
             log.info("[Step] redisSet=START key={}", key);
-            redisTemplate.opsForValue().set(key, code, Duration.ofMinutes(5));
-            long ms = (System.nanoTime() - t2) / 1_000_000;
-            log.info("[Step] redisSet=OK {}ms", ms);
+            redis.opsForValue().set(key, code, Duration.ofMinutes(5));
+            log.info("[Step] redisSet=OK {}ms", (System.nanoTime() - t2) / 1_000_000);
         } catch (Exception e) {
-            long ms = (System.nanoTime() - t2) / 1_000_000;
-            log.error("[Fail] redisSet failed after {}ms", ms, e);
+            log.error("[Fail] redisSet failed", e);
             throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
         }
 
         log.info("[Golden Harvest] 인증 메일 전송 성공: {}", toEmail);
     }
 
+    /**
+     * ✅ DB조회만 담당 (메일/레디스와 완전히 분리)
+     */
+    private boolean checkUserExistFast(String email) {
+        long t0 = System.nanoTime();
+        try {
+            boolean exist = userRepository.existsByEmail(email);
+            log.info("[Timing] existsByEmail={}ms", (System.nanoTime() - t0) / 1_000_000);
+            return exist;
+        } catch (Exception e) {
+            log.error("[Fail] existsByEmail query failed", e);
+            throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
+        }
+    }
 
+    private void validateType(String type, boolean isExist) {
+        if ("signup".equals(type) && isExist) throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        if ("password".equals(type) && !isExist) throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        if (!"signup".equals(type) && !"password".equals(type)) throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
+    }
+
+    private MimeMessage buildMessage(String toEmail, String type, String code) {
+        try {
+            String subject = "signup".equals(type)
+                    ? "[골든하베스트] 회원가입 인증번호 안내"
+                    : "[골든하베스트] 비밀번호 재설정 인증번호 안내";
+
+            String title = "signup".equals(type) ? "회원가입" : "비밀번호 재설정";
+
+            return createEmailForm(toEmail, code, subject, title);
+        } catch (Exception e) {
+            log.error("[Fail] createEmailForm failed", e);
+            throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
+        }
+    }
 
     @Override
     public void verifyCode(String email, String code) {
-        String saveCode = (String) redisTemplate.opsForValue().get("EMAIL_CODE:" + email);
-
-        //  만료되었거나 코드가 일치하지 않는 경우
-        if(saveCode == null || !saveCode.equals(code)){
+        String saved = redis.opsForValue().get(emailCodeKey(email));
+        if (saved == null || !saved.equals(code)) {
             throw new BusinessException(ErrorCode.INVALID_VERIFICATION_CODE);
         }
-        redisTemplate.opsForValue().set(
-                "EMAIL_VERIFIED:" + email,
-                "true",
-                Duration.ofMinutes(10)
-        );
 
-        //  인증 성공 시 redis에서 삭제
-        redisTemplate.delete("EMAIL_CODE:" + email);
+        redis.opsForValue().set(emailVerifiedKey(email), "true", Duration.ofMinutes(10));
+        redis.delete(emailCodeKey(email));
         log.info("[Golden Harvest] 이메일 인증 성공: {}", email);
     }
 
-    //  메일 폼 생성
-    private MimeMessage createEmailForm(String toEmail, String code, String subject, String title, String description) throws Exception {
+    private String emailCodeKey(String email) {
+        return "EMAIL_CODE:" + email;
+    }
+
+    private String emailVerifiedKey(String email) {
+        return "EMAIL_VERIFIED:" + email;
+    }
+
+    private MimeMessage createEmailForm(String toEmail, String code, String subject, String title) throws Exception {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setTo(toEmail);
         helper.setSubject(subject);
 
-        // HTML 템플릿
-        StringBuilder msg = new StringBuilder();
-        msg.append("<div style='margin:20px; border:1px solid #eee; padding:20px; border-radius:10px;'>")
-                .append("<h1 style='color: #f39c12;'>Golden Harvest</h1>")
-                .append("<p>안녕하세요, <strong>Golden Harvest</strong>입니다.</p>")
-                .append("<p>요청하신 <strong>").append(title).append("</strong>을(를) 위한 인증번호입니다.</p>")
-                .append("<p>아래의 인증번호를 입력해 주세요.</p>")
-                .append("<div style='background:#f9f9f9; border:1px dashed #f39c12; padding:20px; font-size:30px; letter-spacing:8px; font-weight:bold; text-align:center; color:#333;'>")
-                .append(code)
-                .append("</div>")
-                .append("<p style='margin-top:20px;'>인증번호 유효 시간은 <strong>5분</strong>입니다.</p>")
-                .append("<hr style='border:0;border-top:1px solid #eee;'>")
-                .append("<p style='font-size:12px; color:gray;'>본 메일은 발신 전용입니다.<br>문의: support@goldenharvest.com</p>")
-                .append("</div>");
+        String html = """
+            <div style='margin:20px; border:1px solid #eee; padding:20px; border-radius:10px;'>
+              <h1 style='color: #f39c12;'>Golden Harvest</h1>
+              <p>안녕하세요, <strong>Golden Harvest</strong>입니다.</p>
+              <p>요청하신 <strong>%s</strong>을(를) 위한 인증번호입니다.</p>
+              <p>아래의 인증번호를 입력해 주세요.</p>
+              <div style='background:#f9f9f9; border:1px dashed #f39c12; padding:20px; font-size:30px; letter-spacing:8px; font-weight:bold; text-align:center; color:#333;'>
+                %s
+              </div>
+              <p style='margin-top:20px;'>인증번호 유효 시간은 <strong>5분</strong>입니다.</p>
+              <hr style='border:0;border-top:1px solid #eee;'>
+              <p style='font-size:12px; color:gray;'>본 메일은 발신 전용입니다.</p>
+            </div>
+            """.formatted(title, code);
 
-        helper.setText(msg.toString(), true);
+        helper.setText(html, true);
         helper.setFrom(new InternetAddress("noreply@goldenharvest.com", "Golden Harvest 관리자"));
-
         return message;
     }
 }
-
