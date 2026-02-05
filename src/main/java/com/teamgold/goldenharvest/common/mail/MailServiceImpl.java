@@ -7,6 +7,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,11 +23,18 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender mailSender;
     private final RedisTemplate<String,Object> redisTemplate;
     private final UserRepository userRepository;
+    private final Environment env;
 
 
     // 메일 발송 및 redis 저장
     @Override
     public void sendVerificationEmail(String toEmail, String type) {
+
+        log.info("[RedisDebug] host={}, port={}, sslEnabled={}",
+                env.getProperty("spring.data.redis.host"),
+                env.getProperty("spring.data.redis.port"),
+                env.getProperty("spring.data.redis.ssl.enabled")
+        );
 
         log.info("[MailDebug] 입력받은 이메일: {}, 입력받은 타입: [{}]", toEmail, type);
 
