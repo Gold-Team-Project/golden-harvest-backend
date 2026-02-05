@@ -20,6 +20,7 @@ spring:
       port: ${REDIS_PORT}
       ssl:
         enabled: true
+      timeout: 2s
 
   mail:
     host: smtp.gmail.com
@@ -29,6 +30,9 @@ spring:
     properties:
       mail:
         smtp:
+          connectiontimeout: 3000
+          timeout: 3000
+          writetimeout: 3000
           auth: true
           starttls:
             enable: true

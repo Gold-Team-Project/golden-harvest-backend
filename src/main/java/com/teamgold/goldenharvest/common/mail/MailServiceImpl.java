@@ -38,45 +38,70 @@ public class MailServiceImpl implements MailService {
 
         log.info("[MailDebug] 입력받은 이메일: {}, 입력받은 타입: [{}]", toEmail, type);
 
-        long t0 = System.currentTimeMillis();
-        boolean isExist = userRepository.existsByEmail(toEmail);
-        log.info("[Timing] existsByEmail={}ms", System.currentTimeMillis() - t0);
+        // 1) 가입 여부 확인 (DB)
+        long t0 = System.nanoTime();
+        boolean isExist;
+        try {
+            isExist = userRepository.existsByEmail(toEmail);
+            long ms = (System.nanoTime() - t0) / 1_000_000;
+            log.info("[Timing] existsByEmail={}ms", ms);
+        } catch (Exception e) {
+            log.error("[Fail] existsByEmail query failed", e);
+            throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
+        }
 
         if (type.equals("signup") && isExist) throw new BusinessException(ErrorCode.EMAIL_ALREADY_EXISTS);
         if (type.equals("password") && !isExist) throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 
         String code = EmailVerificationCode.getCode();
 
-        String subject = type.equals("signup")
-                ? "[골든하베스트] 회원가입 인증번호 안내"
-                : "[골든하베스트] 비밀번호 재설정 인증번호 안내";
-        String title = type.equals("signup") ? "회원가입" : "비밀번호 재설정";
-        String description = type.equals("signup") ? "안전한 회원가입을 위해" : "비밀번호 재설정을 위해";
-
+        // 2) 메일 폼 생성
+        MimeMessage message;
         try {
-            // 1) Redis에 먼저 저장 (성공해야 메일 발송)
-            t0 = System.currentTimeMillis();
-            redisTemplate.opsForValue().set("EMAIL_CODE:" + toEmail, code, Duration.ofMinutes(5));
-            log.info("[Timing] redisSet={}ms", System.currentTimeMillis() - t0);
+            String subject = type.equals("signup")
+                    ? "[골든하베스트] 회원가입 인증번호 안내"
+                    : "[골든하베스트] 비밀번호 재설정 인증번호 안내";
 
-            // 2) 메일 발송
-            t0 = System.currentTimeMillis();
-            MimeMessage message = createEmailForm(toEmail, code, subject, title, description);
-            mailSender.send(message);
-            log.info("[Timing] smtpSend={}ms", System.currentTimeMillis() - t0);
+            String title = type.equals("signup") ? "회원가입" : "비밀번호 재설정";
+            String description = type.equals("signup") ? "안전한 회원가입을 위해" : "비밀번호 재설정을 위해";
 
-            log.info("[Golden Harvest] 인증 메일 전송 성공: {}", toEmail);
-
+            message = createEmailForm(toEmail, code, subject, title, description);
+            log.info("[Step] createEmailForm=OK");
         } catch (Exception e) {
-            // 원인 파악 가능하게 스택트레이스도 남기기
-            log.error("[Golden Harvest] 메일/Redis 처리 실패", e);
-
-            // Redis 저장은 됐는데 메일이 실패하면 code가 남을 수 있음 → 정리(선택)
-            // redisTemplate.delete("EMAIL_CODE:" + toEmail);
-
+            log.error("[Fail] createEmailForm failed", e);
             throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
         }
+
+        // 3) SMTP 전송 (여기서 멈추는지 확인)
+        long t1 = System.nanoTime();
+        try {
+            log.info("[Step] smtpSend=START to={}", toEmail);
+            mailSender.send(message);
+            long ms = (System.nanoTime() - t1) / 1_000_000;
+            log.info("[Step] smtpSend=OK {}ms", ms);
+        } catch (Exception e) {
+            long ms = (System.nanoTime() - t1) / 1_000_000;
+            log.error("[Fail] smtpSend failed after {}ms", ms, e);
+            throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
+        }
+
+        // 4) Redis 저장 (여기서 멈추는지 확인)
+        long t2 = System.nanoTime();
+        String key = "EMAIL_CODE:" + toEmail;
+        try {
+            log.info("[Step] redisSet=START key={}", key);
+            redisTemplate.opsForValue().set(key, code, Duration.ofMinutes(5));
+            long ms = (System.nanoTime() - t2) / 1_000_000;
+            log.info("[Step] redisSet=OK {}ms", ms);
+        } catch (Exception e) {
+            long ms = (System.nanoTime() - t2) / 1_000_000;
+            log.error("[Fail] redisSet failed after {}ms", ms, e);
+            throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
+        }
+
+        log.info("[Golden Harvest] 인증 메일 전송 성공: {}", toEmail);
     }
+
 
 
     @Override
