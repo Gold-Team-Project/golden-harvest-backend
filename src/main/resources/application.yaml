@@ -20,8 +20,8 @@ spring:
       port: ${REDIS_PORT}
       ssl:
         enabled: true
-      timeout: 2s          # command timeout
-      connect-timeout: 2s  # ✅ connect/TLS timeout (중요)
+      timeout: 3s          # command timeout
+      connect-timeout: 3s  # ✅ connect/TLS timeout (중요)
       lettuce:
         shutdown-timeout: 2s
 
